@@ -25,3 +25,14 @@ export const userSchema = z.object({
   refreshToken: z.string(),
 });
 export type User = z.infer<typeof userSchema>;
+
+/**
+ * Public profile = `UserDto` without the tokens. This is what the BFF returns to
+ * the browser (the tokens stay in the httpOnly cookie / are handed over as the
+ * working access token separately).
+ */
+export const userProfileSchema = userSchema.omit({
+  sessionToken: true,
+  refreshToken: true,
+});
+export type UserProfile = z.infer<typeof userProfileSchema>;
