@@ -1,0 +1,25 @@
+{
+  "errors": {
+    "byCode": {
+      "invalidCredentials": "Email o contraseña incorrectos.",
+      "resetLinkExpired": "Este enlace de recuperación ha caducado. Solicita uno nuevo.",
+      "userNotFound": "No encontramos esa cuenta.",
+      "invalidOAuthCredentials": "Esa cuenta aún no está registrada. Prueba a crear una.",
+      "guestNotAllowed": "Crea una cuenta para continuar.",
+      "registerUnavailable": "Ese email o nombre de usuario ya está en uso.",
+      "oauthAlreadyRegistered": "Esta cuenta ya existe. Prueba a iniciar sesión.",
+      "invalidVerificationCode": "El código de verificación es incorrecto o ha caducado.",
+      "gameNotFound": "Este juego no está disponible.",
+      "listNameExists": "Ya tienes una lista con ese nombre.",
+      "webNotAllowed": "Esta acción no está disponible en la web."
+    },
+    "generic": {
+      "rateLimit": "Demasiadas peticiones. Ve más despacio e inténtalo de nuevo en un momento.",
+      "server": "Algo ha ido mal por nuestra parte. Inténtalo de nuevo más tarde.",
+      "network": "Parece que no tienes conexión. Comprueba tu red e inténtalo de nuevo.",
+      "validation": "Revisa los campos marcados e inténtalo de nuevo.",
+      "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "unknown": "Algo ha ido mal. Inténtalo de nuevo."
+    }
+  }
+}

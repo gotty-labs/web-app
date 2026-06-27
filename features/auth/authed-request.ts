@@ -26,6 +26,7 @@ import { bffRequest } from "@/lib/api/bff-client";
 import { apiRequest, type ApiRequestOptions } from "@/lib/api/client";
 import { ApiException } from "@/lib/api/envelope";
 import { InternalCode } from "@/lib/api/error-codes";
+import { getClientLocale } from "@/lib/i18n/locales";
 
 import { isAccessTokenExpired } from "./jwt";
 import { sessionStore } from "./session-store";
@@ -100,13 +101,16 @@ export async function authedRequest<T>(
     token = await refresh();
   }
 
+  // Default the content language to the browser's locale (system-driven, no toggle).
+  const language = options.language ?? getClientLocale();
+
   try {
-    return await apiRequest({ ...options, token });
+    return await apiRequest({ language, ...options, token });
   } catch (error) {
     if (error instanceof ApiException) {
       if (error.internalCode === InternalCode.REAUTHENTICATION_REQUIRED_TOKEN) {
         const fresh = await refresh();
-        return apiRequest({ ...options, token: fresh });
+        return apiRequest({ language, ...options, token: fresh });
       }
       if (
         error.internalCode === InternalCode.INVALID_TOKEN ||

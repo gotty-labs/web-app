@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # JustGame web — project conventions
 
-Conventions established while building the domain + auth layers. Follow them so every
+Follow Conventions so every
 feature looks the same. When in doubt, read the official Next.js (`node_modules/next/dist/docs/`)
 or shadcn docs first — this stack is ahead of training data.
 

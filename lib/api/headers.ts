@@ -16,6 +16,7 @@
 import pkg from "@/package.json";
 
 import { type JgLanguage } from "@/lib/domain/enums";
+import { defaultLocale } from "@/lib/i18n/locales";
 
 export const PLATFORM = {
   origin: "WEB",
@@ -23,12 +24,12 @@ export const PLATFORM = {
   buildNumber: "1",
 } as const;
 
-export const DEFAULT_LANGUAGE: JgLanguage = "es";
+export const DEFAULT_LANGUAGE: JgLanguage = defaultLocale;
 
 export interface HeaderOptions {
   /** Session JWT; when present, sent as `Authorization: Bearer <token>`. */
   token?: string;
-  /** Localized content language; defaults to `es`. */
+  /** Localized content language; defaults to the app default locale (`en`). */
   language?: JgLanguage;
   /** Whether a JSON body is being sent (adds `content-type`). */
   hasBody?: boolean;

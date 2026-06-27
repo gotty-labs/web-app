@@ -1,0 +1,25 @@
+{
+  "errors": {
+    "byCode": {
+      "invalidCredentials": "Wrong email or password.",
+      "resetLinkExpired": "This reset link has expired. Please request a new one.",
+      "userNotFound": "We couldn't find that account.",
+      "invalidOAuthCredentials": "That account isn't registered yet. Try signing up.",
+      "guestNotAllowed": "Create an account to continue.",
+      "registerUnavailable": "That email or nickname is already taken.",
+      "oauthAlreadyRegistered": "This account already exists. Try logging in instead.",
+      "invalidVerificationCode": "That verification code is wrong or expired.",
+      "gameNotFound": "This game isn't available.",
+      "listNameExists": "You already have a list with that name.",
+      "webNotAllowed": "This action isn't available on the web."
+    },
+    "generic": {
+      "rateLimit": "Too many requests. Please slow down and try again in a moment.",
+      "server": "Something went wrong on our side. Please try again later.",
+      "network": "You appear to be offline. Check your connection and try again.",
+      "validation": "Please check the highlighted fields and try again.",
+      "sessionExpired": "Your session expired. Please log in again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  }
+}
