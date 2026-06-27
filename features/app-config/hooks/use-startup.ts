@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 
 import type { Startup } from "@/lib/domain/models";
 
-import { getStartup } from "./startup-client";
+import { getStartup } from "../services/startup-client";
 
 export interface StartupState {
   loading: boolean;

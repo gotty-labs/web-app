@@ -28,8 +28,8 @@ import { ApiException } from "@/lib/api/envelope";
 import { InternalCode } from "@/lib/api/error-codes";
 import { getClientLocale } from "@/lib/i18n/locales";
 
-import { isAccessTokenExpired } from "./jwt";
-import { sessionStore } from "./session-store";
+import { isAccessTokenExpired } from "../utils/jwt";
+import { sessionStore } from "../stores/session-store";
 
 const refreshPayloadSchema = z.object({
   id: z.string(),

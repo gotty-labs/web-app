@@ -18,7 +18,7 @@ import { voidDataSchema } from "@/lib/api/envelope";
 import { userProfileSchema, type UserProfile } from "@/lib/domain/models";
 
 import { authedRequest } from "./authed-request";
-import { sessionStore } from "./session-store";
+import { sessionStore } from "../stores/session-store";
 
 const sessionPayloadSchema = z.object({
   id: z.string(),

@@ -13,8 +13,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
-import { LOGIN_PATH } from "../config";
-import { useSession } from "./session-provider";
+import { LOGIN_PATH } from "../config/config";
+import { useSession } from "../hooks/use-session";
 
 export function RequireAuth({
   children,

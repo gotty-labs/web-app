@@ -19,18 +19,26 @@ or shadcn docs first — this stack is ahead of training data.
 
 ## File structure
 - **No `src/`** — root-based (`app/`, `lib/`, `features/`, `components/`).
+- **Organize by artifact TYPE** into conventionally-named folders, everywhere (NO `ui/` folder):
+  `components/` (React components) · `contexts/` (context + provider) · `hooks/` (React hooks) ·
+  `services/` (API clients / use-cases / loaders / transport) · `stores/` (state stores) ·
+  `utils/` (pure helpers) · `config/` (constants) · `server/` (server-only) · `middlewares/`.
 - **Shared code in `lib/`:** `lib/api/` (transport), `lib/domain/` (the backend contract:
-  `enums.ts`, `models/`, `inputs/` — ONE source of truth, never scatter it), `lib/config/`.
-- **Feature-specific code in `features/<name>/`** (feature-sliced):
-  - feature root = client logic; `server/` = server-only modules; `ui/` = React components.
-  - `index.ts` = public barrel. **Do NOT re-export `server/` from the barrel** (keeps
-    `next/headers` etc. out of client bundles).
-  - Pattern set by `features/auth/`; reuse for `features/game/`, `features/library/`, …
+  `enums.ts`, `models/`, `inputs/` — ONE source of truth, never scatter it), `lib/config/`,
+  `lib/i18n/` (see i18n section). These cohesive infra modules keep flat logic files, but their
+  React artifacts still go in `contexts/` + `hooks/`.
+- **Feature code in `features/<name>/`** (feature-sliced), split into the type folders above.
+  `index.ts` = public barrel; **do NOT re-export `server/`** from it (keeps `next/headers` out of
+  client bundles). Pattern set by `features/auth/`; reuse for `features/game/`, `features/library/`, …
+- Top-level shared `components/`, `hooks/`, `contexts/`, `middlewares/` for cross-feature pieces.
 
 ## Naming
-- **kebab-case** files, named after the primary export/role. A file whose main export is a
-  Provider is `*-provider.tsx` (NOT `*-context.tsx`).
-- Non-routable colocated helpers under `app/` use a leading underscore (`_shared.ts`).
+- **kebab-case** files, named after the primary export/role.
+- **Hooks** are files named `use-*.ts(x)` and live in a `hooks/` folder (one hook concept per file).
+- **Contexts/providers** live in `contexts/`; a Provider file is `*-provider.tsx` (NOT
+  `*-context.tsx`). Export the raw `Context` so the matching `use*` hook (in `hooks/`) consumes it.
+- Non-routable colocated helpers under `app/` use a leading underscore (`_shared.ts`); a `_folder`
+  is non-routable in the App Router.
 
 ## Domain & validation (Zod)
 - **Zod is the single source of truth:** define the schema, infer the type (`z.infer`). Never
@@ -57,6 +65,24 @@ or shadcn docs first — this stack is ahead of training data.
 - **Hybrid token storage:** access token (~2h) in `localStorage` (working copy); full session
   incl. refresh token (~6m) in an **httpOnly cookie** set by the BFF. Never expose the refresh
   token to JS. Web is always authenticated (no guest flow — blocked on WEB, 50080).
+
+## Internationalization (i18n) — `lib/i18n/`
+- Locales: `en` (default) + `es`, detected from the user's SYSTEM (`Accept-Language` on the server
+  via `getServerLocale`, `navigator` on the client via `getClientLocale`). **No user toggle, no
+  locale in the URL** (homogeneous routing) — the Next docs' dictionaries pattern WITHOUT `[lang]`.
+- Translations are **JSON** in `lib/i18n/dictionaries/<locale>.json` — the single source of copy
+  for EVERYTHING (errors + UI). `getDictionary(locale)` dynamically imports + Zod-validates them
+  (fail-loud on missing keys); the `Dictionary` type is inferred from that schema.
+- Map any thrown error to copy via `getErrorMessage(error, dict)` (takes the dictionary, NOT a
+  locale) — the single place errors become UI text. Client UI uses `useErrorMessage()` /
+  `useDictionary()` from `<I18nProvider>` (`lib/i18n/contexts/`, hooks in `lib/i18n/hooks/`).
+- `jg-language` is sourced from the detected locale (`authedRequest` sends the client locale;
+  `DEFAULT_LANGUAGE` is `en`).
+- **SSR/SEO caveat:** never call `getServerLocale()` (reads `headers()`) in the ROOT layout — it
+  forces dynamic rendering and breaks SSG of the SEO zone. Mount `I18nProvider` (dict passed as a
+  prop) in the `(app)` layout; the static marketing zone passes the SEO-strategy locale.
+- **SEO breakpoint (pending, Phase 4):** same-URL + system-locale ⇒ crawlers index only the
+  default (`en`) on public pages. Indexing both languages needs distinct URLs — decide A/B/C then.
 
 ## Next.js 16 / React 19 gotchas
 - `fetch` is **NOT cached by default**. Pass `next: { revalidate, tags }` for ISR/SEO reads;

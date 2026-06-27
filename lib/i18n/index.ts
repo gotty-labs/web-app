@@ -1,6 +1,7 @@
 /**
  * Public surface of the i18n layer (non-UI). Server-only `getServerLocale` is in
- * `./server`; the React provider/hooks are in `./ui/i18n-provider`.
+ * `./server`; the React provider is in `./contexts/i18n-provider` and the hooks
+ * in `./hooks/*`.
  */
 export {
   type Locale,
