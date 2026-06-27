@@ -7,8 +7,11 @@
  */
 import { z } from 'zod'
 
+import type { Metadata } from 'next'
+
 import { apiRequest } from '@/lib/api/client'
-import { defaultLocale, type Locale } from '@/lib/i18n'
+import { env } from '@/lib/config/env'
+import { defaultLocale, locales, type Locale } from '@/lib/i18n'
 import {
   gameDtoSchema,
   gameSitemapEntrySchema,
@@ -38,4 +41,41 @@ export function getPublicGame(slug: string, locale: Locale = defaultLocale): Pro
     schema: gameDtoSchema,
     next: { revalidate: SEO_REVALIDATE_SECONDS, tags: [`game:${slug}`] },
   })
+}
+
+// --- per-locale URLs for the SEO zone (default unprefixed, others under /<locale>) ---
+
+/** SEO path for a game in a given locale, e.g. `/games/x` (en) or `/es/games/x`. */
+export function gamePath(slug: string, locale: Locale): string {
+  return locale === defaultLocale ? `/games/${slug}` : `/${locale}/games/${slug}`
+}
+
+/** Absolute hreflang map (every locale + `x-default`) for a game — used by the
+ *  sitemap (`alternates.languages`) and each page's `<head>` (canonical alternates). */
+export function gameLanguageAlternates(slug: string): Record<string, string> {
+  const languages: Record<string, string> = {}
+  for (const locale of locales) {
+    languages[locale] = `${env.siteUrl}${gamePath(slug, locale)}`
+  }
+  languages['x-default'] = `${env.siteUrl}${gamePath(slug, defaultLocale)}`
+  return languages
+}
+
+/** Per-locale Metadata for a game detail page (title/desc/canonical/hreflang/OG). */
+export async function buildGameMetadata(slug: string, locale: Locale): Promise<Metadata> {
+  const game = await getPublicGame(slug, locale).catch(() => null)
+  if (!game) return {}
+
+  const canonical = `${env.siteUrl}${gamePath(slug, locale)}`
+  return {
+    title: game.name,
+    description: game.description,
+    alternates: { canonical, languages: gameLanguageAlternates(slug) },
+    openGraph: {
+      title: game.name,
+      description: game.description,
+      url: canonical,
+      images: game.media?.cover ? [game.media.cover] : undefined,
+    },
+  }
 }

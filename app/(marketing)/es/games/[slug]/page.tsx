@@ -1,11 +1,7 @@
 /**
- * Default-locale (en) public SEO game detail → URL `/games/[slug]` (Option B).
- * Shares `GameDetail` + `buildGameMetadata` with the `/es/games/[slug]` page.
- *
- * Static + ISR (`revalidate` + `/api/revalidate` webhook). `generateStaticParams`
- * returns [] on purpose: at scale, prebuilding every game × locale would mean
- * 2×N backend fetches at build — instead pages render on-demand (`dynamicParams`)
- * and are discovered via the sitemap. Resilient to a not-yet-built backend.
+ * Spanish public SEO game detail (Option B) → URL `/es/games/[slug]`.
+ * Mirror of the default-locale page with `locale="es"`; shares `GameDetail` +
+ * `buildGameMetadata`. Static + ISR; prebuilds nothing (on-demand at scale).
  */
 import type { Metadata } from 'next'
 
@@ -30,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  return buildGameMetadata(slug, 'en')
+  return buildGameMetadata(slug, 'es')
 }
 
 export default async function Page({
@@ -39,5 +35,5 @@ export default async function Page({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  return <GameDetail slug={slug} locale="en" />
+  return <GameDetail slug={slug} locale="es" />
 }

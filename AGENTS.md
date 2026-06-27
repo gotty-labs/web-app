@@ -89,8 +89,12 @@ or shadcn docs first — this stack is ahead of training data.
 - **SSR/SEO caveat:** never call `getServerLocale()` (reads `headers()`) in the ROOT layout — it
   forces dynamic rendering and breaks SSG of the SEO zone. Mount `I18nProvider` (dict passed as a
   prop) in the `(app)` layout; the static marketing zone passes the SEO-strategy locale.
-- **SEO breakpoint (pending, Phase 4):** same-URL + system-locale ⇒ crawlers index only the
-  default (`en`) on public pages. Indexing both languages needs distinct URLs — decide A/B/C then.
+- **SEO language = Option B (per-locale URLs, SEO zone only):** en at `/games/[slug]`, es at
+  `/es/games/[slug]` (two thin pages sharing `GameDetail` + `buildGameMetadata`). Pages emit
+  hreflang (`alternates.canonical` + `alternates.languages`); the sitemap is localized
+  (`alternates.languages` → one `<url>`/game) + chunked via `generateSitemaps` (45k, under 50k).
+  `generateStaticParams` returns `[]` (render on-demand; avoid 2×N build fetches). The `(app)` zone
+  stays noindex + homogeneous (system locale, same URL).
 
 ## Next.js 16 / React 19 gotchas
 
