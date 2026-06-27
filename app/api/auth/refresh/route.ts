@@ -14,7 +14,7 @@
 import { NextResponse } from "next/server";
 
 import { apiRequest } from "@/lib/api/client";
-import { clearSession, persistSession, readSession } from "@/lib/auth/session-cookie";
+import { clearSession, persistSession, readSession } from "@/features/auth/server/session-cookie";
 import { userSessionSchema } from "@/lib/domain/models";
 
 import { errorResponse } from "../_shared";

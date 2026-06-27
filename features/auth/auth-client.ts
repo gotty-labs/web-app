@@ -13,8 +13,11 @@
 import { z } from "zod";
 
 import { bffRequest } from "@/lib/api/bff-client";
+import { apiRequest } from "@/lib/api/client";
+import { voidDataSchema } from "@/lib/api/envelope";
 import { userProfileSchema, type UserProfile } from "@/lib/domain/models";
 
+import { authedRequest } from "./authed-request";
 import { sessionStore } from "./session-store";
 
 const sessionPayloadSchema = z.object({
@@ -25,7 +28,11 @@ const sessionPayloadSchema = z.object({
 type SessionPayload = z.infer<typeof sessionPayloadSchema>;
 
 function persist(payload: SessionPayload): UserProfile {
-  sessionStore.set({ id: payload.id, accessToken: payload.accessToken });
+  sessionStore.setSession({
+    id: payload.id,
+    accessToken: payload.accessToken,
+    user: payload.user,
+  });
   return payload.user;
 }
 
@@ -89,4 +96,49 @@ export async function logout(): Promise<void> {
   } finally {
     sessionStore.clear();
   }
+}
+
+/**
+ * Forgot-password (§4.1). PUBLIC backend endpoint, no session → called directly
+ * via `apiRequest` (carril 1), NOT the BFF. Errors surface as `ApiException`.
+ */
+export async function forgotPassword(email: string): Promise<void> {
+  await apiRequest({
+    method: "POST",
+    path: "/auth/forgot-password",
+    body: { email },
+    schema: voidDataSchema,
+  });
+}
+
+/**
+ * Reset-password (§4.1). PUBLIC; `resetId` comes from the email link. This is the
+ * one endpoint that does NOT require the `jg-*` headers — sending them anyway is
+ * harmless (extra valid headers are ignored).
+ */
+export async function resetPassword(
+  resetId: string,
+  password: string,
+): Promise<void> {
+  await apiRequest({
+    method: "PATCH",
+    path: "/auth/reset-password",
+    body: { resetId, password },
+    schema: voidDataSchema,
+  });
+}
+
+/**
+ * Delete-account (§4.1). A Member endpoint that also ends the session, so it
+ * combines both channels: the authenticated DELETE goes direct to the backend via
+ * `authedRequest` (token + refresh handled), then `logout()` clears the httpOnly
+ * cookie and the client store (its best-effort backend logout no-ops post-delete).
+ */
+export async function deleteAccount(): Promise<void> {
+  await authedRequest({
+    method: "DELETE",
+    path: "/auth/delete-account",
+    schema: voidDataSchema,
+  });
+  await logout();
 }

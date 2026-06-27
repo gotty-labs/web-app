@@ -62,7 +62,7 @@ async function performRefresh(): Promise<string> {
       path: "/api/auth/refresh",
       schema: refreshPayloadSchema,
     });
-    sessionStore.set(data);
+    sessionStore.setAccess(data);
     return data.accessToken;
   } catch {
     // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). Clear client too.

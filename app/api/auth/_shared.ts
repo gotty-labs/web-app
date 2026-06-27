@@ -7,7 +7,7 @@
 import { NextResponse } from "next/server";
 
 import { ApiException } from "@/lib/api/envelope";
-import { persistSession } from "@/lib/auth/session-cookie";
+import { persistSession } from "@/features/auth/server/session-cookie";
 import type { User } from "@/lib/domain/models";
 
 /**

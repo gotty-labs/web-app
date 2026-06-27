@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 import { apiRequest } from "@/lib/api/client";
 import { voidDataSchema } from "@/lib/api/envelope";
-import { clearSession, readSession } from "@/lib/auth/session-cookie";
+import { clearSession, readSession } from "@/features/auth/server/session-cookie";
 
 export async function POST(): Promise<NextResponse> {
   const session = await readSession();
