@@ -10,6 +10,7 @@ import { z } from 'zod'
 import type { Metadata } from 'next'
 
 import { apiRequest } from '@/lib/api/client'
+import { retryOn429 } from '@/lib/api/retry'
 import { env } from '@/lib/config/env'
 import { defaultLocale, locales, type Locale } from '@/lib/i18n'
 import {
@@ -24,23 +25,30 @@ export const SEO_REVALIDATE_SECONDS = 3600
 
 /** All publishable games (id/slug/updatedAt) for static params + sitemap. */
 export function getSitemapEntries(): Promise<GameSitemapEntry[]> {
-  return apiRequest({
-    method: 'GET',
-    path: '/game/sitemaps',
-    schema: z.array(gameSitemapEntrySchema),
-    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] },
-  })
+  // Idempotent GET on the cold-render path → back off + retry on 429 (rate limit)
+  // instead of failing the build/render when many cold pages hit the backend at once.
+  return retryOn429(() =>
+    apiRequest({
+      method: 'GET',
+      path: '/game/sitemaps',
+      schema: z.array(gameSitemapEntrySchema),
+      next: { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] },
+    }),
+  )
 }
 
 /** Public game detail by slug (no user-specific fields). */
 export function getPublicGame(slug: string, locale: Locale = defaultLocale): Promise<GameDto> {
-  return apiRequest({
-    method: 'GET',
-    path: `/game/public/${slug}`,
-    language: locale,
-    schema: gameDtoSchema,
-    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: [`game:${slug}`] },
-  })
+  // Idempotent GET on the cold-render path → back off + retry on 429 (rate limit).
+  return retryOn429(() =>
+    apiRequest({
+      method: 'GET',
+      path: `/game/public/${slug}`,
+      language: locale,
+      schema: gameDtoSchema,
+      next: { revalidate: SEO_REVALIDATE_SECONDS, tags: [`game:${slug}`] },
+    }),
+  )
 }
 
 // --- per-locale URLs for the SEO zone (default unprefixed, others under /<locale>) ---

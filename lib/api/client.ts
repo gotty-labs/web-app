@@ -9,17 +9,13 @@
  *    Next 16 does NOT cache `fetch` by default, so the SEO render passes
  *    `next: { revalidate, tags }` while authenticated app calls leave them unset.
  *  - Funnel every response through `unwrap(schema)` for typed data or a typed throw.
- *
- * NOT in scope here (later phases):
- *  - Single-flight token refresh / 401 interceptor (Phase 2).
- *  - 429 backoff, 5xx/offline handling, retries (Phase 3).
  */
 import { z } from 'zod'
 
 import { type JgLanguage } from '@/lib/domain/enums'
 
 import { env } from '../config/env'
-import { unwrap } from './envelope'
+import { ApiException, unwrap } from './envelope'
 import { buildHeaders } from './headers'
 
 type QueryPrimitive = string | number | boolean
@@ -95,10 +91,33 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
     signal,
   })
 
-  let raw: unknown
+  let raw: unknown = null
+  let jsonParseFailed = false
   try {
     raw = await response.json()
   } catch {
+    jsonParseFailed = true
+  }
+
+  // Enveloped error (carries a stable internalCode) → typed ApiException via unwrap.
+  const isEnvelopedError =
+    typeof raw === 'object' &&
+    raw !== null &&
+    (raw as { success?: unknown }).success === false
+  if (isEnvelopedError) return unwrap(raw, schema)
+
+  // Non-2xx WITHOUT our envelope (e.g. 429 throttler, 5xx, gateway/proxy) → synthesize an
+  // ApiException from the HTTP status, so the classifier (rateLimit/server) and retryOn429 work.
+  if (!response.ok) {
+    throw new ApiException({
+      success: false,
+      status: response.status,
+      error: response.status >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST',
+      errorInfo: { reason: `HTTP ${response.status} from ${method} ${path}` },
+    })
+  }
+
+  if (jsonParseFailed) {
     throw new Error(
       `JG API: expected a JSON envelope but got a non-JSON body (HTTP ${response.status}) from ${method} ${path}`,
     )
