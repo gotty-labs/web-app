@@ -15,97 +15,97 @@
  * Two setters: `setSession` (full, on login/register) and `setAccess` (token-only,
  * on refresh — preserves the existing profile).
  */
-import type { UserProfile } from "@/lib/domain/models";
+import type { UserProfile } from '@/lib/domain/models'
 
-const STORAGE_KEY = "jg.session";
+const STORAGE_KEY = 'jg.session'
 
 export interface ClientSession {
-  id: string;
-  accessToken: string;
-  user: UserProfile | null;
+  id: string
+  accessToken: string
+  user: UserProfile | null
 }
 
 interface Snapshot {
-  session: ClientSession | null;
-  hydrated: boolean;
+  session: ClientSession | null
+  hydrated: boolean
 }
 
-const SERVER_SNAPSHOT: Snapshot = { session: null, hydrated: false };
-let clientSnapshot: Snapshot = { session: null, hydrated: false };
+const SERVER_SNAPSHOT: Snapshot = { session: null, hydrated: false }
+let clientSnapshot: Snapshot = { session: null, hydrated: false }
 
-const listeners = new Set<() => void>();
+const listeners = new Set<() => void>()
 function emit(): void {
-  for (const listener of listeners) listener();
+  for (const listener of listeners) listener()
 }
 
 function load(): void {
-  if (clientSnapshot.hydrated) return;
-  if (typeof window === "undefined") return;
+  if (clientSnapshot.hydrated) return
+  if (typeof window === 'undefined') return
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(STORAGE_KEY)
     clientSnapshot = {
       session: raw ? (JSON.parse(raw) as ClientSession) : null,
       hydrated: true,
-    };
+    }
   } catch {
-    clientSnapshot = { session: null, hydrated: true };
+    clientSnapshot = { session: null, hydrated: true }
   }
 }
 
 function write(session: ClientSession | null): void {
-  clientSnapshot = { session, hydrated: true };
-  if (typeof window !== "undefined") {
+  clientSnapshot = { session, hydrated: true }
+  if (typeof window !== 'undefined') {
     if (session) {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
     } else {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(STORAGE_KEY)
     }
   }
-  emit();
+  emit()
 }
 
 // Cross-tab sync: another tab logging in/out updates this tab's snapshot.
-if (typeof window !== "undefined") {
-  window.addEventListener("storage", (event) => {
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
     if (event.key === STORAGE_KEY) {
-      clientSnapshot = { ...clientSnapshot, hydrated: false };
-      load();
-      emit();
+      clientSnapshot = { ...clientSnapshot, hydrated: false }
+      load()
+      emit()
     }
-  });
+  })
 }
 
 export const sessionStore = {
   // --- useSyncExternalStore wiring ---
   subscribe(listener: () => void): () => void {
-    listeners.add(listener);
-    return () => listeners.delete(listener);
+    listeners.add(listener)
+    return () => listeners.delete(listener)
   },
   getSnapshot(): Snapshot {
-    load();
-    return clientSnapshot;
+    load()
+    return clientSnapshot
   },
   getServerSnapshot(): Snapshot {
-    return SERVER_SNAPSHOT;
+    return SERVER_SNAPSHOT
   },
 
   // --- imperative access (used outside React, e.g. the request interceptor) ---
   getAccessToken: (): string | null => {
-    load();
-    return clientSnapshot.session?.accessToken ?? null;
+    load()
+    return clientSnapshot.session?.accessToken ?? null
   },
   getId: (): string | null => {
-    load();
-    return clientSnapshot.session?.id ?? null;
+    load()
+    return clientSnapshot.session?.id ?? null
   },
   setSession: (session: ClientSession): void => write(session),
   setAccess: (partial: { id: string; accessToken: string }): void => {
-    load();
+    load()
     write({
       id: partial.id,
       accessToken: partial.accessToken,
       user: clientSnapshot.session?.user ?? null,
-    });
+    })
   },
   clear: (): void => write(null),
-};
+}

@@ -7,25 +7,25 @@
  * issued through our own auth flow; the backend verifies it for real on each call.
  */
 export interface JwtPayload {
-  id?: string;
-  guest?: boolean;
-  exp?: number; // seconds since epoch
-  iat?: number;
+  id?: string
+  guest?: boolean
+  exp?: number // seconds since epoch
+  iat?: number
 }
 
 function base64UrlDecode(input: string): string {
-  const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
+  const normalized = input.replace(/-/g, '+').replace(/_/g, '/')
   // atob is available both in the browser and in the Node/Next server runtime.
-  return atob(normalized);
+  return atob(normalized)
 }
 
 export function decodeJwt(token: string): JwtPayload | null {
   try {
-    const payload = token.split(".")[1];
-    if (!payload) return null;
-    return JSON.parse(base64UrlDecode(payload)) as JwtPayload;
+    const payload = token.split('.')[1]
+    if (!payload) return null
+    return JSON.parse(base64UrlDecode(payload)) as JwtPayload
   } catch {
-    return null;
+    return null
   }
 }
 
@@ -34,8 +34,8 @@ export function decodeJwt(token: string): JwtPayload | null {
  * `skewSeconds`. The skew triggers a refresh slightly early to avoid racing a 401.
  */
 export function isAccessTokenExpired(token: string, skewSeconds = 30): boolean {
-  const payload = decodeJwt(token);
-  if (!payload?.exp) return true;
-  const now = Math.floor(Date.now() / 1000);
-  return payload.exp - skewSeconds <= now;
+  const payload = decodeJwt(token)
+  if (!payload?.exp) return true
+  const now = Math.floor(Date.now() / 1000)
+  return payload.exp - skewSeconds <= now
 }

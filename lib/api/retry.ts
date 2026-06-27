@@ -7,46 +7,43 @@
  * into `apiRequest` so the caller decides what's safe to retry (GETs, idempotent
  * writes) — never blindly retry a non-idempotent mutation.
  */
-import { ApiException } from "./envelope";
+import { ApiException } from './envelope'
 
 export interface RetryOptions {
-  maxAttempts?: number; // total attempts including the first (default 3)
-  baseDelayMs?: number; // first backoff step (default 500ms)
-  maxDelayMs?: number; // cap per wait (default 8s)
-  retryServerErrors?: boolean; // also retry 5xx (default false)
+  maxAttempts?: number // total attempts including the first (default 3)
+  baseDelayMs?: number // first backoff step (default 500ms)
+  maxDelayMs?: number // cap per wait (default 8s)
+  retryServerErrors?: boolean // also retry 5xx (default false)
 }
 
 function isRetryable(error: unknown, retryServerErrors: boolean): boolean {
-  if (!(error instanceof ApiException)) return false;
-  if (error.status === 429) return true;
-  return retryServerErrors && error.status >= 500;
+  if (!(error instanceof ApiException)) return false
+  if (error.status === 429) return true
+  return retryServerErrors && error.status >= 500
 }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function retryOn429<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {},
-): Promise<T> {
+export async function retryOn429<T>(fn: () => Promise<T>, options: RetryOptions = {}): Promise<T> {
   const {
     maxAttempts = 3,
     baseDelayMs = 500,
     maxDelayMs = 8000,
     retryServerErrors = false,
-  } = options;
+  } = options
 
-  let attempt = 0;
+  let attempt = 0
   for (;;) {
-    attempt += 1;
+    attempt += 1
     try {
-      return await fn();
+      return await fn()
     } catch (error) {
       if (attempt >= maxAttempts || !isRetryable(error, retryServerErrors)) {
-        throw error;
+        throw error
       }
       // Exponential backoff with full jitter.
-      const exp = Math.min(maxDelayMs, baseDelayMs * 2 ** (attempt - 1));
-      await sleep(Math.random() * exp);
+      const exp = Math.min(maxDelayMs, baseDelayMs * 2 ** (attempt - 1))
+      await sleep(Math.random() * exp)
     }
   }
 }

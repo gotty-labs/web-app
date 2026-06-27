@@ -16,7 +16,7 @@ export const revalidate = 3600
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.siteUrl
   const routes: MetadataRoute.Sitemap = [
-    { url: `${base}/`, changeFrequency: 'weekly', priority: 1 }
+    { url: `${base}/`, changeFrequency: 'weekly', priority: 1 },
   ]
 
   try {
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${base}/games/${entry.slug}`,
         lastModified: entry.updatedAt,
         changeFrequency: 'weekly',
-        priority: 0.7
+        priority: 0.7,
       })
     }
   } catch {

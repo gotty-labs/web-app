@@ -6,20 +6,20 @@
  * the precise, stable signal each screen reacts to. The localized UI copy lives
  * in a single dictionary (built in a later phase) keyed by `InternalCode`.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
 /** High-level error category (§1.5). */
 export const jgErrorTypeSchema = z.enum([
-  "INTERNAL_ERROR",
-  "BAD_REQUEST",
-  "AUTH_ERROR",
-  "DB_ERROR",
-  "MAIL_PROVIDER_ERROR",
-  "RESTFUL_EXTERNAL_PROVIDER_ERROR",
-  "GAME_ERROR",
-  "PLATFORM_ERROR",
-]);
-export type JgErrorType = z.infer<typeof jgErrorTypeSchema>;
+  'INTERNAL_ERROR',
+  'BAD_REQUEST',
+  'AUTH_ERROR',
+  'DB_ERROR',
+  'MAIL_PROVIDER_ERROR',
+  'RESTFUL_EXTERNAL_PROVIDER_ERROR',
+  'GAME_ERROR',
+  'PLATFORM_ERROR',
+])
+export type JgErrorType = z.infer<typeof jgErrorTypeSchema>
 
 /**
  * Stable numeric error codes (§3). Named constants so call-sites read as intent
@@ -51,6 +51,6 @@ export const InternalCode = {
   // Persistence
   MONGO_WRITE_VALIDATION_ERROR: 50030,
   MONGO_WRITE_DUPLICATE_FIELD: 50031,
-} as const;
+} as const
 
-export type InternalCode = (typeof InternalCode)[keyof typeof InternalCode];
+export type InternalCode = (typeof InternalCode)[keyof typeof InternalCode]

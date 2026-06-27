@@ -4,4 +4,4 @@ export {
   verifyEmail,
   changePassword,
   setConsoleExclusions,
-} from "./services/profile";
+} from './services/profile'

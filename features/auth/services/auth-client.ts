@@ -10,56 +10,53 @@
  * Still TODO (next slice): forgot-password, reset-password, delete-account, and a
  * React session context that wires `setOnSessionExpired` to the router.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
-import { bffRequest } from "@/lib/api/bff-client";
-import { apiRequest } from "@/lib/api/client";
-import { voidDataSchema } from "@/lib/api/envelope";
-import { userProfileSchema, type UserProfile } from "@/lib/domain/models";
+import { bffRequest } from '@/lib/api/bff-client'
+import { apiRequest } from '@/lib/api/client'
+import { voidDataSchema } from '@/lib/api/envelope'
+import { userProfileSchema, type UserProfile } from '@/lib/domain/models'
 
-import { authedRequest } from "./authed-request";
-import { sessionStore } from "../stores/session-store";
+import { authedRequest } from './authed-request'
+import { sessionStore } from '../stores/session-store'
 
 const sessionPayloadSchema = z.object({
   id: z.string(),
   accessToken: z.string(),
   user: userProfileSchema,
-});
-type SessionPayload = z.infer<typeof sessionPayloadSchema>;
+})
+type SessionPayload = z.infer<typeof sessionPayloadSchema>
 
 function persist(payload: SessionPayload): UserProfile {
   sessionStore.setSession({
     id: payload.id,
     accessToken: payload.accessToken,
     user: payload.user,
-  });
-  return payload.user;
+  })
+  return payload.user
 }
 
-export async function loginEmail(
-  email: string,
-  password: string,
-): Promise<UserProfile> {
+export async function loginEmail(email: string, password: string): Promise<UserProfile> {
   return persist(
     await bffRequest({
-      path: "/api/auth/login",
-      body: { provider: "email", email, password },
+      path: '/api/auth/login',
+      body: { provider: 'email', email, password },
       schema: sessionPayloadSchema,
     }),
-  );
+  )
 }
 
 export async function loginOAuth(
-  provider: "google" | "apple",
+  provider: 'google' | 'apple',
   token: string,
 ): Promise<UserProfile> {
   return persist(
     await bffRequest({
-      path: "/api/auth/login",
+      path: '/api/auth/login',
       body: { provider, token },
       schema: sessionPayloadSchema,
     }),
-  );
+  )
 }
 
 export async function registerEmail(
@@ -69,32 +66,32 @@ export async function registerEmail(
 ): Promise<UserProfile> {
   return persist(
     await bffRequest({
-      path: "/api/auth/register",
-      body: { provider: "email", email, nickname, password },
+      path: '/api/auth/register',
+      body: { provider: 'email', email, nickname, password },
       schema: sessionPayloadSchema,
     }),
-  );
+  )
 }
 
 export async function registerOAuth(
-  provider: "google" | "apple",
+  provider: 'google' | 'apple',
   token: string,
   nickname: string,
 ): Promise<UserProfile> {
   return persist(
     await bffRequest({
-      path: "/api/auth/register",
+      path: '/api/auth/register',
       body: { provider, token, nickname },
       schema: sessionPayloadSchema,
     }),
-  );
+  )
 }
 
 export async function logout(): Promise<void> {
   try {
-    await bffRequest({ path: "/api/auth/logout" });
+    await bffRequest({ path: '/api/auth/logout' })
   } finally {
-    sessionStore.clear();
+    sessionStore.clear()
   }
 }
 
@@ -104,11 +101,11 @@ export async function logout(): Promise<void> {
  */
 export async function forgotPassword(email: string): Promise<void> {
   await apiRequest({
-    method: "POST",
-    path: "/auth/forgot-password",
+    method: 'POST',
+    path: '/auth/forgot-password',
     body: { email },
     schema: voidDataSchema,
-  });
+  })
 }
 
 /**
@@ -116,16 +113,13 @@ export async function forgotPassword(email: string): Promise<void> {
  * one endpoint that does NOT require the `jg-*` headers — sending them anyway is
  * harmless (extra valid headers are ignored).
  */
-export async function resetPassword(
-  resetId: string,
-  password: string,
-): Promise<void> {
+export async function resetPassword(resetId: string, password: string): Promise<void> {
   await apiRequest({
-    method: "PATCH",
-    path: "/auth/reset-password",
+    method: 'PATCH',
+    path: '/auth/reset-password',
     body: { resetId, password },
     schema: voidDataSchema,
-  });
+  })
 }
 
 /**
@@ -136,9 +130,9 @@ export async function resetPassword(
  */
 export async function deleteAccount(): Promise<void> {
   await authedRequest({
-    method: "DELETE",
-    path: "/auth/delete-account",
+    method: 'DELETE',
+    path: '/auth/delete-account',
     schema: voidDataSchema,
-  });
-  await logout();
+  })
+  await logout()
 }

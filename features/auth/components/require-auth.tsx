@@ -8,32 +8,32 @@
  * Wrap the `(app)` route group's layout with this. If we later want a server-side
  * gate (e.g. to SSR authed content), we'd expose a server-readable signal too.
  */
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { useRouter } from 'next/navigation'
+import { useEffect, type ReactNode } from 'react'
 
-import { LOGIN_PATH } from "../config/config";
-import { useSession } from "../hooks/use-session";
+import { LOGIN_PATH } from '../config/config'
+import { useSession } from '../hooks/use-session'
 
 export function RequireAuth({
   children,
   fallback = null,
 }: {
-  children: ReactNode;
-  fallback?: ReactNode;
+  children: ReactNode
+  fallback?: ReactNode
 }) {
-  const { status } = useSession();
-  const router = useRouter();
+  const { status } = useSession()
+  const router = useRouter()
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace(LOGIN_PATH);
+    if (status === 'unauthenticated') {
+      router.replace(LOGIN_PATH)
     }
-  }, [status, router]);
+  }, [status, router])
 
-  if (status !== "authenticated") {
-    return <>{fallback}</>;
+  if (status !== 'authenticated') {
+    return <>{fallback}</>
   }
-  return <>{children}</>;
+  return <>{children}</>
 }

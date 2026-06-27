@@ -1,4 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
@@ -11,6 +12,7 @@ feature looks the same. When in doubt, read the official Next.js (`node_modules/
 or shadcn docs first — this stack is ahead of training data.
 
 ## Architecture (the big picture)
+
 - Three zones: **`(marketing)`** = static landing `/` + SEO `/games/[slug]` (public, ISR);
   **`(app)`** = `/home` + descendants (always authenticated). Use App Router **route groups**.
 - Build the **domain/business layer before UI**, feature by feature.
@@ -18,6 +20,7 @@ or shadcn docs first — this stack is ahead of training data.
   **BFF** (`app/api/auth/*`) exists ONLY for operations that must touch the httpOnly cookie.
 
 ## File structure
+
 - **No `src/`** — root-based (`app/`, `lib/`, `features/`, `components/`).
 - **Organize by artifact TYPE** into conventionally-named folders, everywhere (NO `ui/` folder):
   `components/` (React components) · `contexts/` (context + provider) · `hooks/` (React hooks) ·
@@ -33,6 +36,7 @@ or shadcn docs first — this stack is ahead of training data.
 - Top-level shared `components/`, `hooks/`, `contexts/`, `middlewares/` for cross-feature pieces.
 
 ## Naming
+
 - **kebab-case** files, named after the primary export/role.
 - **Hooks** are files named `use-*.ts(x)` and live in a `hooks/` folder (one hook concept per file).
 - **Contexts/providers** live in `contexts/`; a Provider file is `*-provider.tsx` (NOT
@@ -41,6 +45,7 @@ or shadcn docs first — this stack is ahead of training data.
   is non-routable in the App Router.
 
 ## Domain & validation (Zod)
+
 - **Zod is the single source of truth:** define the schema, infer the type (`z.infer`). Never
   hand-write a type that duplicates a schema.
 - Use **Zod 4 top-level validators** (`z.email()`, `z.uuid()`, `z.url()`), not the deprecated
@@ -49,6 +54,7 @@ or shadcn docs first — this stack is ahead of training data.
   (mark pending ones with a `NOTE`). Keep ISO dates as `z.string()` — don't over-validate.
 
 ## HTTP & errors
+
 - Two contracts, never mix them:
   - **`apiRequest`** (`lib/api/client.ts`) → JustGame backend (`/api/v1`): injects `jg-*`
     headers + `Authorization`, unwraps the `ApiResponse`/`ApiError` envelope, throws `ApiException`.
@@ -62,11 +68,13 @@ or shadcn docs first — this stack is ahead of training data.
   Never re-implement token injection or 401-refresh per feature.
 
 ## Auth / session
+
 - **Hybrid token storage:** access token (~2h) in `localStorage` (working copy); full session
   incl. refresh token (~6m) in an **httpOnly cookie** set by the BFF. Never expose the refresh
   token to JS. Web is always authenticated (no guest flow — blocked on WEB, 50080).
 
 ## Internationalization (i18n) — `lib/i18n/`
+
 - Locales: `en` (default) + `es`, detected from the user's SYSTEM (`Accept-Language` on the server
   via `getServerLocale`, `navigator` on the client via `getClientLocale`). **No user toggle, no
   locale in the URL** (homogeneous routing) — the Next docs' dictionaries pattern WITHOUT `[lang]`.
@@ -85,6 +93,7 @@ or shadcn docs first — this stack is ahead of training data.
   default (`en`) on public pages. Indexing both languages needs distinct URLs — decide A/B/C then.
 
 ## Next.js 16 / React 19 gotchas
+
 - `fetch` is **NOT cached by default**. Pass `next: { revalidate, tags }` for ISR/SEO reads;
   leave unset for always-fresh app data. A single `no-store`/`revalidate:0` makes the whole route dynamic.
 - `cookies()` is **async** (`await cookies()`); dynamic `params` is a **Promise** (`await params`).
@@ -95,12 +104,14 @@ or shadcn docs first — this stack is ahead of training data.
   literal (statically analyzable). Tag cached `fetch`es via `next: { tags }` to target them.
 
 ## Environment
+
 - Reference each `NEXT_PUBLIC_*` var by its **full static name** so Next inlines it; validate at
   module load and **fail fast** (`lib/config/env.ts`).
 - Committed `.env.development`/`.env.production` hold empty placeholders; real/localhost values go
   in `.env*.local` (gitignored). Don't write `.env*` via tooling — a hook blocks it.
 
 ## Verification (do this before claiming "done")
+
 - Run **`npx tsc --noEmit`**, **`npx eslint .`** (whole project), and **`npx next build`**.
 - After moving/renaming files: **purge caches first** —
   `find . -name "*.tsbuildinfo" -not -path "./node_modules/*" -delete && rm -rf .next` — then

@@ -5,7 +5,7 @@ export {
   searchGames,
   getGamesBySection,
   getGame,
-} from "./services/catalog";
+} from './services/catalog'
 export {
   getLibraryLists,
   createLibraryList,
@@ -13,9 +13,5 @@ export {
   updateLibraryList,
   deleteLibraryList,
   storeGameInLibrary,
-} from "./services/library";
-export {
-  getSitemapEntries,
-  getPublicGame,
-  SEO_REVALIDATE_SECONDS,
-} from "./services/seo";
+} from './services/library'
+export { getSitemapEntries, getPublicGame, SEO_REVALIDATE_SECONDS } from './services/seo'

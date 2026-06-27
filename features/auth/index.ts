@@ -9,16 +9,12 @@
  * re-exported here — they're imported directly by the BFF route handlers so they
  * never get pulled into a client bundle through this barrel.
  */
-export { SessionProvider } from "./contexts/session-provider";
-export { useSession } from "./hooks/use-session";
-export { RequireAuth } from "./components/require-auth";
-export {
-  authedRequest,
-  SessionExpiredError,
-  setOnSessionExpired,
-} from "./services/authed-request";
-export { sessionStore } from "./stores/session-store";
-export { LOGIN_PATH } from "./config/config";
+export { SessionProvider } from './contexts/session-provider'
+export { useSession } from './hooks/use-session'
+export { RequireAuth } from './components/require-auth'
+export { authedRequest, SessionExpiredError, setOnSessionExpired } from './services/authed-request'
+export { sessionStore } from './stores/session-store'
+export { LOGIN_PATH } from './config/config'
 export {
   loginEmail,
   loginOAuth,
@@ -28,4 +24,4 @@ export {
   forgotPassword,
   resetPassword,
   deleteAccount,
-} from "./services/auth-client";
+} from './services/auth-client'

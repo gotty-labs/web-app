@@ -12,7 +12,7 @@
  * forwarded by the route handler, so callers can branch on it (§3) just like with
  * `ApiException`.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
 export class BffError extends Error {
   constructor(
@@ -21,44 +21,38 @@ export class BffError extends Error {
     readonly errorType?: string,
     message?: string,
   ) {
-    super(message ?? `BFF request failed (${status})`);
-    this.name = "BffError";
+    super(message ?? `BFF request failed (${status})`)
+    this.name = 'BffError'
   }
 }
 
 export interface BffRequestOptions<T> {
   /** Same-origin path, e.g. `/api/auth/login`. */
-  path: string;
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
-  body?: unknown;
+  path: string
+  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
+  body?: unknown
   /** Optional schema to validate the success payload. */
-  schema?: z.ZodType<T>;
-  signal?: AbortSignal;
+  schema?: z.ZodType<T>
+  signal?: AbortSignal
 }
 
 export async function bffRequest<T>(options: BffRequestOptions<T>): Promise<T> {
-  const { path, method = "POST", body, schema, signal } = options;
-  const hasBody = body !== undefined;
+  const { path, method = 'POST', body, schema, signal } = options
+  const hasBody = body !== undefined
 
   const response = await fetch(path, {
     method,
-    headers: hasBody ? { "content-type": "application/json" } : undefined,
+    headers: hasBody ? { 'content-type': 'application/json' } : undefined,
     body: hasBody ? JSON.stringify(body) : undefined,
     signal,
-  });
+  })
 
   const data = (await response.json().catch(() => null)) as
-    | (Record<string, unknown> & { error?: string; internalCode?: number; reason?: string })
-    | null;
+    (Record<string, unknown> & { error?: string; internalCode?: number; reason?: string }) | null
 
   if (!response.ok || data === null) {
-    throw new BffError(
-      response.status,
-      data?.internalCode,
-      data?.error,
-      data?.reason,
-    );
+    throw new BffError(response.status, data?.internalCode, data?.error, data?.reason)
   }
 
-  return schema ? schema.parse(data) : (data as T);
+  return schema ? schema.parse(data) : (data as T)
 }

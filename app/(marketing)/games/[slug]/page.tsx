@@ -12,42 +12,42 @@
  * Resilient to a not-yet-built backend: data loaders catch failures so the build
  * succeeds (prerenders nothing, falls back to on-demand) until the endpoints ship.
  */
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { getPublicGame, getSitemapEntries } from "@/features/game/services/seo";
-import { env } from "@/lib/config/env";
+import { getPublicGame, getSitemapEntries } from '@/features/game/services/seo'
+import { env } from '@/lib/config/env'
 
-export const revalidate = 3600; // must be a literal for static analysis
-export const dynamicParams = true;
+export const revalidate = 3600 // must be a literal for static analysis
+export const dynamicParams = true
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
-    const entries = await getSitemapEntries();
-    return entries.map((entry) => ({ slug: entry.slug }));
+    const entries = await getSitemapEntries()
+    return entries.map((entry) => ({ slug: entry.slug }))
   } catch {
-    return [];
+    return []
   }
 }
 
 async function loadGame(slug: string) {
   try {
-    return await getPublicGame(slug);
+    return await getPublicGame(slug)
   } catch {
-    return null;
+    return null
   }
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const game = await loadGame(slug);
-  if (!game) return {};
+  const { slug } = await params
+  const game = await loadGame(slug)
+  if (!game) return {}
 
-  const url = `${env.siteUrl}/games/${slug}`;
+  const url = `${env.siteUrl}/games/${slug}`
   return {
     title: game.name,
     description: game.description,
@@ -58,17 +58,13 @@ export async function generateMetadata({
       url,
       images: game.media?.cover ? [game.media.cover] : undefined,
     },
-  };
+  }
 }
 
-export default async function GameDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const game = await loadGame(slug);
-  if (!game) notFound();
+export default async function GameDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const game = await loadGame(slug)
+  if (!game) notFound()
 
   // Minimal placeholder render — styled in Phase 5.
   return (
@@ -76,5 +72,5 @@ export default async function GameDetailPage({
       <h1>{game.name}</h1>
       {game.description ? <p>{game.description}</p> : null}
     </main>
-  );
+  )
 }

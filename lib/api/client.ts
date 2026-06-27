@@ -14,55 +14,55 @@
  *  - Single-flight token refresh / 401 interceptor (Phase 2).
  *  - 429 backoff, 5xx/offline handling, retries (Phase 3).
  */
-import { z } from "zod";
+import { z } from 'zod'
 
-import { type JgLanguage } from "@/lib/domain/enums";
+import { type JgLanguage } from '@/lib/domain/enums'
 
-import { env } from "../config/env";
-import { unwrap } from "./envelope";
-import { buildHeaders } from "./headers";
+import { env } from '../config/env'
+import { unwrap } from './envelope'
+import { buildHeaders } from './headers'
 
-type QueryPrimitive = string | number | boolean;
-type QueryValue = QueryPrimitive | QueryPrimitive[] | null | undefined;
-export type Query = Record<string, QueryValue>;
+type QueryPrimitive = string | number | boolean
+type QueryValue = QueryPrimitive | QueryPrimitive[] | null | undefined
+export type Query = Record<string, QueryValue>
 
-export type HttpMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
 export interface ApiRequestOptions<T> {
   /** Path relative to the API base, e.g. `/game/feed` (no `/api/v1` prefix). */
-  path: string;
+  path: string
   /** Zod schema for the UNWRAPPED `data` payload (use `voidDataSchema` for void). */
-  schema: z.ZodType<T>;
-  method?: HttpMethod;
-  query?: Query;
+  schema: z.ZodType<T>
+  method?: HttpMethod
+  query?: Query
   /** JSON-serializable request body. */
-  body?: unknown;
+  body?: unknown
   /** Session JWT for protected routes. */
-  token?: string;
-  language?: JgLanguage;
+  token?: string
+  language?: JgLanguage
   /** Next.js fetch cache mode (e.g. `force-cache`, `no-store`). */
-  cache?: RequestCache;
+  cache?: RequestCache
   /** Next.js ISR controls for cacheable (SEO) reads. */
-  next?: { revalidate?: number | false; tags?: string[] };
-  signal?: AbortSignal;
+  next?: { revalidate?: number | false; tags?: string[] }
+  signal?: AbortSignal
 }
 
 function buildUrl(path: string, query?: Query): string {
-  const base = env.apiBaseUrl.replace(/\/+$/, "");
-  const rel = path.startsWith("/") ? path : `/${path}`;
-  const url = new URL(base + rel);
+  const base = env.apiBaseUrl.replace(/\/+$/, '')
+  const rel = path.startsWith('/') ? path : `/${path}`
+  const url = new URL(base + rel)
 
   if (query) {
     for (const [key, value] of Object.entries(query)) {
-      if (value === undefined || value === null) continue;
+      if (value === undefined || value === null) continue
       if (Array.isArray(value)) {
-        for (const item of value) url.searchParams.append(key, String(item));
+        for (const item of value) url.searchParams.append(key, String(item))
       } else {
-        url.searchParams.set(key, String(value));
+        url.searchParams.set(key, String(value))
       }
     }
   }
-  return url.toString();
+  return url.toString()
 }
 
 /**
@@ -74,7 +74,7 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
   const {
     path,
     schema,
-    method = "GET",
+    method = 'GET',
     query,
     body,
     token,
@@ -82,9 +82,9 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
     cache,
     next,
     signal,
-  } = options;
+  } = options
 
-  const hasBody = body !== undefined;
+  const hasBody = body !== undefined
 
   const response = await fetch(buildUrl(path, query), {
     method,
@@ -93,16 +93,16 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
     cache,
     next,
     signal,
-  });
+  })
 
-  let raw: unknown;
+  let raw: unknown
   try {
-    raw = await response.json();
+    raw = await response.json()
   } catch {
     throw new Error(
       `JG API: expected a JSON envelope but got a non-JSON body (HTTP ${response.status}) from ${method} ${path}`,
-    );
+    )
   }
 
-  return unwrap(raw, schema);
+  return unwrap(raw, schema)
 }

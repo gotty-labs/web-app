@@ -10,15 +10,15 @@
  * The PUBLIC SEO variants (server-side, no token) are a separate Phase-4 slice,
  * blocked on the backend's public endpoints + slug.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
-import { authedRequest } from "@/features/auth";
+import { authedRequest } from '@/features/auth'
 import {
   gameFilterSectionInputSchema,
   gameSearchInputSchema,
   type GameFilterSectionInput,
   type GameSearchInput,
-} from "@/lib/domain/inputs";
+} from '@/lib/domain/inputs'
 import {
   gameDtoSchema,
   gameFeedSectionSchema,
@@ -30,55 +30,51 @@ import {
   type GameFilterOptions,
   type GameSummary,
   type Paginated,
-} from "@/lib/domain/models";
+} from '@/lib/domain/models'
 
 /** Home feed: Netflix-style sections, each with its own cursor. */
 export function getFeed(): Promise<GameFeedSection[]> {
   return authedRequest({
-    method: "GET",
-    path: "/game/feed",
+    method: 'GET',
+    path: '/game/feed',
     schema: z.array(gameFeedSectionSchema),
-  });
+  })
 }
 
 /** Available filter options (genres, themes, consoles). */
 export function getFilterOptions(): Promise<GameFilterOptions> {
   return authedRequest({
-    method: "GET",
-    path: "/game/filter",
+    method: 'GET',
+    path: '/game/filter',
     schema: gameFilterOptionsSchema,
-  });
+  })
 }
 
 /** Free-text + faceted search (paginated). */
-export function searchGames(
-  input: GameSearchInput,
-): Promise<Paginated<GameSummary>> {
+export function searchGames(input: GameSearchInput): Promise<Paginated<GameSummary>> {
   return authedRequest({
-    method: "GET",
-    path: "/game/filter/search",
+    method: 'GET',
+    path: '/game/filter/search',
     query: gameSearchInputSchema.parse(input),
     schema: paginated(gameSummarySchema),
-  });
+  })
 }
 
 /** Paginate a single feed section ("see all" / carousel load-more). */
-export function getGamesBySection(
-  input: GameFilterSectionInput,
-): Promise<Paginated<GameSummary>> {
+export function getGamesBySection(input: GameFilterSectionInput): Promise<Paginated<GameSummary>> {
   return authedRequest({
-    method: "GET",
-    path: "/game/filter/all",
+    method: 'GET',
+    path: '/game/filter/all',
     query: gameFilterSectionInputSchema.parse(input),
     schema: paginated(gameSummarySchema),
-  });
+  })
 }
 
 /** Full game detail (includes user-specific `savedInLibrary`). */
 export function getGame(gameId: string): Promise<GameDto> {
   return authedRequest({
-    method: "GET",
+    method: 'GET',
     path: `/game/${gameId}`,
     schema: gameDtoSchema,
-  });
+  })
 }

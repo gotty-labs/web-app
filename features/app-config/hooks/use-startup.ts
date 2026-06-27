@@ -7,18 +7,18 @@
  * effect body), so it doesn't trip the React 19 `set-state-in-effect` rule. The
  * `active` flag guards against setting state after unmount.
  */
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-import type { Startup } from "@/lib/domain/models";
+import type { Startup } from '@/lib/domain/models'
 
-import { getStartup } from "../services/startup-client";
+import { getStartup } from '../services/startup-client'
 
 export interface StartupState {
-  loading: boolean;
-  startup: Startup | null;
-  error: unknown;
+  loading: boolean
+  startup: Startup | null
+  error: unknown
 }
 
 export function useStartup(): StartupState {
@@ -26,21 +26,21 @@ export function useStartup(): StartupState {
     loading: true,
     startup: null,
     error: null,
-  });
+  })
 
   useEffect(() => {
-    let active = true;
+    let active = true
     getStartup()
       .then((startup) => {
-        if (active) setState({ loading: false, startup, error: null });
+        if (active) setState({ loading: false, startup, error: null })
       })
       .catch((error) => {
-        if (active) setState({ loading: false, startup: null, error });
-      });
+        if (active) setState({ loading: false, startup: null, error })
+      })
     return () => {
-      active = false;
-    };
-  }, []);
+      active = false
+    }
+  }, [])
 
-  return state;
+  return state
 }

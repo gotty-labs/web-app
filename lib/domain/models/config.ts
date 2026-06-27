@@ -6,9 +6,9 @@
  * On WEB (`jg-origin: WEB`) `version` is omitted (no store / force-update
  * concept) — only `needVerifiedEmail` applies. Modeled as optional accordingly.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
-import { appVersionStatusSchema, platformSchema } from "../enums";
+import { appVersionStatusSchema, platformSchema } from '../enums'
 
 export const startupSchema = z.object({
   version: z
@@ -22,5 +22,5 @@ export const startupSchema = z.object({
     })
     .optional(),
   needVerifiedEmail: z.boolean(),
-});
-export type Startup = z.infer<typeof startupSchema>;
+})
+export type Startup = z.infer<typeof startupSchema>

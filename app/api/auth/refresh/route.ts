@@ -11,35 +11,35 @@
  *
  * The client side guarantees single-flight, so this route is hit once per refresh.
  */
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
 
-import { apiRequest } from "@/lib/api/client";
-import { clearSession, persistSession, readSession } from "@/features/auth/server/session-cookie";
-import { userSessionSchema } from "@/lib/domain/models";
+import { apiRequest } from '@/lib/api/client'
+import { clearSession, persistSession, readSession } from '@/features/auth/server/session-cookie'
+import { userSessionSchema } from '@/lib/domain/models'
 
-import { errorResponse } from "../_shared";
+import { errorResponse } from '../_shared'
 
 export async function POST(): Promise<NextResponse> {
-  const session = await readSession();
+  const session = await readSession()
   if (!session) {
-    return NextResponse.json({ error: "NO_SESSION" }, { status: 401 });
+    return NextResponse.json({ error: 'NO_SESSION' }, { status: 401 })
   }
 
   try {
     const rotated = await apiRequest({
-      method: "POST",
+      method: 'POST',
       path: `/auth/autologin/${session.id}`,
       body: {
         sessionToken: session.sessionToken,
         refreshToken: session.refreshToken,
       },
       schema: userSessionSchema,
-    });
+    })
 
-    await persistSession(rotated);
-    return NextResponse.json({ id: rotated.id, accessToken: rotated.sessionToken });
+    await persistSession(rotated)
+    return NextResponse.json({ id: rotated.id, accessToken: rotated.sessionToken })
   } catch (error) {
-    await clearSession();
-    return errorResponse(error);
+    await clearSession()
+    return errorResponse(error)
   }
 }

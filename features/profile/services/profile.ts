@@ -5,52 +5,50 @@
  * this iteration. (Profile routes are not guest-friendly → guests get 50047, but
  * web is always authenticated so that doesn't arise.)
  */
-import { authedRequest } from "@/features/auth";
-import { voidDataSchema } from "@/lib/api/envelope";
+import { authedRequest } from '@/features/auth'
+import { voidDataSchema } from '@/lib/api/envelope'
 import {
   consoleExclusionsInputSchema,
   verifyEmailInputSchema,
   type ConsoleExclusionsInput,
   type VerifyEmailInput,
-} from "@/lib/domain/inputs";
-import { startVerifyEmailSchema, type StartVerifyEmail } from "@/lib/domain/models";
+} from '@/lib/domain/inputs'
+import { startVerifyEmailSchema, type StartVerifyEmail } from '@/lib/domain/models'
 
 /** Begin email verification; backend sends an OTP and returns the recipient. */
 export function startVerifyEmail(): Promise<StartVerifyEmail> {
   return authedRequest({
-    method: "GET",
-    path: "/profile/start-verify-email",
+    method: 'GET',
+    path: '/profile/start-verify-email',
     schema: startVerifyEmailSchema,
-  });
+  })
 }
 
 /** Confirm the 6-digit OTP. */
 export async function verifyEmail(input: VerifyEmailInput): Promise<void> {
   await authedRequest({
-    method: "PATCH",
-    path: "/profile/verify-email",
+    method: 'PATCH',
+    path: '/profile/verify-email',
     body: verifyEmailInputSchema.parse(input),
     schema: voidDataSchema,
-  });
+  })
 }
 
 /** Trigger the change-password flow (backend sends a reset email). */
 export async function changePassword(): Promise<void> {
   await authedRequest({
-    method: "POST",
-    path: "/profile/change-password",
+    method: 'POST',
+    path: '/profile/change-password',
     schema: voidDataSchema,
-  });
+  })
 }
 
 /** Set the consoles to exclude from the catalog. */
-export async function setConsoleExclusions(
-  input: ConsoleExclusionsInput,
-): Promise<void> {
+export async function setConsoleExclusions(input: ConsoleExclusionsInput): Promise<void> {
   await authedRequest({
-    method: "PATCH",
-    path: "/profile/console-exclusions",
+    method: 'PATCH',
+    path: '/profile/console-exclusions',
     body: consoleExclusionsInputSchema.parse(input),
     schema: voidDataSchema,
-  });
+  })
 }

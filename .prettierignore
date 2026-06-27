@@ -1,0 +1,19 @@
+# Build output / framework caches
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Lockfiles (npm manages formatting)
+package-lock.json
+
+# Generated / vendored
+coverage/
+
+# Env files (a hook blocks writing these; never reformat)
+.env
+.env.*

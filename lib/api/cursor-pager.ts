@@ -6,38 +6,36 @@
  * `cursor` is opaque: we only ever send back the `nextCursor` we received.
  * `hasMore` is false once a page comes back without a `nextCursor`.
  */
-import type { Paginated } from "@/lib/domain/models";
+import type { Paginated } from '@/lib/domain/models'
 
 export class CursorPager<T> {
-  private accumulated: T[] = [];
-  private cursor: string | undefined;
-  private started = false;
+  private accumulated: T[] = []
+  private cursor: string | undefined
+  private started = false
 
-  constructor(
-    private readonly fetchPage: (cursor: string | undefined) => Promise<Paginated<T>>,
-  ) {}
+  constructor(private readonly fetchPage: (cursor: string | undefined) => Promise<Paginated<T>>) {}
 
   get items(): readonly T[] {
-    return this.accumulated;
+    return this.accumulated
   }
 
   get hasMore(): boolean {
-    return !this.started || this.cursor !== undefined;
+    return !this.started || this.cursor !== undefined
   }
 
   /** Fetch the next page (or the first), append, and return the full list so far. */
   async loadMore(): Promise<readonly T[]> {
-    if (!this.hasMore) return this.accumulated;
-    const page = await this.fetchPage(this.cursor);
-    this.started = true;
-    this.accumulated = [...this.accumulated, ...page.items];
-    this.cursor = page.nextCursor;
-    return this.accumulated;
+    if (!this.hasMore) return this.accumulated
+    const page = await this.fetchPage(this.cursor)
+    this.started = true
+    this.accumulated = [...this.accumulated, ...page.items]
+    this.cursor = page.nextCursor
+    return this.accumulated
   }
 
   reset(): void {
-    this.accumulated = [];
-    this.cursor = undefined;
-    this.started = false;
+    this.accumulated = []
+    this.cursor = undefined
+    this.started = false
   }
 }

@@ -13,7 +13,7 @@ import {
   gameDtoSchema,
   gameSitemapEntrySchema,
   type GameDto,
-  type GameSitemapEntry
+  type GameSitemapEntry,
 } from '@/lib/domain/models'
 
 /** Shared SEO revalidation window (1h); on-demand revalidation handles freshness. */
@@ -25,20 +25,17 @@ export function getSitemapEntries(): Promise<GameSitemapEntry[]> {
     method: 'GET',
     path: '/game/sitemaps',
     schema: z.array(gameSitemapEntrySchema),
-    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] }
+    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] },
   })
 }
 
 /** Public game detail by slug (no user-specific fields). */
-export function getPublicGame(
-  slug: string,
-  locale: Locale = defaultLocale
-): Promise<GameDto> {
+export function getPublicGame(slug: string, locale: Locale = defaultLocale): Promise<GameDto> {
   return apiRequest({
     method: 'GET',
     path: `/game/public/${slug}`,
     language: locale,
     schema: gameDtoSchema,
-    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: [`game:${slug}`] }
+    next: { revalidate: SEO_REVALIDATE_SECONDS, tags: [`game:${slug}`] },
   })
 }

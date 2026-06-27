@@ -16,7 +16,7 @@ import { z } from 'zod'
 const bodySchema = z.object({
   type: z.enum(['UPSERT', 'DELETE']),
   slug: z.string(),
-  id: z.string()
+  id: z.string(),
 })
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -38,6 +38,6 @@ export async function POST(request: Request): Promise<NextResponse> {
   return NextResponse.json({
     revalidated: true,
     slug: body.slug,
-    type: body.type
+    type: body.type,
   })
 }

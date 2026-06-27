@@ -11,29 +11,29 @@
  * (dynamic, locale from `Accept-Language`); the static marketing/SEO zone passes
  * the SEO-strategy locale (default `en` for now).
  */
-"use client";
+'use client'
 
-import { createContext, useMemo, type ReactNode } from "react";
+import { createContext, useMemo, type ReactNode } from 'react'
 
-import type { Dictionary } from "../dictionary";
-import type { Locale } from "../locales";
+import type { Dictionary } from '../dictionary'
+import type { Locale } from '../locales'
 
 export interface I18nContextValue {
-  locale: Locale;
-  dictionary: Dictionary;
+  locale: Locale
+  dictionary: Dictionary
 }
 
-export const I18nContext = createContext<I18nContextValue | null>(null);
+export const I18nContext = createContext<I18nContextValue | null>(null)
 
 export function I18nProvider({
   locale,
   dictionary,
   children,
 }: {
-  locale: Locale;
-  dictionary: Dictionary;
-  children: ReactNode;
+  locale: Locale
+  dictionary: Dictionary
+  children: ReactNode
 }) {
-  const value = useMemo(() => ({ locale, dictionary }), [locale, dictionary]);
-  return <I18nContext value={value}>{children}</I18nContext>;
+  const value = useMemo(() => ({ locale, dictionary }), [locale, dictionary])
+  return <I18nContext value={value}>{children}</I18nContext>
 }

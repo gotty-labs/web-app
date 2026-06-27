@@ -6,14 +6,14 @@
  * On every successful auth call, persist `{ id, sessionToken, refreshToken }`
  * (and, for the full user, cache the profile fields).
  */
-import { z } from "zod";
+import { z } from 'zod'
 
 export const userSessionSchema = z.object({
   id: z.string(),
   sessionToken: z.string(),
   refreshToken: z.string(),
-});
-export type UserSession = z.infer<typeof userSessionSchema>;
+})
+export type UserSession = z.infer<typeof userSessionSchema>
 
 export const userSchema = z.object({
   id: z.string(),
@@ -23,8 +23,8 @@ export const userSchema = z.object({
   twoFa: z.object({ verifiedEmail: z.boolean() }),
   sessionToken: z.string(),
   refreshToken: z.string(),
-});
-export type User = z.infer<typeof userSchema>;
+})
+export type User = z.infer<typeof userSchema>
 
 /**
  * Public profile = `UserDto` without the tokens. This is what the BFF returns to
@@ -34,5 +34,5 @@ export type User = z.infer<typeof userSchema>;
 export const userProfileSchema = userSchema.omit({
   sessionToken: true,
   refreshToken: true,
-});
-export type UserProfile = z.infer<typeof userProfileSchema>;
+})
+export type UserProfile = z.infer<typeof userProfileSchema>

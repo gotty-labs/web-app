@@ -13,35 +13,35 @@
  * no secrets (a private package), so this is an acceptable trade for a single
  * source of truth; can be moved to a build-time env injection later if desired.
  */
-import pkg from "@/package.json";
+import pkg from '@/package.json'
 
-import { type JgLanguage } from "@/lib/domain/enums";
-import { defaultLocale } from "@/lib/i18n/locales";
+import { type JgLanguage } from '@/lib/domain/enums'
+import { defaultLocale } from '@/lib/i18n/locales'
 
 export const PLATFORM = {
-  origin: "WEB",
+  origin: 'WEB',
   version: pkg.version,
-  buildNumber: "1",
-} as const;
+  buildNumber: '1',
+} as const
 
-export const DEFAULT_LANGUAGE: JgLanguage = defaultLocale;
+export const DEFAULT_LANGUAGE: JgLanguage = defaultLocale
 
 export interface HeaderOptions {
   /** Session JWT; when present, sent as `Authorization: Bearer <token>`. */
-  token?: string;
+  token?: string
   /** Localized content language; defaults to the app default locale (`en`). */
-  language?: JgLanguage;
+  language?: JgLanguage
   /** Whether a JSON body is being sent (adds `content-type`). */
-  hasBody?: boolean;
+  hasBody?: boolean
 }
 
 export function buildHeaders(options: HeaderOptions = {}): Headers {
-  const headers = new Headers();
-  headers.set("jg-origin", PLATFORM.origin);
-  headers.set("jg-platform-version", PLATFORM.version);
-  headers.set("jg-platform-buildnumber", PLATFORM.buildNumber);
-  headers.set("jg-language", options.language ?? DEFAULT_LANGUAGE);
-  if (options.token) headers.set("authorization", `Bearer ${options.token}`);
-  if (options.hasBody) headers.set("content-type", "application/json");
-  return headers;
+  const headers = new Headers()
+  headers.set('jg-origin', PLATFORM.origin)
+  headers.set('jg-platform-version', PLATFORM.version)
+  headers.set('jg-platform-buildnumber', PLATFORM.buildNumber)
+  headers.set('jg-language', options.language ?? DEFAULT_LANGUAGE)
+  if (options.token) headers.set('authorization', `Bearer ${options.token}`)
+  if (options.hasBody) headers.set('content-type', 'application/json')
+  return headers
 }

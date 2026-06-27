@@ -11,9 +11,9 @@
  * New namespaces (e.g. `common`, per-screen UI copy) get added to BOTH the schema
  * and every `<locale>.json`.
  */
-import { z } from "zod";
+import { z } from 'zod'
 
-import { defaultLocale, type Locale } from "./locales";
+import { defaultLocale, type Locale } from './locales'
 
 const errorByCodeSchema = z.object({
   invalidCredentials: z.string(),
@@ -27,7 +27,7 @@ const errorByCodeSchema = z.object({
   gameNotFound: z.string(),
   listNameExists: z.string(),
   webNotAllowed: z.string(),
-});
+})
 
 export const dictionarySchema = z.object({
   errors: z.object({
@@ -41,18 +41,18 @@ export const dictionarySchema = z.object({
       unknown: z.string(),
     }),
   }),
-});
+})
 
-export type Dictionary = z.infer<typeof dictionarySchema>;
+export type Dictionary = z.infer<typeof dictionarySchema>
 /** Semantic keys for per-`internalCode` error copy (see `errors.ts` mapping). */
-export type ErrorByCodeKey = keyof Dictionary["errors"]["byCode"];
+export type ErrorByCodeKey = keyof Dictionary['errors']['byCode']
 
 const loaders: Record<Locale, () => Promise<unknown>> = {
-  en: () => import("./dictionaries/en.json").then((m) => m.default),
-  es: () => import("./dictionaries/es.json").then((m) => m.default),
-};
+  en: () => import('./dictionaries/en.json').then((m) => m.default),
+  es: () => import('./dictionaries/es.json').then((m) => m.default),
+}
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const raw = await (loaders[locale] ?? loaders[defaultLocale])();
-  return dictionarySchema.parse(raw);
+  const raw = await (loaders[locale] ?? loaders[defaultLocale])()
+  return dictionarySchema.parse(raw)
 }
