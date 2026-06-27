@@ -2,11 +2,10 @@
  * Game output DTOs (§5): feed/search summaries, feed sections, filter options,
  * the library superset, and the full detail.
  *
- * NOTE (pending backend, see memory `seo-rendering-strategy`): a canonical `slug`
- * will be added to `gameSummarySchema` and `gameDtoSchema`, plus a
- * `GET /game/sitemaps` entry `{ id, slug, updatedAt }`. We mirror the CURRENT
- * contract here and will add `slug` once the backend ships it, to avoid validating
- * against a field that doesn't exist yet.
+ * `slug` (canonical, backend-owned) is modeled here as OPTIONAL so current
+ * authed endpoints still validate before the backend ships it; the public SEO
+ * layer (`GET /game/public/:slug`, `GET /game/sitemaps`) relies on it. See memory
+ * `seo-rendering-strategy`. Make `slug` required once the backend guarantees it.
  */
 import { z } from "zod";
 
@@ -35,6 +34,7 @@ import {
 /** Card model used by feed, search and filter lists. */
 export const gameSummarySchema = z.object({
   id: z.string(),
+  slug: z.string().optional(), // backend-owned; used to link to /games/[slug]
   name: z.string(),
   rating: ratingSchema.optional(),
   cover: z.string().optional(),
@@ -46,6 +46,14 @@ export const gameSummarySchema = z.object({
   releaseDate: z.string().optional(), // ISO date
 });
 export type GameSummary = z.infer<typeof gameSummarySchema>;
+
+/** Compact entry from `GET /game/sitemaps` — drives static params + the sitemap. */
+export const gameSitemapEntrySchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  updatedAt: z.string(), // ISO date → sitemap <lastmod>
+});
+export type GameSitemapEntry = z.infer<typeof gameSitemapEntrySchema>;
 
 /** One horizontal carousel of the home feed; paginates independently (§7). */
 export const gameFeedSectionSchema = z.object({
@@ -100,6 +108,7 @@ const gameLanguageSchema = z.object({
 /** Full game detail — powers both the in-app detail and the public SEO page. */
 export const gameDtoSchema = z.object({
   id: z.string(),
+  slug: z.string().optional(), // backend-owned; canonical URL key
   name: z.string(),
   description: z.string().optional(),
   storyline: z.string().optional(),

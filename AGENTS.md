@@ -90,6 +90,9 @@ or shadcn docs first — this stack is ahead of training data.
 - `cookies()` is **async** (`await cookies()`); dynamic `params` is a **Promise** (`await params`).
 - Read client/external state with **`useSyncExternalStore`**, not setState-in-effect (the
   `react-hooks/set-state-in-effect` rule will flag it). Use `<Context value>` directly (no `.Provider`).
+- `revalidateTag(tag, "max")` **requires the 2nd arg** (cache-life profile; `"max"` =
+  stale-while-revalidate) — the single-arg form is deprecated. `export const revalidate` must be a
+  literal (statically analyzable). Tag cached `fetch`es via `next: { tags }` to target them.
 
 ## Environment
 - Reference each `NEXT_PUBLIC_*` var by its **full static name** so Next inlines it; validate at

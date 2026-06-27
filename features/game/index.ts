@@ -14,3 +14,8 @@ export {
   deleteLibraryList,
   storeGameInLibrary,
 } from "./services/library";
+export {
+  getSitemapEntries,
+  getPublicGame,
+  SEO_REVALIDATE_SECONDS,
+} from "./services/seo";
