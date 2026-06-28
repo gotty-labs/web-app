@@ -21,5 +21,81 @@
       "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
       "unknown": "Algo ha ido mal. Inténtalo de nuevo."
     }
+  },
+  "games": {
+    "status": {
+      "RELEASED": "Lanzado",
+      "ALPHA": "Alpha",
+      "BETA": "Beta",
+      "EARLY_ACCESS": "Acceso anticipado",
+      "CANCELLED": "Cancelado",
+      "RUMORED": "Rumoreado",
+      "DELISTED": "Retirado",
+      "UNKNOWN": "Desconocido"
+    },
+    "category": {
+      "MAIN": "Principal",
+      "REMAKE": "Remake",
+      "REMASTER": "Remaster"
+    },
+    "genre": {
+      "POINT_AND_CLICK": "Point & click",
+      "FIGHTING": "Lucha",
+      "SHOOTER": "Disparos",
+      "MUSIC": "Música",
+      "PLATFORM": "Plataformas",
+      "PUZZLE": "Puzles",
+      "RACING": "Carreras",
+      "REAL_TIME_STRATEGY": "Estrategia en tiempo real",
+      "ROLE_PLAYING": "Rol",
+      "SIMULATOR": "Simulación",
+      "SPORT": "Deportes",
+      "STRATEGY": "Estrategia",
+      "TURN_BASED_STRATEGY": "Estrategia por turnos",
+      "TACTICAL": "Táctico",
+      "HACK_AND_SLASH": "Hack and slash",
+      "QUIZ_TRIVIA": "Preguntas y trivia",
+      "PINBALL": "Pinball",
+      "ADVENTURE": "Aventura",
+      "INDIE": "Indie",
+      "ARCADE": "Arcade",
+      "VISUAL_NOVEL": "Novela visual",
+      "CARD_AND_BOARD_GAME": "Cartas y mesa",
+      "MOBA": "MOBA"
+    },
+    "theme": {
+      "ACTION": "Acción",
+      "FANTASY": "Fantasía",
+      "SCIENCE_FICTION": "Ciencia ficción",
+      "HORROR": "Terror",
+      "THRILLER": "Thriller",
+      "SURVIVAL": "Supervivencia",
+      "HISTORICAL": "Histórico",
+      "STEALTH": "Sigilo",
+      "COMEDY": "Comedia",
+      "BUSINESS": "Negocios",
+      "DRAMA": "Drama",
+      "NON_FICTION": "No ficción",
+      "SANDBOX": "Sandbox",
+      "EDUCATIONAL": "Educativo",
+      "KIDS": "Infantil",
+      "OPEN_WORLD": "Mundo abierto",
+      "WARFARE": "Bélico",
+      "PARTY": "Fiesta",
+      "FOUR_X": "4X",
+      "EROTIC": "Erótico",
+      "MYSTERY": "Misterio",
+      "ROMANCE": "Romance"
+    },
+    "progressState": {
+      "NOT_STARTED": "Sin empezar",
+      "IN_PROGRESS": "En progreso",
+      "BLOCKED": "Bloqueado",
+      "COMPLETED": "Completado"
+    },
+    "libraryStatus": {
+      "SAVED": "Guardado",
+      "WHITELIST": "Whitelist"
+    }
   }
 }

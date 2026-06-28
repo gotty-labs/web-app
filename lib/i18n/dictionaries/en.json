@@ -21,5 +21,81 @@
       "sessionExpired": "Your session expired. Please log in again.",
       "unknown": "Something went wrong. Please try again."
     }
+  },
+  "games": {
+    "status": {
+      "RELEASED": "Released",
+      "ALPHA": "Alpha",
+      "BETA": "Beta",
+      "EARLY_ACCESS": "Early access",
+      "CANCELLED": "Cancelled",
+      "RUMORED": "Rumored",
+      "DELISTED": "Delisted",
+      "UNKNOWN": "Unknown"
+    },
+    "category": {
+      "MAIN": "Main",
+      "REMAKE": "Remake",
+      "REMASTER": "Remaster"
+    },
+    "genre": {
+      "POINT_AND_CLICK": "Point & click",
+      "FIGHTING": "Fighting",
+      "SHOOTER": "Shooter",
+      "MUSIC": "Music",
+      "PLATFORM": "Platformer",
+      "PUZZLE": "Puzzle",
+      "RACING": "Racing",
+      "REAL_TIME_STRATEGY": "Real-time strategy",
+      "ROLE_PLAYING": "Role-playing",
+      "SIMULATOR": "Simulator",
+      "SPORT": "Sports",
+      "STRATEGY": "Strategy",
+      "TURN_BASED_STRATEGY": "Turn-based strategy",
+      "TACTICAL": "Tactical",
+      "HACK_AND_SLASH": "Hack and slash",
+      "QUIZ_TRIVIA": "Quiz / Trivia",
+      "PINBALL": "Pinball",
+      "ADVENTURE": "Adventure",
+      "INDIE": "Indie",
+      "ARCADE": "Arcade",
+      "VISUAL_NOVEL": "Visual novel",
+      "CARD_AND_BOARD_GAME": "Card & board game",
+      "MOBA": "MOBA"
+    },
+    "theme": {
+      "ACTION": "Action",
+      "FANTASY": "Fantasy",
+      "SCIENCE_FICTION": "Science fiction",
+      "HORROR": "Horror",
+      "THRILLER": "Thriller",
+      "SURVIVAL": "Survival",
+      "HISTORICAL": "Historical",
+      "STEALTH": "Stealth",
+      "COMEDY": "Comedy",
+      "BUSINESS": "Business",
+      "DRAMA": "Drama",
+      "NON_FICTION": "Non-fiction",
+      "SANDBOX": "Sandbox",
+      "EDUCATIONAL": "Educational",
+      "KIDS": "Kids",
+      "OPEN_WORLD": "Open world",
+      "WARFARE": "Warfare",
+      "PARTY": "Party",
+      "FOUR_X": "4X",
+      "EROTIC": "Erotic",
+      "MYSTERY": "Mystery",
+      "ROMANCE": "Romance"
+    },
+    "progressState": {
+      "NOT_STARTED": "Not started",
+      "IN_PROGRESS": "In progress",
+      "BLOCKED": "Blocked",
+      "COMPLETED": "Completed"
+    },
+    "libraryStatus": {
+      "SAVED": "Saved",
+      "WHITELIST": "Whitelist"
+    }
   }
 }

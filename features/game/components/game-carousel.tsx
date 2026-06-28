@@ -1,0 +1,64 @@
+'use client'
+
+import { ChevronRightIcon } from 'lucide-react'
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+import type { GameSummary } from '@/lib/domain/models'
+import { cn } from '@/lib/utils'
+
+import { GameCard } from './game-card'
+
+/**
+ * A Netflix-style section: an interactive title + a looping horizontal carousel
+ * of game cards (desktop arrows; touch-scroll on mobile). Clicking the title
+ * fires `onSeeAll` (the flow decides: modal or full paginated screen).
+ */
+export function GameCarousel({
+  title,
+  games,
+  onSeeAll,
+  className,
+}: {
+  title: string
+  games: GameSummary[]
+  onSeeAll?: () => void
+  className?: string
+}) {
+  return (
+    <section className={cn('flex flex-col gap-3', className)}>
+      {onSeeAll ? (
+        <button
+          type="button"
+          onClick={onSeeAll}
+          className="group flex w-fit items-center gap-1 text-lg font-semibold"
+        >
+          {title}
+          <ChevronRightIcon className="text-muted-foreground size-5 transition-transform group-hover:translate-x-0.5" />
+        </button>
+      ) : (
+        <h2 className="text-lg font-semibold">{title}</h2>
+      )}
+
+      <Carousel opts={{ loop: true, align: 'start' }} className="w-full">
+        <CarouselContent>
+          {games.map((game) => (
+            <CarouselItem
+              key={game.id}
+              className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+            >
+              <GameCard game={game} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="hidden md:inline-flex" />
+        <CarouselNext className="hidden md:inline-flex" />
+      </Carousel>
+    </section>
+  )
+}

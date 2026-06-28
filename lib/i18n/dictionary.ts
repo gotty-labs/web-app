@@ -1,17 +1,25 @@
 /**
  * Dictionary loading (Next docs' "Localization" pattern). Translations live in
  * `dictionaries/<locale>.json` — the SINGLE source of copy, used everywhere
- * (errors now, UI later). The JSON is dynamically imported so only the ACTIVE
- * locale's file is code-split into the bundle (works on server AND client).
+ * (errors + UI + game enum labels). The JSON is dynamically imported so only the
+ * ACTIVE locale's file is code-split into the bundle (works on server AND client).
  *
  * The shape is validated with Zod on load (fail-loud): a missing/renamed key in
- * any locale file throws here instead of rendering `undefined` in the UI. The
- * `Dictionary` TYPE is inferred from that schema — one source of truth.
- *
- * New namespaces (e.g. `common`, per-screen UI copy) get added to BOTH the schema
- * and every `<locale>.json`.
+ * any locale file throws here instead of rendering `undefined`. The `Dictionary`
+ * TYPE is inferred from that schema — one source of truth. Game enum labels MUST
+ * be localized here (never humanized in code), so a Spanish user reads "Rumoreado",
+ * not "Rumored".
  */
 import { z } from 'zod'
+
+import {
+  gameCategorySchema,
+  gameGenreSchema,
+  gameLibraryProgressStateSchema,
+  gameStatusSchema,
+  gameThemeSchema,
+  userGameLibraryStatusSchema,
+} from '@/lib/domain/enums'
 
 import { defaultLocale, type Locale } from './locales'
 
@@ -29,6 +37,10 @@ const errorByCodeSchema = z.object({
   webNotAllowed: z.string(),
 })
 
+/** A localized label for EVERY value of an enum — fail-loud if a locale omits one. */
+const enumLabels = (values: readonly string[]) =>
+  z.object(Object.fromEntries(values.map((value) => [value, z.string()])))
+
 export const dictionarySchema = z.object({
   errors: z.object({
     byCode: errorByCodeSchema,
@@ -41,10 +53,17 @@ export const dictionarySchema = z.object({
       unknown: z.string(),
     }),
   }),
+  games: z.object({
+    status: enumLabels(gameStatusSchema.options),
+    category: enumLabels(gameCategorySchema.options),
+    genre: enumLabels(gameGenreSchema.options),
+    theme: enumLabels(gameThemeSchema.options),
+    progressState: enumLabels(gameLibraryProgressStateSchema.options),
+    libraryStatus: enumLabels(userGameLibraryStatusSchema.options),
+  }),
 })
 
 export type Dictionary = z.infer<typeof dictionarySchema>
-/** Semantic keys for per-`internalCode` error copy (see `errors.ts` mapping). */
 export type ErrorByCodeKey = keyof Dictionary['errors']['byCode']
 
 const loaders: Record<Locale, () => Promise<unknown>> = {
