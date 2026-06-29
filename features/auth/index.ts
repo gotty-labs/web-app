@@ -12,6 +12,8 @@
 export { SessionProvider } from './contexts/session-provider'
 export { useSession } from './hooks/use-session'
 export { RequireAuth } from './components/require-auth'
+export { AuthGate } from './components/auth-gate'
+export { AuthModal } from './components/auth-modal'
 export { authedRequest, SessionExpiredError, setOnSessionExpired } from './services/authed-request'
 export { sessionStore } from './stores/session-store'
 export { LOGIN_PATH } from './config/config'

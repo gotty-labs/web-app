@@ -23,6 +23,12 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    // design-sync artifacts (all gitignored): the staged converter scripts, the
+    // compiled DS bundle, and the sync working dir + fork overrides. Generated /
+    // vendored code, not hand-authored project source — don't lint it.
+    '.ds-sync/**',
+    'ds-bundle/**',
+    '.design-sync/**',
   ]),
 ])
 

@@ -97,5 +97,52 @@
       "SAVED": "Guardado",
       "WHITELIST": "Whitelist"
     }
+  },
+  "app": {
+    "brand": {
+      "name": "JustGame",
+      "tagline": "Descubre, guarda y sigue tus videojuegos."
+    },
+    "actions": {
+      "enterApp": "Entrar a la app",
+      "signIn": "Iniciar sesión",
+      "signUp": "Crear cuenta",
+      "continue": "Continuar",
+      "cancel": "Cancelar",
+      "back": "Atrás",
+      "retry": "Reintentar"
+    },
+    "landing": {
+      "heroTitle": "Todos tus juegos, en una sola biblioteca.",
+      "heroSubtitle": "Descubre lo que está por venir, guarda lo que quieres jugar y sigue tu progreso en todas las plataformas.",
+      "primaryCta": "Empezar",
+      "secondaryCta": "Explorar juegos"
+    },
+    "auth": {
+      "loginTitle": "Bienvenido de nuevo",
+      "loginDescription": "Inicia sesión para continuar en JustGame.",
+      "registerTitle": "Crea tu cuenta",
+      "registerDescription": "Únete a JustGame y construye tu biblioteca.",
+      "forgotTitle": "Recupera tu contraseña",
+      "forgotDescription": "Introduce tu email y te enviaremos un enlace de recuperación.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "nicknameLabel": "Nombre de usuario",
+      "nicknamePlaceholder": "¿Cómo te llamamos?",
+      "submitLogin": "Iniciar sesión",
+      "submitRegister": "Crear cuenta",
+      "submitForgot": "Enviar enlace",
+      "forgotLink": "¿Olvidaste tu contraseña?",
+      "googleContinue": "Continuar con Google",
+      "googleUnavailable": "El acceso con Google aún no está configurado.",
+      "orSeparator": "o",
+      "noAccountPrompt": "¿No tienes cuenta?",
+      "haveAccountPrompt": "¿Ya tienes cuenta?",
+      "forgotSentTitle": "Revisa tu bandeja de entrada",
+      "forgotSentDescription": "Si ese email está registrado, recibirás un enlace de recuperación en breve.",
+      "backToLogin": "Volver a iniciar sesión"
+    }
   }
 }

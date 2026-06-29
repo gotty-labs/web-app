@@ -97,5 +97,52 @@
       "SAVED": "Saved",
       "WHITELIST": "Whitelist"
     }
+  },
+  "app": {
+    "brand": {
+      "name": "JustGame",
+      "tagline": "Discover, save and track your games."
+    },
+    "actions": {
+      "enterApp": "Enter the app",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "back": "Back",
+      "retry": "Try again"
+    },
+    "landing": {
+      "heroTitle": "Every game you love, in one library.",
+      "heroSubtitle": "Discover what's coming, save what you want to play, and track your progress across every platform.",
+      "primaryCta": "Get started",
+      "secondaryCta": "Browse games"
+    },
+    "auth": {
+      "loginTitle": "Welcome back",
+      "loginDescription": "Sign in to continue to JustGame.",
+      "registerTitle": "Create your account",
+      "registerDescription": "Join JustGame to build your library.",
+      "forgotTitle": "Reset your password",
+      "forgotDescription": "Enter your email and we'll send you a reset link.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "nicknameLabel": "Nickname",
+      "nicknamePlaceholder": "How should we call you?",
+      "submitLogin": "Sign in",
+      "submitRegister": "Create account",
+      "submitForgot": "Send reset link",
+      "forgotLink": "Forgot your password?",
+      "googleContinue": "Continue with Google",
+      "googleUnavailable": "Google sign-in isn't set up yet.",
+      "orSeparator": "or",
+      "noAccountPrompt": "Don't have an account?",
+      "haveAccountPrompt": "Already have an account?",
+      "forgotSentTitle": "Check your inbox",
+      "forgotSentDescription": "If that email is registered, you'll receive a reset link shortly.",
+      "backToLogin": "Back to sign in"
+    }
   }
 }
