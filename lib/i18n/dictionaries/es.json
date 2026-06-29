@@ -131,6 +131,11 @@
       "logout": "Cerrar sesión",
       "version": "Versión"
     },
+    "feed": {
+      "loadMore": "Cargar más",
+      "empty": "Aquí no hay nada todavía.",
+      "error": "No pudimos cargar esto. Inténtalo de nuevo."
+    },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
       "loginDescription": "Inicia sesión para continuar en JustGame.",

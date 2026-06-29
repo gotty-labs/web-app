@@ -94,6 +94,11 @@ export const dictionarySchema = z.object({
       logout: z.string(),
       version: z.string(),
     }),
+    feed: z.object({
+      loadMore: z.string(),
+      empty: z.string(),
+      error: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

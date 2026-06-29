@@ -131,6 +131,11 @@
       "logout": "Log out",
       "version": "Version"
     },
+    "feed": {
+      "loadMore": "Load more",
+      "empty": "Nothing here yet.",
+      "error": "We couldn't load this. Please try again."
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",
