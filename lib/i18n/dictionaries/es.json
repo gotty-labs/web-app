@@ -136,6 +136,17 @@
       "empty": "Aquí no hay nada todavía.",
       "error": "No pudimos cargar esto. Inténtalo de nuevo."
     },
+    "search": {
+      "placeholder": "Buscar juegos…",
+      "submit": "Buscar",
+      "consoles": "Consolas",
+      "genreTheme": "Género / Tema",
+      "all": "Todos",
+      "genres": "Géneros",
+      "themes": "Temas",
+      "prompt": "Busca un juego o elige un filtro para empezar.",
+      "noResults": "Ningún juego coincide con tus filtros."
+    },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
       "loginDescription": "Inicia sesión para continuar en JustGame.",

@@ -99,6 +99,17 @@ export const dictionarySchema = z.object({
       empty: z.string(),
       error: z.string(),
     }),
+    search: z.object({
+      placeholder: z.string(),
+      submit: z.string(),
+      consoles: z.string(),
+      genreTheme: z.string(),
+      all: z.string(),
+      genres: z.string(),
+      themes: z.string(),
+      prompt: z.string(),
+      noResults: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

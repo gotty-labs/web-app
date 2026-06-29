@@ -136,6 +136,17 @@
       "empty": "Nothing here yet.",
       "error": "We couldn't load this. Please try again."
     },
+    "search": {
+      "placeholder": "Search games…",
+      "submit": "Search",
+      "consoles": "Consoles",
+      "genreTheme": "Genre / Theme",
+      "all": "All",
+      "genres": "Genres",
+      "themes": "Themes",
+      "prompt": "Search for a game or pick a filter to start.",
+      "noResults": "No games match your filters."
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",

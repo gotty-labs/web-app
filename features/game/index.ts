@@ -19,3 +19,4 @@ export { getSitemapEntries, getPublicGame, SEO_REVALIDATE_SECONDS } from './serv
 // UI (Phase 5). Domain card/badge components stay imported by path within the
 // feature; `GameFeed` is the page-level surface the (app) routes mount.
 export { GameFeed } from './components/game-feed'
+export { GameSearch } from './components/game-search'
