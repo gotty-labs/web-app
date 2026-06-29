@@ -128,6 +128,14 @@ export const dictionarySchema = z.object({
         updatedToast: z.string(),
       }),
     }),
+    library: z.object({
+      savedTab: z.string(),
+      whitelistTab: z.string(),
+      listsLabel: z.string(),
+      allLists: z.string(),
+      savedEmpty: z.string(),
+      whitelistEmpty: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

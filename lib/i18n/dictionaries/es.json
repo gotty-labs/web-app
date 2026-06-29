@@ -165,6 +165,14 @@
         "updatedToast": "Progreso actualizado"
       }
     },
+    "library": {
+      "savedTab": "Biblioteca",
+      "whitelistTab": "Whitelist",
+      "listsLabel": "Lista",
+      "allLists": "Todas las listas",
+      "savedEmpty": "Tu biblioteca está vacía. Guarda un juego para verlo aquí.",
+      "whitelistEmpty": "Tu whitelist está vacía."
+    },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
       "loginDescription": "Inicia sesión para continuar en JustGame.",

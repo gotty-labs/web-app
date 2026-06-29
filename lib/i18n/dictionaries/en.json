@@ -165,6 +165,14 @@
         "updatedToast": "Progress updated"
       }
     },
+    "library": {
+      "savedTab": "Library",
+      "whitelistTab": "Whitelist",
+      "listsLabel": "List",
+      "allLists": "All lists",
+      "savedEmpty": "Your library is empty. Save a game to see it here.",
+      "whitelistEmpty": "Your whitelist is empty."
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",
