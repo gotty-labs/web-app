@@ -14,6 +14,7 @@ import type { ReactNode } from 'react'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 import { AppSidebar } from './app-sidebar'
+import { OnboardingModal } from './onboarding-modal'
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -25,6 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         {children}
       </SidebarInset>
+      <OnboardingModal />
     </SidebarProvider>
   )
 }

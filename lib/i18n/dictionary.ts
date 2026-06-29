@@ -136,6 +136,37 @@ export const dictionarySchema = z.object({
       savedEmpty: z.string(),
       whitelistEmpty: z.string(),
     }),
+    settings: z.object({
+      title: z.string(),
+      email: z.object({
+        title: z.string(),
+        verified: z.string(),
+        unverified: z.string(),
+        verifyCta: z.string(),
+        modalTitle: z.string(),
+        sentTo: z.string(),
+        confirm: z.string(),
+        resend: z.string(),
+        successToast: z.string(),
+      }),
+      consoles: z.object({
+        title: z.string(),
+        description: z.string(),
+        save: z.string(),
+        savedToast: z.string(),
+      }),
+      password: z.object({
+        title: z.string(),
+        description: z.string(),
+        cta: z.string(),
+        sentToast: z.string(),
+      }),
+    }),
+    onboarding: z.object({
+      title: z.string(),
+      description: z.string(),
+      cta: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

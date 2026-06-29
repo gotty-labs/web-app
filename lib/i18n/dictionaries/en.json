@@ -173,6 +173,37 @@
       "savedEmpty": "Your library is empty. Save a game to see it here.",
       "whitelistEmpty": "Your whitelist is empty."
     },
+    "settings": {
+      "title": "Settings",
+      "email": {
+        "title": "Email verification",
+        "verified": "Your email is verified.",
+        "unverified": "Verify your email to secure your account.",
+        "verifyCta": "Verify email",
+        "modalTitle": "Verify your email",
+        "sentTo": "We sent a 6-digit code to",
+        "confirm": "Confirm",
+        "resend": "Resend code",
+        "successToast": "Email verified"
+      },
+      "consoles": {
+        "title": "Hidden consoles",
+        "description": "Hide games only available on consoles you don't use.",
+        "save": "Save changes",
+        "savedToast": "Console preferences saved"
+      },
+      "password": {
+        "title": "Password",
+        "description": "We'll email you a secure link to change it.",
+        "cta": "Change password",
+        "sentToast": "Check your email to change your password"
+      }
+    },
+    "onboarding": {
+      "title": "Welcome to JustGame",
+      "description": "Discover games, build your library, and track your progress across every platform.",
+      "cta": "Get started"
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",
