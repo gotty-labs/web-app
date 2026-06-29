@@ -20,3 +20,4 @@ export { getSitemapEntries, getPublicGame, SEO_REVALIDATE_SECONDS } from './serv
 // feature; `GameFeed` is the page-level surface the (app) routes mount.
 export { GameFeed } from './components/game-feed'
 export { GameSearch } from './components/game-search'
+export { ProgressUpdateModal } from './components/progress-update-modal'

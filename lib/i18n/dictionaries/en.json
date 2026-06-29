@@ -147,6 +147,24 @@
       "prompt": "Search for a game or pick a filter to start.",
       "noResults": "No games match your filters."
     },
+    "detail": {
+      "save": "Save",
+      "saved": "Saved",
+      "whitelist": "Add to whitelist",
+      "updateProgress": "Update progress",
+      "signInToSave": "Sign in to save",
+      "moreActions": "More actions",
+      "savedToast": "Saved to your library",
+      "whitelistToast": "Added to your whitelist",
+      "progress": {
+        "title": "Update progress",
+        "description": "Track where you are with this game.",
+        "durationLabel": "Time played (minutes)",
+        "durationPlaceholder": "e.g. 120",
+        "save": "Save",
+        "updatedToast": "Progress updated"
+      }
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",

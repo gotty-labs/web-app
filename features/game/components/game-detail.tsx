@@ -1,31 +1,79 @@
 /**
- * Minimal public game detail render shared by the en/es SEO pages (Option B).
- * Server component (no token) — fetches the public game in the given locale.
- * Placeholder markup; visual design lands in Phase 5.
+ * Public game detail shared by the en/es SEO pages (Option B). Server Component (no
+ * token): fetches the public game + the dictionary for the page's locale, both
+ * statically cacheable (no `headers()`), so the page stays SSG.
  *
- * The fetch here is the SAME `getPublicGame(slug, locale)` call as in the page's
- * `generateMetadata`, so Next memoizes it per request → one backend call.
+ * The static markup composes the presentational badges (resolving enum labels with
+ * the pure `gameXLabel(dict, …)` helpers). The authed library actions live in the
+ * `GameDetailIsland` client widget, which brings its own session/i18n/toaster.
  */
 import { notFound } from 'next/navigation'
 
-import type { Locale } from '@/lib/i18n'
+import { getDictionary, type Locale } from '@/lib/i18n'
 
 import { getPublicGame } from '../services/seo'
+import { gameGenreLabel, gameStatusLabel, gameThemeLabel } from '../utils/labels'
 
-export async function GameDetail({
-  slug,
-  locale,
-}: {
-  slug: string
-  locale: Locale
-}) {
-  const game = await getPublicGame(slug, locale).catch(() => null)
+import { ConsoleBadge } from './console-badge'
+import { GameDetailIsland } from './game-detail-island'
+import { GenreThemeChip } from './genre-theme-chip'
+import { RatingBadge } from './rating-badge'
+import { StatusBadge } from './status-badge'
+
+export async function GameDetail({ slug, locale }: { slug: string; locale: Locale }) {
+  const [game, dict] = await Promise.all([
+    getPublicGame(slug, locale).catch(() => null),
+    getDictionary(locale),
+  ])
   if (!game) notFound()
 
+  const cover = game.media?.cover
+
   return (
-    <main>
-      <h1>{game.name}</h1>
-      {game.description ? <p>{game.description}</p> : null}
+    <main className="mx-auto max-w-5xl p-4 md:p-8">
+      <div className="flex flex-col gap-6 md:flex-row">
+        {cover && (
+          <div className="mx-auto w-full max-w-[240px] shrink-0 md:mx-0">
+            {/* eslint-disable-next-line @next/next/no-img-element -- external cover host; migrate to next/image + remotePatterns when known */}
+            <img src={cover} alt={game.name} className="w-full rounded-lg" />
+          </div>
+        )}
+
+        <div className="flex flex-1 flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-heading text-3xl font-semibold tracking-tight">{game.name}</h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusBadge status={game.status} label={gameStatusLabel(dict, game.status)} />
+              <RatingBadge value={game.rating?.value} quantity={game.rating?.quantity} />
+            </div>
+          </div>
+
+          <GameDetailIsland gameId={game.id} locale={locale} dictionary={dict} />
+
+          {game.description && (
+            <p className="leading-relaxed text-muted-foreground">{game.description}</p>
+          )}
+
+          {(game.genres.length > 0 || game.themes.length > 0) && (
+            <div className="flex flex-wrap gap-2">
+              {game.genres.map((genre) => (
+                <GenreThemeChip key={`genre-${genre}`} label={gameGenreLabel(dict, genre)} />
+              ))}
+              {game.themes.map((theme) => (
+                <GenreThemeChip key={`theme-${theme}`} label={gameThemeLabel(dict, theme)} />
+              ))}
+            </div>
+          )}
+
+          {game.platforms.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {game.platforms.map((platform) => (
+                <ConsoleBadge key={platform.id} console={platform} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </main>
   )
 }

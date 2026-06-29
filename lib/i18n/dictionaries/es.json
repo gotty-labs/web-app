@@ -147,6 +147,24 @@
       "prompt": "Busca un juego o elige un filtro para empezar.",
       "noResults": "Ningún juego coincide con tus filtros."
     },
+    "detail": {
+      "save": "Guardar",
+      "saved": "Guardado",
+      "whitelist": "Añadir a whitelist",
+      "updateProgress": "Actualizar progreso",
+      "signInToSave": "Inicia sesión para guardar",
+      "moreActions": "Más acciones",
+      "savedToast": "Guardado en tu biblioteca",
+      "whitelistToast": "Añadido a tu whitelist",
+      "progress": {
+        "title": "Actualizar progreso",
+        "description": "Lleva el control de por dónde vas en este juego.",
+        "durationLabel": "Tiempo jugado (minutos)",
+        "durationPlaceholder": "p. ej. 120",
+        "save": "Guardar",
+        "updatedToast": "Progreso actualizado"
+      }
+    },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
       "loginDescription": "Inicia sesión para continuar en JustGame.",
