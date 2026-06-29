@@ -81,6 +81,19 @@ export const dictionarySchema = z.object({
       primaryCta: z.string(),
       secondaryCta: z.string(),
     }),
+    nav: z.object({
+      feed: z.string(),
+      library: z.string(),
+      search: z.string(),
+    }),
+    profile: z.object({
+      account: z.string(),
+      settings: z.string(),
+      notifications: z.string(),
+      consoleExclusions: z.string(),
+      logout: z.string(),
+      version: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

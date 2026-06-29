@@ -118,6 +118,19 @@
       "primaryCta": "Get started",
       "secondaryCta": "Browse games"
     },
+    "nav": {
+      "feed": "Feed",
+      "library": "Library",
+      "search": "Search"
+    },
+    "profile": {
+      "account": "Account",
+      "settings": "Settings",
+      "notifications": "Notifications",
+      "consoleExclusions": "Hidden consoles",
+      "logout": "Log out",
+      "version": "Version"
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",
