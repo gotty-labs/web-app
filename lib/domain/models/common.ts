@@ -41,7 +41,7 @@ export type Engine = z.infer<typeof engineSchema>
 export const gameConsoleSchema = z.object({
   id: z.string(),
   name: z.string(),
-  family: consoleFamilySchema.optional(),
+  family: consoleFamilySchema.nullish(),
   image: z.string().optional(),
 })
 export type GameConsole = z.infer<typeof gameConsoleSchema>
