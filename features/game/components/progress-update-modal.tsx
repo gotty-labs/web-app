@@ -30,8 +30,8 @@ import {
   gameLibraryProgressStateSchema,
   type GameLibraryProgressState,
 } from '@/lib/domain/enums'
+import { useReportError } from '@/hooks/use-report-error'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
-import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { storeGameInLibrary } from '../services/library'
 import { gameProgressStateLabel } from '../utils/labels'
@@ -47,7 +47,7 @@ export function ProgressUpdateModal({
 }) {
   const dict = useDictionary()
   const t = dict.app.detail.progress
-  const toMessage = useErrorMessage()
+  const report = useReportError()
 
   const [state, setState] = useState<GameLibraryProgressState>('NOT_STARTED')
   const [duration, setDuration] = useState('')
@@ -65,7 +65,7 @@ export function ProgressUpdateModal({
       onUpdated?.()
       onClose()
     } catch (e) {
-      toast.error(toMessage(e))
+      report(e)
     } finally {
       setPending(false)
     }

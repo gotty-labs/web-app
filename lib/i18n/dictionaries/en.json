@@ -204,6 +204,10 @@
       "description": "Discover games, build your library, and track your progress across every platform.",
       "cta": "Get started"
     },
+    "errorModal": {
+      "title": "Something went wrong",
+      "dismiss": "Got it"
+    },
     "auth": {
       "loginTitle": "Welcome back",
       "loginDescription": "Sign in to continue to JustGame.",

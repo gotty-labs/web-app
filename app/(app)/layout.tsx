@@ -12,6 +12,7 @@
  */
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { ErrorProvider } from '@/contexts/error-provider'
 import { AuthGate, SessionProvider } from '@/features/auth'
 import { AppShell } from '@/features/shell'
 import { getDictionary } from '@/lib/i18n'
@@ -24,14 +25,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <I18nProvider locale={locale} dictionary={dictionary}>
-      <SessionProvider>
-        <TooltipProvider>
-          <AuthGate>
-            <AppShell>{children}</AppShell>
-          </AuthGate>
-          <Toaster theme="dark" position="top-center" />
-        </TooltipProvider>
-      </SessionProvider>
+      <ErrorProvider>
+        <SessionProvider>
+          <TooltipProvider>
+            <AuthGate>
+              <AppShell>{children}</AppShell>
+            </AuthGate>
+            <Toaster theme="dark" position="top-center" />
+          </TooltipProvider>
+        </SessionProvider>
+      </ErrorProvider>
     </I18nProvider>
   )
 }

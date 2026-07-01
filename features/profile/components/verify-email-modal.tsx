@@ -4,10 +4,10 @@
  * with `InputOTP` and confirms via `verifyEmail({ otp })` (the OTP is a NUMBER per the
  * contract).
  *
- * Errors are mapped with `getErrorMessage(e, dict)` directly (not `useErrorMessage`)
- * so the effect depends only on the stable `dict` and doesn't resend on every render.
- * The initial send lives in the effect (setState only in `.then`, never synchronously
- * in the body); `resend` is a separate event handler that can show its spinner.
+ * Errors go through the app-wide `report()` (generic error modal); it's stable, so the
+ * initial-send effect can depend on it without resending on every render. That send
+ * lives in the effect (setState only in `.then`, never synchronously in the body);
+ * `resend` is a separate event handler that can show its spinner.
  */
 'use client'
 
@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dialog'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Spinner } from '@/components/ui/spinner'
-import { getErrorMessage } from '@/lib/i18n'
+import { useReportError } from '@/hooks/use-report-error'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { startVerifyEmail, verifyEmail } from '../services/profile'
@@ -41,6 +41,7 @@ export function VerifyEmailModal({
 }) {
   const dict = useDictionary()
   const t = dict.app.settings.email
+  const report = useReportError()
 
   const [recipient, setRecipient] = useState<string | null>(null)
   const [code, setCode] = useState('')
@@ -56,12 +57,12 @@ export function VerifyEmailModal({
         if (active) setRecipient(to)
       })
       .catch((e) => {
-        if (active) toast.error(getErrorMessage(e, dict))
+        if (active) report(e)
       })
     return () => {
       active = false
     }
-  }, [dict])
+  }, [report])
 
   async function resend() {
     setSending(true)
@@ -69,7 +70,7 @@ export function VerifyEmailModal({
       const { recipient: to } = await startVerifyEmail()
       setRecipient(to)
     } catch (e) {
-      toast.error(getErrorMessage(e, dict))
+      report(e)
     } finally {
       setSending(false)
     }
@@ -83,7 +84,7 @@ export function VerifyEmailModal({
       onVerified?.()
       onClose()
     } catch (e) {
-      toast.error(getErrorMessage(e, dict))
+      report(e)
     } finally {
       setPending(false)
     }

@@ -204,6 +204,10 @@
       "description": "Descubre juegos, construye tu biblioteca y sigue tu progreso en todas las plataformas.",
       "cta": "Empezar"
     },
+    "errorModal": {
+      "title": "Algo ha ido mal",
+      "dismiss": "Entendido"
+    },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
       "loginDescription": "Inicia sesión para continuar en JustGame.",

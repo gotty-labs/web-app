@@ -27,10 +27,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
+import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
-import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { getGame } from '../services/catalog'
 import { storeGameInLibrary } from '../services/library'
@@ -40,7 +40,7 @@ import { ProgressUpdateModal } from './progress-update-modal'
 export function GameLibraryActions({ gameId }: { gameId: string }) {
   const dict = useDictionary()
   const t = dict.app.detail
-  const toMessage = useErrorMessage()
+  const report = useReportError()
   const { status } = useSession()
 
   const [saved, setSaved] = useState(false)
@@ -86,7 +86,7 @@ export function GameLibraryActions({ gameId }: { gameId: string }) {
       setSaved(true)
       toast.success(successMsg)
     } catch (e) {
-      toast.error(toMessage(e))
+      report(e)
     } finally {
       setPending(false)
     }

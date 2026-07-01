@@ -24,9 +24,9 @@ import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
+import { useReportError } from '@/hooks/use-report-error'
 import { getFilterOptions } from '@/features/game'
 import type { GameFilterOptions } from '@/lib/domain/models'
-import { getErrorMessage } from '@/lib/i18n'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { setConsoleExclusions } from '../services/profile'
@@ -36,6 +36,7 @@ type Console = GameFilterOptions['consoles'][number]
 export function ConsoleExclusions() {
   const dict = useDictionary()
   const t = dict.app.settings.consoles
+  const report = useReportError()
 
   const [consoles, setConsoles] = useState<Console[]>([])
   const [excluded, setExcluded] = useState<Set<string>>(new Set())
@@ -74,7 +75,7 @@ export function ConsoleExclusions() {
       await setConsoleExclusions({ consoleIds: [...excluded] })
       toast.success(t.savedToast)
     } catch (e) {
-      toast.error(getErrorMessage(e, dict))
+      report(e)
     } finally {
       setSaving(false)
     }

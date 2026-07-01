@@ -11,6 +11,7 @@
 'use client'
 
 import { Toaster } from '@/components/ui/sonner'
+import { ErrorProvider } from '@/contexts/error-provider'
 import { SessionProvider } from '@/features/auth'
 import type { Dictionary, Locale } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
@@ -28,10 +29,12 @@ export function GameDetailIsland({
 }) {
   return (
     <I18nProvider locale={locale} dictionary={dictionary}>
-      <SessionProvider>
-        <GameLibraryActions gameId={gameId} />
-        <Toaster theme="dark" position="top-center" />
-      </SessionProvider>
+      <ErrorProvider>
+        <SessionProvider>
+          <GameLibraryActions gameId={gameId} />
+          <Toaster theme="dark" position="top-center" />
+        </SessionProvider>
+      </ErrorProvider>
     </I18nProvider>
   )
 }

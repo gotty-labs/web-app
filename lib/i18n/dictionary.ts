@@ -167,6 +167,10 @@ export const dictionarySchema = z.object({
       description: z.string(),
       cta: z.string(),
     }),
+    errorModal: z.object({
+      title: z.string(),
+      dismiss: z.string(),
+    }),
     auth: z.object({
       loginTitle: z.string(),
       loginDescription: z.string(),

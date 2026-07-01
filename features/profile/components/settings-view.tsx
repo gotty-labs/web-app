@@ -17,8 +17,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
+import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
-import { getErrorMessage } from '@/lib/i18n'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { changePassword } from '../services/profile'
@@ -29,6 +29,7 @@ import { VerifyEmailModal } from './verify-email-modal'
 export function SettingsView() {
   const dict = useDictionary()
   const s = dict.app.settings
+  const report = useReportError()
   const { user } = useSession()
 
   const [verifyOpen, setVerifyOpen] = useState(false)
@@ -41,7 +42,7 @@ export function SettingsView() {
       await changePassword()
       toast.success(s.password.sentToast)
     } catch (e) {
-      toast.error(getErrorMessage(e, dict))
+      report(e)
     } finally {
       setChangingPassword(false)
     }

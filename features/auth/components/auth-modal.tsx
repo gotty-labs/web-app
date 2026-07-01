@@ -19,7 +19,6 @@
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -31,8 +30,8 @@ import {
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+import { useReportError } from '@/hooks/use-report-error'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
-import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { forgotPassword, loginEmail, registerEmail } from '../services/auth-client'
 
@@ -52,24 +51,21 @@ function GoogleIcon() {
 export function AuthModal() {
   const dict = useDictionary()
   const t = dict.app.auth
-  const toMessage = useErrorMessage()
+  const report = useReportError()
 
   const [view, setView] = useState<AuthView>('login')
   const [pending, setPending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [nickname, setNickname] = useState('')
 
   function go(next: AuthView) {
-    setError(null)
     setView(next)
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setPending(true)
-    setError(null)
     try {
       if (view === 'login') {
         await loginEmail(email, password)
@@ -81,7 +77,7 @@ export function AuthModal() {
       }
       // On login/register success the session store updates and AuthGate unmounts us.
     } catch (err) {
-      setError(toMessage(err))
+      report(err)
     } finally {
       setPending(false)
     }
@@ -114,12 +110,6 @@ export function AuthModal() {
           <DialogTitle>{titles[view].title}</DialogTitle>
           <DialogDescription>{titles[view].description}</DialogDescription>
         </DialogHeader>
-
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
 
         {view === 'forgotSent' ? (
           <Button variant="outline" onClick={() => go('login')}>
