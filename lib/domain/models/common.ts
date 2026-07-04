@@ -42,7 +42,7 @@ export const gameConsoleSchema = z.object({
   id: z.string(),
   name: z.string(),
   family: consoleFamilySchema.nullish(),
-  image: z.string().optional(),
+  image: z.string().nullish(),
 })
 export type GameConsole = z.infer<typeof gameConsoleSchema>
 

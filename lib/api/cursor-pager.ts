@@ -13,7 +13,17 @@ export class CursorPager<T> {
   private cursor: string | undefined
   private started = false
 
-  constructor(private readonly fetchPage: (cursor: string | undefined) => Promise<Paginated<T>>) {}
+  /**
+   * `initialCursor` seeds the pager so the first `loadMore` continues FROM that point
+   * (e.g. a feed section's `nextCursor`), rather than re-fetching page 1. Omit it to
+   * page from the beginning.
+   */
+  constructor(
+    private readonly fetchPage: (cursor: string | undefined) => Promise<Paginated<T>>,
+    initialCursor?: string,
+  ) {
+    this.cursor = initialCursor
+  }
 
   get items(): readonly T[] {
     return this.accumulated

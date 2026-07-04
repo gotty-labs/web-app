@@ -24,10 +24,17 @@ export interface SectionPagerState {
   loadMore: () => Promise<void>
 }
 
-export function useSectionPager(section: GameSection): SectionPagerState {
+export function useSectionPager(
+  section: GameSection,
+  initialCursor?: string,
+): SectionPagerState {
   const pager = useMemo(
-    () => new CursorPager<GameSummary>((cursor) => getGamesBySection({ section, cursor })),
-    [section],
+    () =>
+      new CursorPager<GameSummary>(
+        (cursor) => getGamesBySection({ section, cursor }),
+        initialCursor,
+      ),
+    [section, initialCursor],
   )
   const [items, setItems] = useState<GameSummary[]>([])
   const [loading, setLoading] = useState(false)

@@ -25,13 +25,18 @@ import { SeeAllDialog } from './see-all-dialog'
 
 function FeedSkeleton() {
   return (
-    <div className="flex flex-col gap-8 p-4 md:p-6">
+    <div className="flex flex-col gap-6 overflow-x-hidden p-3 md:gap-8 md:p-6">
       {Array.from({ length: 3 }).map((_, row) => (
         <section key={row} className="flex flex-col gap-3">
           <Skeleton className="h-6 w-40" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {Array.from({ length: 6 }).map((_, card) => (
-              <GameCardSkeleton key={card} />
+          {/* Single row (not a wrapping grid) so it matches the carousel's height
+              and doesn't jump when the real content loads. */}
+          <div className="flex gap-4 overflow-hidden">
+            {Array.from({ length: 8 }).map((_, card) => (
+              <GameCardSkeleton
+                key={card}
+                className="w-1/3 shrink-0 sm:w-1/4 md:w-1/5 lg:w-1/6 xl:w-[12.5%]"
+              />
             ))}
           </div>
         </section>
@@ -44,7 +49,11 @@ export function GameFeed() {
   const dict = useDictionary()
   const toMessage = useErrorMessage()
   const { loading, sections, error, reload } = useFeed()
-  const [seeAll, setSeeAll] = useState<{ section: GameSection; title: string } | null>(null)
+  const [seeAll, setSeeAll] = useState<{
+    section: GameSection
+    title: string
+    cursor?: string
+  } | null>(null)
 
   if (loading) return <FeedSkeleton />
 
@@ -81,19 +90,26 @@ export function GameFeed() {
   }
 
   return (
-    <div className="flex flex-col gap-8 p-4 md:p-6">
+    <div className="flex min-w-0 flex-col gap-6 overflow-x-hidden p-3 md:gap-8 md:p-6">
       {visible.map((s) => (
         <GameCarousel
           key={s.section}
           title={s.title}
           games={s.games}
-          onSeeAll={() => setSeeAll({ section: s.section, title: s.title })}
+          // "See all" only when the section has more games beyond the feed (a
+          // nextCursor). Otherwise the carousel already shows everything.
+          onSeeAll={
+            s.nextCursor
+              ? () => setSeeAll({ section: s.section, title: s.title, cursor: s.nextCursor })
+              : undefined
+          }
         />
       ))}
       {seeAll && (
         <SeeAllDialog
           section={seeAll.section}
           title={seeAll.title}
+          initialCursor={seeAll.cursor}
           onClose={() => setSeeAll(null)}
         />
       )}

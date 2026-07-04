@@ -36,28 +36,28 @@ export function GameCarousel({
         <button
           type="button"
           onClick={onSeeAll}
-          className="group flex w-fit items-center gap-1 text-lg font-semibold"
+          className="group flex w-fit items-center gap-1 text-base font-semibold md:text-lg"
         >
           {title}
           <ChevronRightIcon className="text-muted-foreground size-5 transition-transform group-hover:translate-x-0.5" />
         </button>
       ) : (
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-base font-semibold md:text-lg">{title}</h2>
       )}
 
-      <Carousel opts={{ loop: true, align: 'start' }} className="w-full">
+      <Carousel opts={{ align: 'start', dragFree: true, loop: true }} className="w-full">
         <CarouselContent>
           {games.map((game) => (
             <CarouselItem
               key={game.id}
-              className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+              className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-[12.5%]"
             >
               <GameCard game={game} />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden md:inline-flex" />
-        <CarouselNext className="hidden md:inline-flex" />
+        <CarouselPrevious className="left-1 hidden bg-background/80 backdrop-blur-sm md:inline-flex" />
+        <CarouselNext className="right-1 hidden bg-background/80 backdrop-blur-sm md:inline-flex" />
       </Carousel>
     </section>
   )
