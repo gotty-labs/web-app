@@ -1,10 +1,10 @@
 /**
- * Home — the Netflix-style feed (Phase 5, Slice C). A thin mount point: `GameFeed`
- * owns the data fetch, load/error/empty states, and the see-all flow. Renders only
- * once `AuthGate` reports an authenticated session (the feed is an authed call).
+ * Home — search bar on top of the Netflix-style feed (QA Chunk 1). `GameSearch` owns
+ * the search state and swaps to results when a search is active; otherwise it renders
+ * the `idle` slot: the `GameFeed` carousels. (Search moved out of the sidebar to here.)
  */
-import { GameFeed } from '@/features/game'
+import { GameFeed, GameSearch } from '@/features/game'
 
 export default function HomePage() {
-  return <GameFeed />
+  return <GameSearch idle={<GameFeed />} />
 }

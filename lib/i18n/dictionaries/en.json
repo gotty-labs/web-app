@@ -119,9 +119,41 @@
       "secondaryCta": "Browse games"
     },
     "nav": {
+      "games": "Games",
+      "options": "Options",
       "feed": "Feed",
       "library": "Library",
-      "search": "Search"
+      "search": "Search",
+      "consoleVisibility": "Console visibility",
+      "feedback": "Feedback"
+    },
+    "consoleVisibility": {
+      "title": "Console visibility",
+      "description": "All consoles are shown by default. Turn off the ones you don't want to see games for.",
+      "showAll": "Show all",
+      "hideAll": "Hide all",
+      "save": "Save changes",
+      "savedToast": "Console preferences saved"
+    },
+    "feedback": {
+      "title": "Send feedback",
+      "description": "Your message goes straight to the team building JustGame.",
+      "typeLabel": "Type of message",
+      "typeIdea": "Idea",
+      "typeImprovement": "Improvement",
+      "typeProblem": "Problem",
+      "typeOther": "Other",
+      "messageLabel": "Your message",
+      "messagePlaceholder": "Tell us what's missing, what you'd improve, or what doesn't work as expected. The more specific, the better.",
+      "metadataLabel": "Sent with your message",
+      "appField": "App",
+      "systemField": "System",
+      "localeField": "Language",
+      "privacyNote": "This helps us reproduce what you describe. Nothing else is sent.",
+      "replyLabel": "I'd like a reply by email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send",
+      "sentToast": "Thanks! Your feedback was sent."
     },
     "profile": {
       "account": "Account",
@@ -145,7 +177,9 @@
       "genres": "Genres",
       "themes": "Themes",
       "prompt": "Search for a game or pick a filter to start.",
-      "noResults": "No games match your filters."
+      "noResults": "No games match your filters.",
+      "reset": "Clear all",
+      "clear": "Clear search"
     },
     "detail": {
       "save": "Save",

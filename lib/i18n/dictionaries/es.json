@@ -119,9 +119,41 @@
       "secondaryCta": "Explorar juegos"
     },
     "nav": {
+      "games": "Juegos",
+      "options": "Opciones",
       "feed": "Feed",
       "library": "Biblioteca",
-      "search": "Buscar"
+      "search": "Buscar",
+      "consoleVisibility": "Visibilidad de consolas",
+      "feedback": "Feedback"
+    },
+    "consoleVisibility": {
+      "title": "Visibilidad de consolas",
+      "description": "Por defecto se muestran todas. Desactiva las consolas de las que no quieras ver juegos.",
+      "showAll": "Mostrar todas",
+      "hideAll": "Ocultar todas",
+      "save": "Guardar cambios",
+      "savedToast": "Preferencias guardadas"
+    },
+    "feedback": {
+      "title": "Enviar feedback",
+      "description": "Tu mensaje llega directamente al equipo que desarrolla JustGame.",
+      "typeLabel": "Tipo de mensaje",
+      "typeIdea": "Idea",
+      "typeImprovement": "Mejora",
+      "typeProblem": "Problema",
+      "typeOther": "Otro",
+      "messageLabel": "Tu mensaje",
+      "messagePlaceholder": "Cuéntanos qué echas en falta, qué mejorarías o qué no funciona como esperas. Cuanto más concreto, mejor.",
+      "metadataLabel": "Se enviará con tu mensaje",
+      "appField": "App",
+      "systemField": "Sistema",
+      "localeField": "Idioma",
+      "privacyNote": "Esto nos ayuda a reproducir lo que cuentas. No se envía nada más.",
+      "replyLabel": "Quiero que me respondáis por correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submit": "Enviar",
+      "sentToast": "¡Gracias! Tu feedback se ha enviado."
     },
     "profile": {
       "account": "Cuenta",
@@ -145,7 +177,9 @@
       "genres": "Géneros",
       "themes": "Temas",
       "prompt": "Busca un juego o elige un filtro para empezar.",
-      "noResults": "Ningún juego coincide con tus filtros."
+      "noResults": "Ningún juego coincide con tus filtros.",
+      "reset": "Limpiar todo",
+      "clear": "Limpiar búsqueda"
     },
     "detail": {
       "save": "Guardar",

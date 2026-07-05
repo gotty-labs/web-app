@@ -8,3 +8,4 @@ export {
 
 // UI (Phase 5, Slice G).
 export { SettingsView } from './components/settings-view'
+export { ConsoleVisibilityModal } from './components/console-visibility-modal'

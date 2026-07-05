@@ -12,13 +12,7 @@
 'use client'
 
 import Link from 'next/link'
-import {
-  BellIcon,
-  ChevronUpIcon,
-  LogOutIcon,
-  MonitorXIcon,
-  SettingsIcon,
-} from 'lucide-react'
+import { BellIcon, ChevronUpIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -93,12 +87,6 @@ export function ProfileMenu() {
             <Link href="/settings">
               <SettingsIcon />
               {t.settings}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/settings">
-              <MonitorXIcon />
-              {t.consoleExclusions}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => void requestNotifications()}>

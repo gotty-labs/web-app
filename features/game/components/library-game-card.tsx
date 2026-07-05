@@ -1,6 +1,7 @@
 'use client'
 
 import { SquarePenIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -37,12 +38,12 @@ export function LibraryGameCard({
     <div className="flex flex-col gap-2">
       <div className="bg-muted relative aspect-3/4 overflow-hidden rounded-lg">
         {game.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element -- external cover host; migrate to next/image + remotePatterns when known
-          <img
+          <Image
             src={game.cover}
             alt={game.name}
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : null}
         <div className="absolute top-2 left-2">

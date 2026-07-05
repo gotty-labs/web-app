@@ -186,7 +186,16 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className="w-(--sidebar-width) max-h-svh bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          onInteractOutside={(event) => {
+            if (
+              (event.target as Element | null)?.closest(
+                "[data-radix-popper-content-wrapper]"
+              )
+            ) {
+              event.preventDefault()
+            }
+          }}
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,

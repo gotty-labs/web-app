@@ -11,7 +11,7 @@
 
 import type { ReactNode } from 'react'
 
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
 import { AppSidebar } from './app-sidebar'
 import { OnboardingModal } from './onboarding-modal'
@@ -23,15 +23,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* min-w-0 lets this flex child shrink instead of expanding to the carousel's
           intrinsic width (the flexbox min-width:auto trap) — the real cause of the
           page-wide horizontal scroll. No overflow here: it would become a scroll
-          container and break the sticky header below. */}
-      <SidebarInset className="min-w-0">
-        {/* Sticky so the sidebar trigger stays reachable while scrolling on mobile
-            (and sets up the future top-nav where search will live). */}
-        <header className="bg-background/95 sticky top-0 z-30 flex h-12 items-center gap-2 border-b px-3 backdrop-blur-sm md:hidden">
-          <SidebarTrigger />
-        </header>
-        {children}
-      </SidebarInset>
+          container and break sticky headers. The sidebar toggle now lives in each
+          page's <AppTopBar/>. */}
+      <SidebarInset className="min-w-0">{children}</SidebarInset>
       <OnboardingModal />
     </SidebarProvider>
   )

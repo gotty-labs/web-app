@@ -7,6 +7,7 @@
  * the pure `gameXLabel(dict, …)` helpers). The authed library actions live in the
  * `GameDetailIsland` client widget, which brings its own session/i18n/toaster.
  */
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 import { getDictionary, type Locale } from '@/lib/i18n'
@@ -33,9 +34,8 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
     <main className="mx-auto max-w-5xl p-4 md:p-8">
       <div className="flex flex-col gap-6 md:flex-row">
         {cover && (
-          <div className="mx-auto w-full max-w-[240px] shrink-0 md:mx-0">
-            {/* eslint-disable-next-line @next/next/no-img-element -- external cover host; migrate to next/image + remotePatterns when known */}
-            <img src={cover} alt={game.name} className="w-full rounded-lg" />
+          <div className="relative mx-auto aspect-3/4 w-full max-w-[240px] shrink-0 overflow-hidden rounded-lg md:mx-0">
+            <Image src={cover} alt={game.name} fill sizes="240px" className="object-cover" />
           </div>
         )}
 

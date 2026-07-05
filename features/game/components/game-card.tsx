@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 
 import type { GameSummary } from '@/lib/domain/models'
@@ -40,12 +41,12 @@ export function GameCard({
     <div className={cn('group flex w-full flex-col gap-2', className)}>
       <div className="bg-muted relative aspect-3/4 overflow-hidden rounded-lg">
         {game.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element -- external cover host; migrate to next/image + remotePatterns when known
-          <img
+          <Image
             src={game.cover}
             alt={game.name}
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : null}
         {(showStatus || showRating) && (
@@ -68,9 +69,7 @@ export function GameCard({
       </div>
       <div className="flex flex-col">
         <p className="truncate text-sm font-medium">{game.name}</p>
-        {subtitle ? (
-          <p className="text-muted-foreground truncate text-xs">{subtitle}</p>
-        ) : null}
+        {subtitle ? <p className="text-muted-foreground truncate text-xs">{subtitle}</p> : null}
       </div>
     </div>
   )

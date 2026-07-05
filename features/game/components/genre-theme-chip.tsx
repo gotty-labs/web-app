@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { Badge } from '@/components/ui/badge'
 
 /**
@@ -11,8 +13,7 @@ export function GenreThemeChip({ label, iconUrl }: { label: string; iconUrl?: st
   return (
     <Badge variant="outline">
       {iconUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- small remote icon; migrate to next/image + remotePatterns when host is known
-        <img src={iconUrl} alt="" className="size-3.5" />
+        <Image src={iconUrl} alt="" width={14} height={14} className="size-3.5" />
       ) : null}
       {label}
     </Badge>
