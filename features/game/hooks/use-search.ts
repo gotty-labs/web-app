@@ -50,6 +50,8 @@ export interface SearchState {
   touched: boolean
   search: (criteria: SearchCriteria) => void
   loadMore: () => void
+  /** Clear results AND `touched`, so the next search is a clean interaction. */
+  reset: () => void
 }
 
 export function useSearch(): SearchState {
@@ -100,6 +102,14 @@ export function useSearch(): SearchState {
     [loadMore],
   )
 
+  const reset = useCallback(() => {
+    pagerRef.current = null
+    setItems([])
+    setHasMore(false)
+    setError(null)
+    setTouched(false)
+  }, [])
+
   return {
     items,
     loading,
@@ -108,5 +118,6 @@ export function useSearch(): SearchState {
     touched,
     search,
     loadMore: () => void loadMore(),
+    reset,
   }
 }

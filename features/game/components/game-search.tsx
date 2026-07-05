@@ -27,7 +27,7 @@ import { SearchFilters } from './search-filters'
 export function GameSearch({ idle }: { idle?: ReactNode }) {
   const dict = useDictionary()
   const { options } = useFilterOptions()
-  const { items, loading, error, hasMore, touched, search, loadMore } = useSearch()
+  const { items, loading, error, hasMore, touched, search, loadMore, reset } = useSearch()
 
   const [query, setQuery] = useState('')
   const [consoleIds, setConsoleIds] = useState<string[]>([])
@@ -39,11 +39,14 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
 
   // Name search and console/genre filters are MUTUALLY EXCLUSIVE (per QA): submitting a
   // query clears the filters, and touching a filter clears the query. Console + genre
-  // still coexist. The search() call takes explicit criteria (not the async state).
+  // still coexist. `search()` takes explicit criteria (not the async state), and any
+  // path back to the feed calls `reset()` so `touched` clears — the NEXT search starts
+  // clean instead of flashing the previous results.
   function submitQuery() {
     setConsoleIds([])
     setContent(undefined)
-    search({ query, consoleIds: [], content: undefined })
+    if (query.trim().length >= 3) search({ query, consoleIds: [], content: undefined })
+    else reset()
   }
 
   function toggleConsole(id: string) {
@@ -52,27 +55,32 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
       : [...consoleIds, id]
     setQuery('')
     setConsoleIds(next)
-    search({ query: '', consoleIds: next, content })
+    if (next.length === 0 && !content) reset()
+    else search({ query: '', consoleIds: next, content })
   }
 
   function changeContent(key: string | undefined) {
     setQuery('')
     setContent(key)
-    search({ query: '', consoleIds, content: key })
+    if (consoleIds.length === 0 && !key) reset()
+    else search({ query: '', consoleIds, content: key })
   }
 
-  // Clearing the query (violet X) in query mode leaves no criteria → back to the feed.
-  function clearQuery() {
-    setQuery('')
-    search({ query: '', consoleIds, content })
+  // Editing the query by hand below the 3-char threshold (with no active filter)
+  // invalidates the previous search — same as pressing X — so re-typing starts clean
+  // (feed until the user submits again) instead of flashing the old results.
+  function changeQuery(value: string) {
+    setQuery(value)
+    if (value.trim().length < 3 && !hasFilters && touched) reset()
   }
 
-  // Reset control (shown when a filter is active) → clears everything → feed.
-  function resetAll() {
+  // Back to the feed: wipe every filter AND the search state (used by the input's X and
+  // the reset control), so returning to the feed is always a clean slate.
+  function clearAll() {
     setQuery('')
     setConsoleIds([])
     setContent(undefined)
-    search({ query: '', consoleIds: [], content: undefined })
+    reset()
   }
 
   return (
@@ -80,10 +88,10 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
       <AppTopBar>
         <SearchFilters
           query={query}
-          onQueryChange={setQuery}
+          onQueryChange={changeQuery}
           onSubmit={submitQuery}
-          onClearQuery={clearQuery}
-          onReset={resetAll}
+          onClearQuery={clearAll}
+          onReset={clearAll}
           showReset={hasFilters}
           options={options}
           consoleIds={consoleIds}

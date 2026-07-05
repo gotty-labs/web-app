@@ -24,6 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { ConsoleVisibilityModal } from '@/features/profile'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
@@ -36,7 +37,17 @@ import { ProfileMenu } from './profile-menu'
 export function AppSidebar() {
   const dict = useDictionary()
   const pathname = usePathname()
+  const { setOpenMobile } = useSidebar()
   const [modal, setModal] = useState<'consoles' | 'feedback' | null>(null)
+
+  // On mobile the sidebar is an off-canvas sheet; activating any item should dismiss
+  // it (navigation or opening a modal). Dismissing an overlay does NOT (handled by the
+  // Sheet's onInteractOutside guard).
+  const closeMobile = () => setOpenMobile(false)
+  const openModal = (which: 'consoles' | 'feedback') => {
+    setModal(which)
+    closeMobile()
+  }
 
   return (
     <>
@@ -45,7 +56,7 @@ export function AppSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild size="lg" tooltip={dict.app.brand.name}>
-                <Link href="/home">
+                <Link href="/home" onClick={closeMobile}>
                   <Gamepad2Icon className="text-primary" />
                   <span className="font-heading text-base font-semibold tracking-tight">
                     {dict.app.brand.name}
@@ -71,7 +82,7 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton asChild isActive={active} tooltip={label}>
-                        <Link href={item.href}>
+                        <Link href={item.href} onClick={closeMobile}>
                           <Icon />
                           <span>{label}</span>
                         </Link>
@@ -89,7 +100,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    onClick={() => setModal('consoles')}
+                    onClick={() => openModal('consoles')}
                     tooltip={dict.app.nav.consoleVisibility}
                   >
                     <MonitorIcon />
@@ -98,7 +109,7 @@ export function AppSidebar() {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    onClick={() => setModal('feedback')}
+                    onClick={() => openModal('feedback')}
                     tooltip={dict.app.nav.feedback}
                   >
                     <MessageSquareIcon />

@@ -1,9 +1,9 @@
 'use client'
 
 import { SquarePenIcon } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 
+import { AppImage } from '@/components/app-image'
 import { Button } from '@/components/ui/button'
 import type { GameLibrary } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
@@ -38,11 +38,12 @@ export function LibraryGameCard({
     <div className="flex flex-col gap-2">
       <div className="bg-muted relative aspect-3/4 overflow-hidden rounded-lg">
         {game.cover ? (
-          <Image
+          <AppImage
             src={game.cover}
             alt={game.name}
             fill
             sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+            wrapperClassName="absolute inset-0"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : null}

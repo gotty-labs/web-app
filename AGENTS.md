@@ -107,6 +107,14 @@ or shadcn docs first — this stack is ahead of training data.
   stale-while-revalidate) — the single-arg form is deprecated. `export const revalidate` must be a
   literal (statically analyzable). Tag cached `fetch`es via `next: { tags }` to target them.
 
+## Images
+
+- **Always use `<AppImage>`** (`components/app-image.tsx`) for remote/content images — NEVER raw
+  `<img>` or `next/image` directly. It wraps `next/image` and shows a violet (`text-primary`) spinner
+  while loading. Pass `wrapperClassName` to size the wrapper (`absolute inset-0` for `fill` images).
+  Tiny decorative badge icons (≈14px) may stay on `next/image` (a spinner would overflow them).
+- Remote hosts must be allowed in `next.config` `images.remotePatterns` (game covers AND console covers).
+
 ## Environment
 
 - Reference each `NEXT_PUBLIC_*` var by its **full static name** so Next inlines it; validate at
@@ -117,6 +125,9 @@ or shadcn docs first — this stack is ahead of training data.
 ## Verification (do this before claiming "done")
 
 - Run **`npx tsc --noEmit`**, **`npx eslint .`** (whole project), and **`npx next build`**.
+- **NEVER silence a lint rule** with `eslint-disable` / `// eslint-disable-next-line` (or `@ts-ignore`).
+  Fix the root cause instead — e.g. a `jsx-a11y/alt-text` false positive from `{...props}` is fixed by
+  destructuring `alt` and passing it explicitly, not by disabling the rule.
 - After moving/renaming files: **purge caches first** —
   `find . -name "*.tsbuildinfo" -not -path "./node_modules/*" -delete && rm -rf .next` — then
   re-run clean. A cached `tsc` can report green over a broken/zombie file.

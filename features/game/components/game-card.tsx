@@ -1,8 +1,8 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 
+import { AppImage } from '@/components/app-image'
 import type { GameSummary } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
@@ -41,11 +41,12 @@ export function GameCard({
     <div className={cn('group flex w-full flex-col gap-2', className)}>
       <div className="bg-muted relative aspect-3/4 overflow-hidden rounded-lg">
         {game.cover ? (
-          <Image
+          <AppImage
             src={game.cover}
             alt={game.name}
             fill
             sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+            wrapperClassName="absolute inset-0"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : null}

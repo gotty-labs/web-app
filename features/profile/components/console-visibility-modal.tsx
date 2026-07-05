@@ -6,10 +6,10 @@
  */
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
+import { AppImage } from '@/components/app-image'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -28,6 +28,7 @@ import { useReportError } from '@/hooks/use-report-error'
 import { getFilterOptions } from '@/features/game'
 import type { GameFilterOptions } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
+import { cn } from '@/lib/utils'
 
 import { setConsoleExclusions } from '../services/profile'
 
@@ -99,7 +100,9 @@ export function ConsoleVisibilityModal({ onClose }: { onClose: () => void }) {
     >
       <SheetContent
         side={isMobile ? 'bottom' : 'right'}
-        className="flex flex-col gap-0 sm:max-w-md"
+        // Cap height only on the mobile (bottom) sheet; the desktop (right) sheet is
+        // full height by default and shouldn't leave a gap.
+        className={cn('flex flex-col gap-0 sm:max-w-md', isMobile && 'max-h-[85svh]')}
       >
         <SheetHeader>
           <SheetTitle>{t.title}</SheetTitle>
@@ -119,12 +122,13 @@ export function ConsoleVisibilityModal({ onClose }: { onClose: () => void }) {
                 const id = `console-${gameConsole.id}`
                 return (
                   <div key={gameConsole.id} className="flex min-w-0 items-center gap-3 py-1.5">
-                    <Image
+                    <AppImage
                       src={gameConsole.cover}
                       alt=""
                       width={32}
                       height={32}
-                      className="size-8 shrink-0 rounded object-contain"
+                      wrapperClassName="size-8 shrink-0 rounded"
+                      className="object-contain"
                     />
                     <Label htmlFor={id} className="min-w-0 flex-1 truncate font-normal">
                       {gameConsole.name}

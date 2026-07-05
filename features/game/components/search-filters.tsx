@@ -10,9 +10,9 @@
 'use client'
 
 import { type FormEvent } from 'react'
-import Image from 'next/image'
 import { MonitorIcon, SearchIcon, XIcon } from 'lucide-react'
 
+import { AppImage } from '@/components/app-image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -101,7 +101,7 @@ export function SearchFilters({
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="shrink-0" aria-label={t.consoles}>
+          <Button variant="outline" aria-label={t.consoles} className="shrink-0">
             <MonitorIcon />
             <span className="hidden sm:inline">{t.consoles}</span>
             {consoleIds.length > 0 && (
@@ -120,12 +120,13 @@ export function SearchFilters({
               onSelect={(e) => e.preventDefault()}
             >
               <span className="flex min-w-0 items-center gap-2">
-                <Image
+                <AppImage
                   src={gameConsole.cover}
                   alt=""
                   width={20}
                   height={20}
-                  className="size-5 shrink-0 rounded object-contain"
+                  wrapperClassName="size-5 shrink-0 rounded"
+                  className="object-contain"
                 />
                 <span className="truncate">{gameConsole.name}</span>
               </span>

@@ -31,6 +31,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useSession } from '@/features/auth'
 import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
+import { cn } from '@/lib/utils'
 
 import { APP_VERSION } from '../config/shell'
 
@@ -80,7 +81,11 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
         if (!next) onClose()
       }}
     >
-      <SheetContent side={isMobile ? 'bottom' : 'right'} className="flex flex-col gap-0 sm:max-w-lg">
+      <SheetContent
+        side={isMobile ? 'bottom' : 'right'}
+        // Cap height only on the mobile (bottom) sheet; the desktop (right) sheet is full height.
+        className={cn('flex flex-col gap-0 sm:max-w-lg', isMobile && 'max-h-[90svh]')}
+      >
         <SheetHeader>
           <SheetTitle>{t.title}</SheetTitle>
           <SheetDescription>{t.description}</SheetDescription>
