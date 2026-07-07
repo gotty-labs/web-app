@@ -53,6 +53,16 @@ or shadcn docs first — this stack is ahead of training data.
 - Mirror the backend contract **exactly**; don't add fields the backend doesn't send yet
   (mark pending ones with a `NOTE`). Keep ISO dates as `z.string()` — don't over-validate.
 
+## Dates & time (Luxon)
+
+- **Always use Luxon** (`luxon`, pinned exact) for ANY date/time work — parsing, comparison,
+  arithmetic, formatting. **NEVER the native `Date`** (`new Date()`, `Date.now()`, `Date.parse`,
+  `toLocale*`). `DateTime.fromISO(...)` to parse; `setLocale(locale).toLocaleString(...)` to
+  format; `Duration` for spans.
+- The domain layer keeps dates as ISO **strings** (see Zod section); converting to `DateTime` is
+  a presentation-edge concern. Game formatters live in `features/game/utils/format.ts` — extend
+  that hub instead of formatting inline.
+
 ## HTTP & errors
 
 - Two contracts, never mix them:
@@ -107,6 +117,14 @@ or shadcn docs first — this stack is ahead of training data.
   stale-while-revalidate) — the single-arg form is deprecated. `export const revalidate` must be a
   literal (statically analyzable). Tag cached `fetch`es via `next: { tags }` to target them.
 
+## Images
+
+- **Always use `<AppImage>`** (`components/app-image.tsx`) for remote/content images — NEVER raw
+  `<img>` or `next/image` directly. It wraps `next/image` and shows a violet (`text-primary`) spinner
+  while loading. Pass `wrapperClassName` to size the wrapper (`absolute inset-0` for `fill` images).
+  Tiny decorative badge icons (≈14px) may stay on `next/image` (a spinner would overflow them).
+- Remote hosts must be allowed in `next.config` `images.remotePatterns` (game covers AND console covers).
+
 ## Environment
 
 - Reference each `NEXT_PUBLIC_*` var by its **full static name** so Next inlines it; validate at
@@ -117,6 +135,9 @@ or shadcn docs first — this stack is ahead of training data.
 ## Verification (do this before claiming "done")
 
 - Run **`npx tsc --noEmit`**, **`npx eslint .`** (whole project), and **`npx next build`**.
+- **NEVER silence a lint rule** with `eslint-disable` / `// eslint-disable-next-line` (or `@ts-ignore`).
+  Fix the root cause instead — e.g. a `jsx-a11y/alt-text` false positive from `{...props}` is fixed by
+  destructuring `alt` and passing it explicitly, not by disabling the rule.
 - After moving/renaming files: **purge caches first** —
   `find . -name "*.tsbuildinfo" -not -path "./node_modules/*" -delete && rm -rf .next` — then
   re-run clean. A cached `tsc` can report green over a broken/zombie file.

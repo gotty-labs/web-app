@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { Badge } from '@/components/ui/badge'
 import type { GameConsole } from '@/lib/domain/models'
 
@@ -6,8 +8,13 @@ export function ConsoleBadge({ console: gameConsole }: { console: GameConsole })
   return (
     <Badge variant="outline">
       {gameConsole.image ? (
-        // eslint-disable-next-line @next/next/no-img-element -- small remote icon; migrate to next/image + remotePatterns when host is known
-        <img src={gameConsole.image} alt="" className="size-3.5" />
+        <Image
+          src={gameConsole.image}
+          alt=""
+          width={14}
+          height={14}
+          className="size-3.5"
+        />
       ) : null}
       {gameConsole.name}
     </Badge>

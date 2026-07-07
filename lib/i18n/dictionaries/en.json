@@ -97,5 +97,239 @@
       "SAVED": "Saved",
       "WHITELIST": "Whitelist"
     }
+  },
+  "app": {
+    "brand": {
+      "name": "JustGame",
+      "tagline": "Discover, save and track your games."
+    },
+    "actions": {
+      "enterApp": "Enter the app",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "back": "Back",
+      "retry": "Try again"
+    },
+    "landing": {
+      "heroBadge": "Free · Every platform · One library",
+      "heroTitleLead": "Every game you love,",
+      "heroTitleAccent": "in one library.",
+      "heroSubtitle": "Discover what's coming, save what you want to play, and track your progress across every platform.",
+      "primaryCta": "Get started — it's free",
+      "secondaryCta": "See how it works",
+      "nav": {
+        "features": "Features",
+        "how": "How it works"
+      },
+      "mock": {
+        "trending": "Trending this week",
+        "library": "Your library",
+        "search": "Search games…"
+      },
+      "features": {
+        "title": "Everything your backlog needs",
+        "subtitle": "From discovery to the credits, JustGame keeps your gaming life organized in one place.",
+        "discover": {
+          "title": "A feed that knows what's next",
+          "description": "Curated rows of trending, upcoming and acclaimed titles across every console — always fresh, always yours."
+        },
+        "search": {
+          "title": "Find any game in seconds",
+          "description": "Powerful search with console, genre and theme filters. If it exists, you'll find it."
+        },
+        "library": {
+          "title": "Your library, your rules",
+          "description": "Save the games you own, whitelist the ones you're watching, and keep everything in one tidy place."
+        },
+        "progress": {
+          "title": "Track every playthrough",
+          "description": "Log your status and playtime per game — from “not started” all the way to the credits rolling."
+        }
+      },
+      "how": {
+        "title": "Start in three moves",
+        "subtitle": "No setup, no spreadsheets. Your library is ready in under a minute.",
+        "steps": [
+          {
+            "title": "Create your free account",
+            "description": "Sign up in seconds. No credit card — just games."
+          },
+          {
+            "title": "Save what you want to play",
+            "description": "Browse the feed or search anything, then add it to your library or whitelist in one tap."
+          },
+          {
+            "title": "Track until the credits roll",
+            "description": "Update progress and playtime as you go, and always know what to play next."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ready to press start?",
+        "subtitle": "Turn your backlog into a plan. Join JustGame today — free, on any device.",
+        "button": "Enter JustGame"
+      },
+      "footer": {
+        "rights": "All rights reserved."
+      }
+    },
+    "nav": {
+      "games": "Games",
+      "options": "Options",
+      "feed": "Feed",
+      "library": "Library",
+      "search": "Search",
+      "consoleVisibility": "Console visibility",
+      "feedback": "Feedback",
+      "toggleSidebar": "Toggle sidebar"
+    },
+    "consoleVisibility": {
+      "title": "Console visibility",
+      "description": "All consoles are shown by default. Turn off the ones you don't want to see games for.",
+      "showAll": "Show all",
+      "hideAll": "Hide all",
+      "save": "Save changes",
+      "savedToast": "Console preferences saved"
+    },
+    "feedback": {
+      "title": "Send feedback",
+      "description": "Your message goes straight to the team building JustGame.",
+      "typeLabel": "Type of message",
+      "typeIdea": "Idea",
+      "typeImprovement": "Improvement",
+      "typeProblem": "Problem",
+      "typeOther": "Other",
+      "messageLabel": "Your message",
+      "messagePlaceholder": "Tell us what's missing, what you'd improve, or what doesn't work as expected. The more specific, the better.",
+      "metadataLabel": "Sent with your message",
+      "appField": "App",
+      "systemField": "System",
+      "localeField": "Language",
+      "privacyNote": "This helps us reproduce what you describe. Nothing else is sent.",
+      "replyLabel": "I'd like a reply by email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send",
+      "sentToast": "Thanks! Your feedback was sent."
+    },
+    "profile": {
+      "account": "Account",
+      "settings": "Settings",
+      "notifications": "Notifications",
+      "consoleExclusions": "Hidden consoles",
+      "logout": "Log out",
+      "version": "Version"
+    },
+    "feed": {
+      "loadMore": "Load more",
+      "empty": "Nothing here yet.",
+      "error": "We couldn't load this. Please try again."
+    },
+    "search": {
+      "placeholder": "Search games…",
+      "submit": "Search",
+      "consoles": "Consoles",
+      "genreTheme": "Genre / Theme",
+      "all": "All",
+      "genres": "Genres",
+      "themes": "Themes",
+      "prompt": "Search for a game or pick a filter to start.",
+      "noResults": "No games match your filters.",
+      "reset": "Clear all",
+      "clear": "Clear search"
+    },
+    "detail": {
+      "save": "Save",
+      "saved": "Saved",
+      "whitelist": "Add to whitelist",
+      "updateProgress": "Update progress",
+      "signInToSave": "Sign in to save",
+      "moreActions": "More actions",
+      "savedToast": "Saved to your library",
+      "whitelistToast": "Added to your whitelist",
+      "progress": {
+        "title": "Update progress",
+        "description": "Track where you are with this game.",
+        "durationLabel": "Time played (minutes)",
+        "durationPlaceholder": "e.g. 120",
+        "save": "Save",
+        "updatedToast": "Progress updated"
+      },
+      "releaseDate": "Release date",
+      "developer": "Developer",
+      "publisher": "Publisher",
+      "timeToBeat": "Time to beat"
+    },
+    "library": {
+      "savedTab": "Library",
+      "whitelistTab": "Whitelist",
+      "listsLabel": "List",
+      "allLists": "All lists",
+      "savedEmpty": "Your library is empty. Save a game to see it here.",
+      "whitelistEmpty": "Your whitelist is empty.",
+      "emptyCta": "Discover games"
+    },
+    "settings": {
+      "title": "Settings",
+      "email": {
+        "title": "Email verification",
+        "verified": "Your email is verified.",
+        "unverified": "Verify your email to secure your account.",
+        "verifyCta": "Verify email",
+        "modalTitle": "Verify your email",
+        "sentTo": "We sent a 6-digit code to",
+        "confirm": "Confirm",
+        "resend": "Resend code",
+        "successToast": "Email verified"
+      },
+      "consoles": {
+        "title": "Hidden consoles",
+        "description": "Hide games only available on consoles you don't use.",
+        "save": "Save changes",
+        "savedToast": "Console preferences saved"
+      },
+      "password": {
+        "title": "Password",
+        "description": "We'll email you a secure link to change it.",
+        "cta": "Change password",
+        "sentToast": "Check your email to change your password"
+      }
+    },
+    "onboarding": {
+      "title": "Welcome to JustGame",
+      "description": "Discover games, build your library, and track your progress across every platform.",
+      "cta": "Get started"
+    },
+    "errorModal": {
+      "title": "Something went wrong",
+      "dismiss": "Got it"
+    },
+    "auth": {
+      "loginTitle": "Welcome back",
+      "loginDescription": "Sign in to continue to JustGame.",
+      "registerTitle": "Create your account",
+      "registerDescription": "Join JustGame to build your library.",
+      "forgotTitle": "Reset your password",
+      "forgotDescription": "Enter your email and we'll send you a reset link.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "nicknameLabel": "Nickname",
+      "nicknamePlaceholder": "How should we call you?",
+      "submitLogin": "Sign in",
+      "submitRegister": "Create account",
+      "submitForgot": "Send reset link",
+      "forgotLink": "Forgot your password?",
+      "googleContinue": "Continue with Google",
+      "googleUnavailable": "Google sign-in isn't set up yet.",
+      "orSeparator": "or",
+      "noAccountPrompt": "Don't have an account?",
+      "haveAccountPrompt": "Already have an account?",
+      "forgotSentTitle": "Check your inbox",
+      "forgotSentDescription": "If that email is registered, you'll receive a reset link shortly.",
+      "backToLogin": "Back to sign in"
+    }
   }
 }

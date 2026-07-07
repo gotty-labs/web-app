@@ -3,8 +3,8 @@
  *
  * Derives entirely from the observable `sessionStore` via `useSyncExternalStore`,
  * so it's reactive with no effects: any store update (login, refresh, a failed
- * refresh calling `clear()`) re-renders every `useSession()` consumer. Redirect-
- * on-expiry is handled declaratively by `RequireAuth` reacting to `status`.
+ * refresh calling `clear()`) re-renders every `useSession()` consumer. On expiry,
+ * `AuthGate` reacts to `status` and shows the auth modal in place.
  *
  * The `useSession` hook lives in `../hooks/use-session` (per the hooks/ convention);
  * the raw `SessionContext` is exported here for it to consume.

@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import type { GameStatus } from '@/lib/domain/enums'
+import { cn } from '@/lib/utils'
 
 type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline'
 
@@ -20,6 +21,18 @@ const VARIANT: Record<GameStatus, BadgeVariant> = {
  * so this works in both server and client contexts. The variant (color) is derived
  * from the enum.
  */
-export function StatusBadge({ status, label }: { status: GameStatus; label: string }) {
-  return <Badge variant={VARIANT[status]}>{label}</Badge>
+export function StatusBadge({
+  status,
+  label,
+  className,
+}: {
+  status: GameStatus
+  label: string
+  className?: string
+}) {
+  return (
+    <Badge variant={VARIANT[status]} className={cn(className)}>
+      {label}
+    </Badge>
+  )
 }

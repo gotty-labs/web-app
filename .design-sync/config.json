@@ -1,0 +1,183 @@
+{
+  "projectId": "87dff220-9beb-41db-ada1-219ad71bfed9",
+  "shape": "package",
+  "pkg": "justgame-web",
+  "globalName": "JustGameDS",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/.cache/tailwind.css",
+  "srcDir": "components/ui",
+  "readmeHeader": ".design-sync/conventions.md",
+  "libOverrides": {
+    "previews.mjs": "reset esbuild service every 15 preview builds — service deadlocks after ~23 build() calls in one process on this repo"
+  },
+  "overrides": {
+    "Badge": {
+      "cardMode": "column"
+    },
+    "Button": {
+      "cardMode": "column"
+    },
+    "Dialog": {
+      "cardMode": "single"
+    },
+    "DialogClose": {
+      "cardMode": "single"
+    },
+    "DialogContent": {
+      "cardMode": "single"
+    },
+    "DialogDescription": {
+      "cardMode": "single"
+    },
+    "DialogFooter": {
+      "cardMode": "single"
+    },
+    "DialogHeader": {
+      "cardMode": "single"
+    },
+    "DialogOverlay": {
+      "cardMode": "single"
+    },
+    "DialogPortal": {
+      "cardMode": "single"
+    },
+    "DialogTitle": {
+      "cardMode": "single"
+    },
+    "DialogTrigger": {
+      "cardMode": "single"
+    },
+    "DropdownMenu": {
+      "cardMode": "single"
+    },
+    "DropdownMenuCheckboxItem": {
+      "cardMode": "single"
+    },
+    "DropdownMenuContent": {
+      "cardMode": "single"
+    },
+    "DropdownMenuGroup": {
+      "cardMode": "single"
+    },
+    "DropdownMenuItem": {
+      "cardMode": "single"
+    },
+    "DropdownMenuLabel": {
+      "cardMode": "single"
+    },
+    "DropdownMenuPortal": {
+      "cardMode": "single"
+    },
+    "DropdownMenuRadioGroup": {
+      "cardMode": "single"
+    },
+    "DropdownMenuRadioItem": {
+      "cardMode": "single"
+    },
+    "DropdownMenuSeparator": {
+      "cardMode": "single"
+    },
+    "DropdownMenuShortcut": {
+      "cardMode": "single"
+    },
+    "DropdownMenuSub": {
+      "cardMode": "single"
+    },
+    "DropdownMenuSubContent": {
+      "cardMode": "single"
+    },
+    "DropdownMenuSubTrigger": {
+      "cardMode": "single"
+    },
+    "DropdownMenuTrigger": {
+      "cardMode": "single"
+    },
+    "Popover": {
+      "cardMode": "single"
+    },
+    "PopoverAnchor": {
+      "cardMode": "single"
+    },
+    "PopoverContent": {
+      "cardMode": "single"
+    },
+    "PopoverDescription": {
+      "cardMode": "single"
+    },
+    "PopoverHeader": {
+      "cardMode": "single"
+    },
+    "PopoverTitle": {
+      "cardMode": "single"
+    },
+    "PopoverTrigger": {
+      "cardMode": "single"
+    },
+    "Select": {
+      "cardMode": "single"
+    },
+    "SelectContent": {
+      "cardMode": "single"
+    },
+    "SelectGroup": {
+      "cardMode": "single"
+    },
+    "SelectItem": {
+      "cardMode": "single"
+    },
+    "SelectLabel": {
+      "cardMode": "single"
+    },
+    "SelectScrollDownButton": {
+      "cardMode": "single"
+    },
+    "SelectScrollUpButton": {
+      "cardMode": "single"
+    },
+    "SelectSeparator": {
+      "cardMode": "single"
+    },
+    "SelectTrigger": {
+      "cardMode": "single"
+    },
+    "SelectValue": {
+      "cardMode": "single"
+    },
+    "Sheet": {
+      "cardMode": "single"
+    },
+    "SheetClose": {
+      "cardMode": "single"
+    },
+    "SheetContent": {
+      "cardMode": "single"
+    },
+    "SheetDescription": {
+      "cardMode": "single"
+    },
+    "SheetFooter": {
+      "cardMode": "single"
+    },
+    "SheetHeader": {
+      "cardMode": "single"
+    },
+    "SheetTitle": {
+      "cardMode": "single"
+    },
+    "SheetTrigger": {
+      "cardMode": "single"
+    },
+    "Tooltip": {
+      "cardMode": "single"
+    },
+    "TooltipContent": {
+      "cardMode": "single"
+    },
+    "TooltipProvider": {
+      "cardMode": "single"
+    },
+    "TooltipTrigger": {
+      "cardMode": "single"
+    }
+  }
+}

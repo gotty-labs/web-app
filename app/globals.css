@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-source-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-montserrat);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -83,20 +83,24 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Dark surfaces = violet-tinted charcoal (never pure black): every neutral
+   carries a subtle chroma toward the brand hue (~285), and elevation is a
+   lightness ramp — background (0.19) < card/sidebar (0.23) < popover (0.25)
+   < muted/secondary/accent (0.29). */
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.19 0.012 285);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.23 0.014 285);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.25 0.015 285);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.58 0.22 280);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.29 0.016 285);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.29 0.016 285);
+  --muted-foreground: oklch(0.72 0.015 285);
+  --accent: oklch(0.29 0.016 285);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -107,14 +111,27 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0.23 0.014 285);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.58 0.22 280);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.29 0.016 285);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.58 0.22 280);
+}
+
+/* Landing-only animation tokens (marketing zone). `animate-marquee` scrolls a
+   track built as TWO identical sets, each carrying its own trailing gap, so the
+   -50% loop point is seamless. */
+@theme {
+  --animate-marquee: marquee 45s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @layer base {

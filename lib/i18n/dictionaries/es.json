@@ -97,5 +97,239 @@
       "SAVED": "Guardado",
       "WHITELIST": "Whitelist"
     }
+  },
+  "app": {
+    "brand": {
+      "name": "JustGame",
+      "tagline": "Descubre, guarda y sigue tus videojuegos."
+    },
+    "actions": {
+      "enterApp": "Entrar a la app",
+      "signIn": "Iniciar sesión",
+      "signUp": "Crear cuenta",
+      "continue": "Continuar",
+      "cancel": "Cancelar",
+      "back": "Atrás",
+      "retry": "Reintentar"
+    },
+    "landing": {
+      "heroBadge": "Gratis · Todas las plataformas · Una biblioteca",
+      "heroTitleLead": "Todos los juegos que te encantan,",
+      "heroTitleAccent": "en una sola biblioteca.",
+      "heroSubtitle": "Descubre lo que está por venir, guarda lo que quieres jugar y sigue tu progreso en todas las plataformas.",
+      "primaryCta": "Empieza gratis",
+      "secondaryCta": "Cómo funciona",
+      "nav": {
+        "features": "Funciones",
+        "how": "Cómo funciona"
+      },
+      "mock": {
+        "trending": "Tendencias de la semana",
+        "library": "Tu biblioteca",
+        "search": "Buscar juegos…"
+      },
+      "features": {
+        "title": "Todo lo que tu backlog necesita",
+        "subtitle": "Del descubrimiento a los créditos, JustGame mantiene tu vida gamer organizada en un solo lugar.",
+        "discover": {
+          "title": "Un feed que sabe qué viene",
+          "description": "Filas seleccionadas con títulos en tendencia, próximos lanzamientos y juegos aclamados en todas las consolas — siempre al día, siempre a tu gusto."
+        },
+        "search": {
+          "title": "Encuentra cualquier juego en segundos",
+          "description": "Búsqueda potente con filtros por consola, género y temática. Si existe, lo encontrarás."
+        },
+        "library": {
+          "title": "Tu biblioteca, tus reglas",
+          "description": "Guarda los juegos que tienes, añade a tu whitelist los que sigues y tenlo todo ordenado en un solo sitio."
+        },
+        "progress": {
+          "title": "Sigue cada partida",
+          "description": "Registra tu estado y tiempo de juego por título: de «sin empezar» hasta ver los créditos."
+        }
+      },
+      "how": {
+        "title": "Empieza en tres pasos",
+        "subtitle": "Sin configuración ni hojas de cálculo. Tu biblioteca está lista en menos de un minuto.",
+        "steps": [
+          {
+            "title": "Crea tu cuenta gratis",
+            "description": "Regístrate en segundos. Sin tarjeta de crédito: solo juegos."
+          },
+          {
+            "title": "Guarda lo que quieres jugar",
+            "description": "Explora el feed o busca cualquier título y añádelo a tu biblioteca o whitelist con un toque."
+          },
+          {
+            "title": "Sigue tu progreso hasta los créditos",
+            "description": "Actualiza estado y tiempo de juego sobre la marcha, y ten siempre claro a qué jugar después."
+          }
+        ]
+      },
+      "cta": {
+        "title": "¿Listo para pulsar start?",
+        "subtitle": "Convierte tu backlog en un plan. Únete a JustGame hoy: gratis y en cualquier dispositivo.",
+        "button": "Entrar en JustGame"
+      },
+      "footer": {
+        "rights": "Todos los derechos reservados."
+      }
+    },
+    "nav": {
+      "games": "Juegos",
+      "options": "Opciones",
+      "feed": "Feed",
+      "library": "Biblioteca",
+      "search": "Buscar",
+      "consoleVisibility": "Visibilidad de consolas",
+      "feedback": "Feedback",
+      "toggleSidebar": "Mostrar u ocultar el menú"
+    },
+    "consoleVisibility": {
+      "title": "Visibilidad de consolas",
+      "description": "Por defecto se muestran todas. Desactiva las consolas de las que no quieras ver juegos.",
+      "showAll": "Mostrar todas",
+      "hideAll": "Ocultar todas",
+      "save": "Guardar cambios",
+      "savedToast": "Preferencias guardadas"
+    },
+    "feedback": {
+      "title": "Enviar feedback",
+      "description": "Tu mensaje llega directamente al equipo que desarrolla JustGame.",
+      "typeLabel": "Tipo de mensaje",
+      "typeIdea": "Idea",
+      "typeImprovement": "Mejora",
+      "typeProblem": "Problema",
+      "typeOther": "Otro",
+      "messageLabel": "Tu mensaje",
+      "messagePlaceholder": "Cuéntanos qué echas en falta, qué mejorarías o qué no funciona como esperas. Cuanto más concreto, mejor.",
+      "metadataLabel": "Se enviará con tu mensaje",
+      "appField": "App",
+      "systemField": "Sistema",
+      "localeField": "Idioma",
+      "privacyNote": "Esto nos ayuda a reproducir lo que cuentas. No se envía nada más.",
+      "replyLabel": "Quiero que me respondáis por correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submit": "Enviar",
+      "sentToast": "¡Gracias! Tu feedback se ha enviado."
+    },
+    "profile": {
+      "account": "Cuenta",
+      "settings": "Ajustes",
+      "notifications": "Notificaciones",
+      "consoleExclusions": "Consolas ocultas",
+      "logout": "Cerrar sesión",
+      "version": "Versión"
+    },
+    "feed": {
+      "loadMore": "Cargar más",
+      "empty": "Aquí no hay nada todavía.",
+      "error": "No pudimos cargar esto. Inténtalo de nuevo."
+    },
+    "search": {
+      "placeholder": "Buscar juegos…",
+      "submit": "Buscar",
+      "consoles": "Consolas",
+      "genreTheme": "Género / Tema",
+      "all": "Todos",
+      "genres": "Géneros",
+      "themes": "Temas",
+      "prompt": "Busca un juego o elige un filtro para empezar.",
+      "noResults": "Ningún juego coincide con tus filtros.",
+      "reset": "Limpiar todo",
+      "clear": "Limpiar búsqueda"
+    },
+    "detail": {
+      "save": "Guardar",
+      "saved": "Guardado",
+      "whitelist": "Añadir a whitelist",
+      "updateProgress": "Actualizar progreso",
+      "signInToSave": "Inicia sesión para guardar",
+      "moreActions": "Más acciones",
+      "savedToast": "Guardado en tu biblioteca",
+      "whitelistToast": "Añadido a tu whitelist",
+      "progress": {
+        "title": "Actualizar progreso",
+        "description": "Lleva el control de por dónde vas en este juego.",
+        "durationLabel": "Tiempo jugado (minutos)",
+        "durationPlaceholder": "p. ej. 120",
+        "save": "Guardar",
+        "updatedToast": "Progreso actualizado"
+      },
+      "releaseDate": "Lanzamiento",
+      "developer": "Desarrollador",
+      "publisher": "Editor",
+      "timeToBeat": "Duración estimada"
+    },
+    "library": {
+      "savedTab": "Biblioteca",
+      "whitelistTab": "Whitelist",
+      "listsLabel": "Lista",
+      "allLists": "Todas las listas",
+      "savedEmpty": "Tu biblioteca está vacía. Guarda un juego para verlo aquí.",
+      "whitelistEmpty": "Tu whitelist está vacía.",
+      "emptyCta": "Descubrir juegos"
+    },
+    "settings": {
+      "title": "Ajustes",
+      "email": {
+        "title": "Verificación de email",
+        "verified": "Tu email está verificado.",
+        "unverified": "Verifica tu email para proteger tu cuenta.",
+        "verifyCta": "Verificar email",
+        "modalTitle": "Verifica tu email",
+        "sentTo": "Hemos enviado un código de 6 dígitos a",
+        "confirm": "Confirmar",
+        "resend": "Reenviar código",
+        "successToast": "Email verificado"
+      },
+      "consoles": {
+        "title": "Consolas ocultas",
+        "description": "Oculta juegos solo disponibles en consolas que no usas.",
+        "save": "Guardar cambios",
+        "savedToast": "Preferencias guardadas"
+      },
+      "password": {
+        "title": "Contraseña",
+        "description": "Te enviaremos un enlace seguro para cambiarla.",
+        "cta": "Cambiar contraseña",
+        "sentToast": "Revisa tu email para cambiar la contraseña"
+      }
+    },
+    "onboarding": {
+      "title": "Bienvenido a JustGame",
+      "description": "Descubre juegos, construye tu biblioteca y sigue tu progreso en todas las plataformas.",
+      "cta": "Empezar"
+    },
+    "errorModal": {
+      "title": "Algo ha ido mal",
+      "dismiss": "Entendido"
+    },
+    "auth": {
+      "loginTitle": "Bienvenido de nuevo",
+      "loginDescription": "Inicia sesión para continuar en JustGame.",
+      "registerTitle": "Crea tu cuenta",
+      "registerDescription": "Únete a JustGame y construye tu biblioteca.",
+      "forgotTitle": "Recupera tu contraseña",
+      "forgotDescription": "Introduce tu email y te enviaremos un enlace de recuperación.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "nicknameLabel": "Nombre de usuario",
+      "nicknamePlaceholder": "¿Cómo te llamamos?",
+      "submitLogin": "Iniciar sesión",
+      "submitRegister": "Crear cuenta",
+      "submitForgot": "Enviar enlace",
+      "forgotLink": "¿Olvidaste tu contraseña?",
+      "googleContinue": "Continuar con Google",
+      "googleUnavailable": "El acceso con Google aún no está configurado.",
+      "orSeparator": "o",
+      "noAccountPrompt": "¿No tienes cuenta?",
+      "haveAccountPrompt": "¿Ya tienes cuenta?",
+      "forgotSentTitle": "Revisa tu bandeja de entrada",
+      "forgotSentDescription": "Si ese email está registrado, recibirás un enlace de recuperación en breve.",
+      "backToLogin": "Volver a iniciar sesión"
+    }
   }
 }

@@ -1,15 +1,24 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist_Mono, Montserrat, Source_Sans_3 } from 'next/font/google'
 
 import { env } from '@/lib/config/env'
 
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+// Body / UI — neutral, highly legible workhorse (Source Sans Pro is now "Source
+// Sans 3" on Google Fonts). Variable font → all weights, no `weight` needed.
+const sourceSans = Source_Sans_3({
+  variable: '--font-source-sans',
   subsets: ['latin'],
 })
 
+// Headings (`font-heading`) — geometric display with more presence.
+const montserrat = Montserrat({
+  variable: '--font-montserrat',
+  subsets: ['latin'],
+})
+
+// Mono token (code / tabular) — rarely surfaced, kept for completeness.
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
@@ -29,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${sourceSans.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
