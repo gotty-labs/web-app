@@ -113,10 +113,67 @@
       "retry": "Try again"
     },
     "landing": {
-      "heroTitle": "Every game you love, in one library.",
+      "heroBadge": "Free · Every platform · One library",
+      "heroTitleLead": "Every game you love,",
+      "heroTitleAccent": "in one library.",
       "heroSubtitle": "Discover what's coming, save what you want to play, and track your progress across every platform.",
-      "primaryCta": "Get started",
-      "secondaryCta": "Browse games"
+      "primaryCta": "Get started — it's free",
+      "secondaryCta": "See how it works",
+      "nav": {
+        "features": "Features",
+        "how": "How it works"
+      },
+      "mock": {
+        "trending": "Trending this week",
+        "library": "Your library",
+        "search": "Search games…"
+      },
+      "features": {
+        "title": "Everything your backlog needs",
+        "subtitle": "From discovery to the credits, JustGame keeps your gaming life organized in one place.",
+        "discover": {
+          "title": "A feed that knows what's next",
+          "description": "Curated rows of trending, upcoming and acclaimed titles across every console — always fresh, always yours."
+        },
+        "search": {
+          "title": "Find any game in seconds",
+          "description": "Powerful search with console, genre and theme filters. If it exists, you'll find it."
+        },
+        "library": {
+          "title": "Your library, your rules",
+          "description": "Save the games you own, whitelist the ones you're watching, and keep everything in one tidy place."
+        },
+        "progress": {
+          "title": "Track every playthrough",
+          "description": "Log your status and playtime per game — from “not started” all the way to the credits rolling."
+        }
+      },
+      "how": {
+        "title": "Start in three moves",
+        "subtitle": "No setup, no spreadsheets. Your library is ready in under a minute.",
+        "steps": [
+          {
+            "title": "Create your free account",
+            "description": "Sign up in seconds. No credit card — just games."
+          },
+          {
+            "title": "Save what you want to play",
+            "description": "Browse the feed or search anything, then add it to your library or whitelist in one tap."
+          },
+          {
+            "title": "Track until the credits roll",
+            "description": "Update progress and playtime as you go, and always know what to play next."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ready to press start?",
+        "subtitle": "Turn your backlog into a plan. Join JustGame today — free, on any device.",
+        "button": "Enter JustGame"
+      },
+      "footer": {
+        "rights": "All rights reserved."
+      }
     },
     "nav": {
       "games": "Games",

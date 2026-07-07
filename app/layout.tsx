@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${sourceSans.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${sourceSans.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -41,6 +41,12 @@ const errorByCodeSchema = z.object({
 const enumLabels = (values: readonly string[]) =>
   z.object(Object.fromEntries(values.map((value) => [value, z.string()])))
 
+/** A landing block with a heading + supporting copy (feature cards, how-it-works steps). */
+const landingFeatureSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+})
+
 export const dictionarySchema = z.object({
   errors: z.object({
     byCode: errorByCodeSchema,
@@ -76,10 +82,42 @@ export const dictionarySchema = z.object({
       retry: z.string(),
     }),
     landing: z.object({
-      heroTitle: z.string(),
+      heroBadge: z.string(),
+      heroTitleLead: z.string(),
+      heroTitleAccent: z.string(),
       heroSubtitle: z.string(),
       primaryCta: z.string(),
       secondaryCta: z.string(),
+      nav: z.object({
+        features: z.string(),
+        how: z.string(),
+      }),
+      mock: z.object({
+        trending: z.string(),
+        library: z.string(),
+        search: z.string(),
+      }),
+      features: z.object({
+        title: z.string(),
+        subtitle: z.string(),
+        discover: landingFeatureSchema,
+        search: landingFeatureSchema,
+        library: landingFeatureSchema,
+        progress: landingFeatureSchema,
+      }),
+      how: z.object({
+        title: z.string(),
+        subtitle: z.string(),
+        steps: z.array(landingFeatureSchema).length(3),
+      }),
+      cta: z.object({
+        title: z.string(),
+        subtitle: z.string(),
+        button: z.string(),
+      }),
+      footer: z.object({
+        rights: z.string(),
+      }),
     }),
     nav: z.object({
       games: z.string(),

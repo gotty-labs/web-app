@@ -3,49 +3,43 @@
  *
  * A Server Component that reads the dictionary at the DEFAULT locale only: it must
  * NOT call `getServerLocale()` (that reads `headers()` and would force dynamic
- * rendering, breaking SSG of this zone — see AGENTS.md i18n). The CTA links into the
- * `(app)` zone (`/home`), where `AuthGate` handles authentication via the modal.
+ * rendering, breaking SSG of this zone — see AGENTS.md i18n). All CTAs link into
+ * the `(app)` zone (`/home`), where `AuthGate` handles authentication via the modal.
+ *
+ * Sections live in `_components/` (non-routable): sticky header → hero with a
+ * CSS-only app mock → genre marquee → features bento → how-it-works → CTA → footer.
  */
-import Link from 'next/link'
+import type { Metadata } from 'next'
 
-import { Button } from '@/components/ui/button'
 import { getDictionary, defaultLocale } from '@/lib/i18n'
+
+import { GenreMarquee } from './_components/genre-marquee'
+import { LandingCta } from './_components/landing-cta'
+import { LandingFeatures } from './_components/landing-features'
+import { LandingFooter } from './_components/landing-footer'
+import { LandingHeader } from './_components/landing-header'
+import { LandingHero } from './_components/landing-hero'
+import { LandingHowItWorks } from './_components/landing-how-it-works'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = await getDictionary(defaultLocale)
+  return { description: dict.app.landing.heroSubtitle }
+}
 
 export default async function LandingPage() {
   const dict = await getDictionary(defaultLocale)
-  const { brand, landing, actions } = dict.app
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <header className="flex items-center justify-between px-6 py-4 sm:px-10">
-        <span className="font-heading text-lg font-semibold tracking-tight">{brand.name}</span>
-        <Button asChild size="sm">
-          <Link href="/home">{actions.enterApp}</Link>
-        </Button>
-      </header>
-
-      <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
-        <div className="flex max-w-2xl flex-col items-center gap-5">
-          <h1 className="font-heading text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            {landing.heroTitle}
-          </h1>
-          <p className="max-w-xl text-pretty text-lg text-muted-foreground">
-            {landing.heroSubtitle}
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg">
-            <Link href="/home">{landing.primaryCta}</Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href="/home">{landing.secondaryCta}</Link>
-          </Button>
-        </div>
+    <div className="relative flex min-h-svh flex-col">
+      <LandingHeader dict={dict} />
+      <main className="flex-1">
+        <LandingHero dict={dict} />
+        <GenreMarquee dict={dict} />
+        <LandingFeatures dict={dict} />
+        <LandingHowItWorks dict={dict} />
+        <LandingCta dict={dict} />
       </main>
-
-      <footer className="px-6 py-6 text-center text-sm text-muted-foreground">
-        {brand.tagline}
-      </footer>
+      <LandingFooter dict={dict} />
     </div>
   )
 }
