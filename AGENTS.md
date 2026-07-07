@@ -53,6 +53,16 @@ or shadcn docs first — this stack is ahead of training data.
 - Mirror the backend contract **exactly**; don't add fields the backend doesn't send yet
   (mark pending ones with a `NOTE`). Keep ISO dates as `z.string()` — don't over-validate.
 
+## Dates & time (Luxon)
+
+- **Always use Luxon** (`luxon`, pinned exact) for ANY date/time work — parsing, comparison,
+  arithmetic, formatting. **NEVER the native `Date`** (`new Date()`, `Date.now()`, `Date.parse`,
+  `toLocale*`). `DateTime.fromISO(...)` to parse; `setLocale(locale).toLocaleString(...)` to
+  format; `Duration` for spans.
+- The domain layer keeps dates as ISO **strings** (see Zod section); converting to `DateTime` is
+  a presentation-edge concern. Game formatters live in `features/game/utils/format.ts` — extend
+  that hub instead of formatting inline.
+
 ## HTTP & errors
 
 - Two contracts, never mix them:

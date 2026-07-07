@@ -6,6 +6,8 @@
  * WITHOUT a network round-trip. Trust comes from the fact that the token was
  * issued through our own auth flow; the backend verifies it for real on each call.
  */
+import { DateTime } from 'luxon'
+
 export interface JwtPayload {
   id?: string
   guest?: boolean
@@ -36,6 +38,6 @@ export function decodeJwt(token: string): JwtPayload | null {
 export function isAccessTokenExpired(token: string, skewSeconds = 30): boolean {
   const payload = decodeJwt(token)
   if (!payload?.exp) return true
-  const now = Math.floor(Date.now() / 1000)
+  const now = Math.floor(DateTime.now().toSeconds())
   return payload.exp - skewSeconds <= now
 }

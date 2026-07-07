@@ -10,13 +10,16 @@ import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 import { gameProgressStateLabel } from '../utils/labels'
+import { formatPlaytime } from '../utils/format'
 import { ProgressBadge } from './progress-badge'
 
 /**
- * Library card: cover + name + the user's progress-state badge. The card links to
- * the game detail; the overlaid pen button fires `onUpdateProgress` (opens the
- * progress modal in the flow). The pen is a SIBLING of the link, never nested in
- * it (no interactive-inside-anchor). `updateLabel` is the button's accessible name.
+ * Library card: cover + name + the user's progress-state badge, plus the logged
+ * play time under the name when there is one (the datum the user recorded via the
+ * progress modal — otherwise it was write-only). The card links to the game
+ * detail; the overlaid pen button fires `onUpdateProgress` (opens the progress
+ * modal in the flow). The pen is a SIBLING of the link, never nested in it (no
+ * interactive-inside-anchor). `updateLabel` is the button's accessible name.
  */
 export function LibraryGameCard({
   game,
@@ -54,7 +57,14 @@ export function LibraryGameCard({
           />
         </div>
       </div>
-      <p className="truncate text-sm font-medium">{game.name}</p>
+      <div className="flex flex-col">
+        <p className="truncate text-sm font-medium">{game.name}</p>
+        {game.progress.duration ? (
+          <p className="text-muted-foreground truncate text-xs">
+            {formatPlaytime(game.progress.duration)}
+          </p>
+        ) : null}
+      </div>
     </div>
   )
 

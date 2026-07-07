@@ -4,6 +4,7 @@
  * that redeploys regularly.
  */
 import { Gamepad2Icon } from 'lucide-react'
+import { DateTime } from 'luxon'
 import Link from 'next/link'
 
 import { Separator } from '@/components/ui/separator'
@@ -11,7 +12,7 @@ import type { Dictionary } from '@/lib/i18n'
 
 export function LandingFooter({ dict }: { dict: Dictionary }) {
   const { brand, landing, actions } = dict.app
-  const year = new Date().getFullYear()
+  const year = DateTime.now().year
 
   return (
     <footer className="border-t border-border/40 px-6 py-12">

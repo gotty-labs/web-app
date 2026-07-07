@@ -13,8 +13,11 @@ import { AppImage } from '@/components/app-image'
 
 import { getDictionary, type Locale } from '@/lib/i18n'
 
+import type { GameReleaseDate } from '@/lib/domain/models'
+
 import { findPublicGame } from '../services/seo'
 import { gameGenreLabel, gameStatusLabel, gameThemeLabel } from '../utils/labels'
+import { formatFullDate, formatTimeToBeat, parseIsoDate } from '../utils/format'
 
 import { ConsoleBadge } from './console-badge'
 import { GameDetailIsland } from './game-detail-island'
@@ -22,11 +25,37 @@ import { GenreThemeChip } from './genre-theme-chip'
 import { RatingBadge } from './rating-badge'
 import { StatusBadge } from './status-badge'
 
+/** Earliest release across consoles/regions — the date a visitor asks about. */
+function earliestRelease(releases: GameReleaseDate[]): string | undefined {
+  const dated = releases
+    .map((release) => ({ iso: release.date, time: parseIsoDate(release.date)?.toMillis() }))
+    .filter((entry): entry is { iso: string; time: number } => entry.time !== undefined)
+  if (dated.length === 0) return undefined
+  return dated.reduce((min, entry) => (entry.time < min.time ? entry : min)).iso
+}
+
 export async function GameDetail({ slug, locale }: { slug: string; locale: Locale }) {
   const [game, dict] = await Promise.all([findPublicGame(slug, locale), getDictionary(locale)])
   if (!game) notFound()
 
+  const t = dict.app.detail
   const cover = game.media?.cover
+
+  // Key facts the backend already sends but the page never surfaced.
+  const releaseIso = earliestRelease(game.releaseDates)
+  const timeToBeatSeconds = game.timeToBeat?.average ?? game.timeToBeat?.total
+  const facts = [
+    releaseIso ? { label: t.releaseDate, value: formatFullDate(releaseIso, locale) } : null,
+    game.companies.develop.length > 0
+      ? { label: t.developer, value: game.companies.develop.join(', ') }
+      : null,
+    game.companies.publish.length > 0
+      ? { label: t.publisher, value: game.companies.publish.join(', ') }
+      : null,
+    timeToBeatSeconds
+      ? { label: t.timeToBeat, value: formatTimeToBeat(timeToBeatSeconds) }
+      : null,
+  ].filter((fact): fact is { label: string; value: string } => fact !== null)
 
   return (
     <main className="mx-auto max-w-5xl p-4 md:p-8">
@@ -48,10 +77,24 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
           <div className="flex flex-col gap-2">
             <h1 className="font-heading text-3xl font-semibold tracking-tight">{game.name}</h1>
             <div className="flex flex-wrap items-center gap-2">
-              <StatusBadge status={game.status} label={gameStatusLabel(dict, game.status)} />
+              {/* UNKNOWN says nothing — omit it rather than badge the ignorance. */}
+              {game.status !== 'UNKNOWN' && (
+                <StatusBadge status={game.status} label={gameStatusLabel(dict, game.status)} />
+              )}
               <RatingBadge value={game.rating?.value} quantity={game.rating?.quantity} />
             </div>
           </div>
+
+          {facts.length > 0 && (
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-4">
+              {facts.map((fact) => (
+                <div key={fact.label} className="flex flex-col gap-0.5">
+                  <dt className="text-muted-foreground text-xs">{fact.label}</dt>
+                  <dd className="font-medium">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
           <GameDetailIsland gameId={game.id} locale={locale} dictionary={dict} />
 

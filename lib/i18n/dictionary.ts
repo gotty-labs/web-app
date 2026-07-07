@@ -192,6 +192,10 @@ export const dictionarySchema = z.object({
       moreActions: z.string(),
       savedToast: z.string(),
       whitelistToast: z.string(),
+      releaseDate: z.string(),
+      developer: z.string(),
+      publisher: z.string(),
+      timeToBeat: z.string(),
       progress: z.object({
         title: z.string(),
         description: z.string(),

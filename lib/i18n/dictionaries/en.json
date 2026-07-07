@@ -255,7 +255,11 @@
         "durationPlaceholder": "e.g. 120",
         "save": "Save",
         "updatedToast": "Progress updated"
-      }
+      },
+      "releaseDate": "Release date",
+      "developer": "Developer",
+      "publisher": "Publisher",
+      "timeToBeat": "Time to beat"
     },
     "library": {
       "savedTab": "Library",

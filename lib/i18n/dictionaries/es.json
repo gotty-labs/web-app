@@ -255,7 +255,11 @@
         "durationPlaceholder": "p. ej. 120",
         "save": "Guardar",
         "updatedToast": "Progreso actualizado"
-      }
+      },
+      "releaseDate": "Lanzamiento",
+      "developer": "Desarrollador",
+      "publisher": "Editor",
+      "timeToBeat": "Duración estimada"
     },
     "library": {
       "savedTab": "Biblioteca",

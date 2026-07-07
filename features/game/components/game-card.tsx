@@ -1,21 +1,36 @@
 'use client'
 
+import { CalendarIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { AppImage } from '@/components/app-image'
+import { Badge } from '@/components/ui/badge'
+import type { GameStatus } from '@/lib/domain/enums'
 import type { GameSummary } from '@/lib/domain/models'
-import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
+import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 import { gameGenreLabel, gameStatusLabel } from '../utils/labels'
+import { formatReleaseChip, isFutureDate } from '../utils/format'
 import { RatingBadge } from './rating-badge'
 import { StatusBadge } from './status-badge'
 
 /** Dark, blurred chip so overlays stay readable over any (often light) cover. */
 const OVERLAY_CHIP = 'border-transparent bg-black/70 text-white backdrop-blur-sm'
 
+/** Statuses worth a warning chip — the game may never be playable. */
+const WARNING_STATUSES: GameStatus[] = ['CANCELLED', 'DELISTED']
+/** Pre-release states that genuinely inform (unlike RELEASED/UNKNOWN = noise). */
+const INFORMATIVE_STATUSES: GameStatus[] = ['ALPHA', 'BETA', 'EARLY_ACCESS', 'RUMORED']
+
 /**
- * Netflix-style game card (cover + name, status badge overlay for non-released).
+ * Netflix-style game card (cover + name + one overlay chip, at most). The chip
+ * slot is prioritized by usefulness to the user:
+ *   1. CANCELLED/DELISTED → destructive status (a real warning),
+ *   2. a FUTURE release date → localized date chip (the answer to "when?", which
+ *      is what matters in upcoming rows — never a "Unknown" status),
+ *   3. ALPHA/BETA/EARLY_ACCESS/RUMORED → informative status,
+ *   4. RELEASED/UNKNOWN → nothing (both are noise on a card).
  * Used in the authed app (feed/search/library) → client component, reads labels
  * from the dictionary. Links to `href` (defaults to `/games/<slug>` when present).
  */
@@ -29,11 +44,22 @@ export function GameCard({
   className?: string
 }) {
   const dict = useDictionary()
+  const locale = useLocale()
   const target = href ?? (game.slug ? `/games/${game.slug}` : undefined)
 
-  const showStatus = game.status !== 'RELEASED'
+  const showWarning = WARNING_STATUSES.includes(game.status)
+  const dateChip =
+    !showWarning && game.releaseDate && isFutureDate(game.releaseDate)
+      ? formatReleaseChip(game.releaseDate, locale)
+      : null
+  const showStatus =
+    !showWarning && dateChip === null && INFORMATIVE_STATUSES.includes(game.status)
+
   const showRating = game.rating?.value != null
-  const year = game.releaseDate?.slice(0, 4)
+  const hasOverlay = showWarning || dateChip !== null || showStatus || showRating
+
+  // The date chip already answers "when" — repeating the year below is noise.
+  const year = dateChip !== null ? undefined : game.releaseDate?.slice(0, 4)
   const genre = game.genres[0] ? gameGenreLabel(dict, game.genres[0]) : undefined
   const subtitle = [year, genre].filter(Boolean).join(' · ')
 
@@ -50,10 +76,10 @@ export function GameCard({
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : null}
-        {(showStatus || showRating) && (
+        {hasOverlay && (
           <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent" />
         )}
-        {showStatus ? (
+        {(showWarning || showStatus) && (
           <div className="absolute top-2 left-2">
             <StatusBadge
               status={game.status}
@@ -61,7 +87,15 @@ export function GameCard({
               className={OVERLAY_CHIP}
             />
           </div>
-        ) : null}
+        )}
+        {dateChip !== null && (
+          <div className="absolute top-2 left-2">
+            <Badge className={OVERLAY_CHIP}>
+              <CalendarIcon />
+              {dateChip}
+            </Badge>
+          </div>
+        )}
         {showRating ? (
           <div className="absolute top-2 right-2">
             <RatingBadge value={game.rating?.value} className={OVERLAY_CHIP} />
