@@ -182,7 +182,8 @@
       "library": "Library",
       "search": "Search",
       "consoleVisibility": "Console visibility",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "toggleSidebar": "Toggle sidebar"
     },
     "consoleVisibility": {
       "title": "Console visibility",
@@ -262,7 +263,8 @@
       "listsLabel": "List",
       "allLists": "All lists",
       "savedEmpty": "Your library is empty. Save a game to see it here.",
-      "whitelistEmpty": "Your whitelist is empty."
+      "whitelistEmpty": "Your whitelist is empty.",
+      "emptyCta": "Discover games"
     },
     "settings": {
       "title": "Settings",

@@ -16,9 +16,11 @@ import { MenuIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 export function AppTopBar({ children }: { children?: ReactNode }) {
   const { toggleSidebar } = useSidebar()
+  const dict = useDictionary()
 
   return (
     <header className="bg-background/95 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-3 backdrop-blur-sm md:px-4">
@@ -28,7 +30,7 @@ export function AppTopBar({ children }: { children?: ReactNode }) {
             variant="ghost"
             size="icon"
             onClick={toggleSidebar}
-            aria-label="Toggle sidebar"
+            aria-label={dict.app.nav.toggleSidebar}
             className="shrink-0"
           >
             <MenuIcon />

@@ -1,8 +1,8 @@
 /**
- * Client-side auth gate for the `(app)` zone (Phase 5). Unlike `RequireAuth` (which
- * REDIRECTS unauthenticated users to the landing), this renders the undismissable
- * `AuthModal` IN PLACE — matching the UX spec where the web app is always
- * authenticated and login happens through a modal, never a separate page.
+ * Client-side auth gate for the `(app)` zone (Phase 5). Instead of redirecting
+ * unauthenticated users away, it renders the undismissable `AuthModal` IN PLACE —
+ * matching the UX spec where the web app is always authenticated and login happens
+ * through a modal, never a separate page.
  *
  * Three states from `useSession()`:
  *  - `loading`        → the session store is still hydrating from localStorage; show

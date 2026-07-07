@@ -19,6 +19,7 @@
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -30,8 +31,8 @@ import {
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
-import { useReportError } from '@/hooks/use-report-error'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
+import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { forgotPassword, loginEmail, registerEmail } from '../services/auth-client'
 
@@ -51,21 +52,24 @@ function GoogleIcon() {
 export function AuthModal() {
   const dict = useDictionary()
   const t = dict.app.auth
-  const report = useReportError()
+  const toMessage = useErrorMessage()
 
   const [view, setView] = useState<AuthView>('login')
   const [pending, setPending] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [nickname, setNickname] = useState('')
 
   function go(next: AuthView) {
     setView(next)
+    setFormError(null)
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setPending(true)
+    setFormError(null)
     try {
       if (view === 'login') {
         await loginEmail(email, password)
@@ -77,7 +81,9 @@ export function AuthModal() {
       }
       // On login/register success the session store updates and AuthGate unmounts us.
     } catch (err) {
-      report(err)
+      // Inline, not the global error modal: a dialog stacked over the auth dialog
+      // would bury the form. The message still comes from the single error mapper.
+      setFormError(toMessage(err))
     } finally {
       setPending(false)
     }
@@ -118,6 +124,12 @@ export function AuthModal() {
         ) : (
           <form onSubmit={handleSubmit}>
             <FieldGroup>
+              {formError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{formError}</AlertDescription>
+                </Alert>
+              )}
+
               {view === 'register' && (
                 <Field>
                   <FieldLabel htmlFor="auth-nickname">{t.nicknameLabel}</FieldLabel>

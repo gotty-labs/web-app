@@ -107,6 +107,7 @@ export function GameFeed() {
       ))}
       {seeAll && (
         <SeeAllDialog
+          key={seeAll.section}
           section={seeAll.section}
           title={seeAll.title}
           initialCursor={seeAll.cursor}

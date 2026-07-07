@@ -182,7 +182,8 @@
       "library": "Biblioteca",
       "search": "Buscar",
       "consoleVisibility": "Visibilidad de consolas",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "toggleSidebar": "Mostrar u ocultar el menú"
     },
     "consoleVisibility": {
       "title": "Visibilidad de consolas",
@@ -262,7 +263,8 @@
       "listsLabel": "Lista",
       "allLists": "Todas las listas",
       "savedEmpty": "Tu biblioteca está vacía. Guarda un juego para verlo aquí.",
-      "whitelistEmpty": "Tu whitelist está vacía."
+      "whitelistEmpty": "Tu whitelist está vacía.",
+      "emptyCta": "Descubrir juegos"
     },
     "settings": {
       "title": "Ajustes",

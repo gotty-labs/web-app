@@ -21,6 +21,7 @@ import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useFilterOptions } from '../hooks/use-filter-options'
 import { useSearch } from '../hooks/use-search'
 
+import { GameCard } from './game-card'
 import { GameResultsGrid } from './game-results-grid'
 import { SearchFilters } from './search-filters'
 
@@ -109,6 +110,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
             error={error}
             hasMore={hasMore}
             onLoadMore={loadMore}
+            renderItem={(game) => <GameCard game={game} />}
             emptyLabel={dict.app.search.noResults}
           />
         </div>

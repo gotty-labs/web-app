@@ -1,7 +1,7 @@
 /**
  * Public surface of the auth feature.
  *
- * UI imports the React pieces (`SessionProvider`, `useSession`, `RequireAuth`) and
+ * UI imports the React pieces (`SessionProvider`, `useSession`, `AuthGate`) and
  * the use-cases (`loginEmail`, `logout`, …). Feature data clients (Phase 4) import
  * `authedRequest` to call the backend directly with refresh handling.
  *
@@ -11,7 +11,6 @@
  */
 export { SessionProvider } from './contexts/session-provider'
 export { useSession } from './hooks/use-session'
-export { RequireAuth } from './components/require-auth'
 export { AuthGate } from './components/auth-gate'
 export { AuthModal } from './components/auth-modal'
 export { authedRequest, SessionExpiredError, setOnSessionExpired } from './services/authed-request'

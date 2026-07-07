@@ -42,10 +42,4 @@ export class CursorPager<T> {
     this.cursor = page.nextCursor
     return this.accumulated
   }
-
-  reset(): void {
-    this.accumulated = []
-    this.cursor = undefined
-    this.started = false
-  }
 }

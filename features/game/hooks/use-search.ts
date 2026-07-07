@@ -3,18 +3,19 @@
  *
  * Criteria: free-text `query` (sent only when ≥3 chars, per the backend), N
  * `consoleIds`, and a single `content` key (one genre OR theme — the backend takes
- * one for now). `search(criteria)` builds the request, spins up a fresh `CursorPager`
- * for it, and loads page 1; `loadMore` appends. A `loadingRef` keeps `loadMore`
- * stable and guards re-entrancy (same rationale as `useSectionPager`).
+ * one for now). `search(criteria)` builds the request and swaps in a fresh pager via
+ * the shared `useCursorPagerList` (which also invalidates any in-flight page from
+ * the previous criteria, so stale results never overwrite the new search).
  *
  * `touched` distinguishes "haven't searched yet" (show a prompt) from "searched, no
  * results" (show empty) at the page level.
  */
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { CursorPager } from '@/lib/api/cursor-pager'
+import { useCursorPagerList } from '@/lib/api/hooks/use-cursor-pager-list'
 import type { GameSearchInput } from '@/lib/domain/inputs'
 import type { GameSummary } from '@/lib/domain/models'
 
@@ -55,60 +56,26 @@ export interface SearchState {
 }
 
 export function useSearch(): SearchState {
-  const [items, setItems] = useState<GameSummary[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<unknown>(null)
-  const [hasMore, setHasMore] = useState(false)
   const [touched, setTouched] = useState(false)
-
-  const pagerRef = useRef<CursorPager<GameSummary> | null>(null)
-  const loadingRef = useRef(false)
-
-  const loadMore = useCallback(async () => {
-    const pager = pagerRef.current
-    if (!pager || loadingRef.current) return
-    loadingRef.current = true
-    setLoading(true)
-    setError(null)
-    try {
-      const next = await pager.loadMore()
-      setItems([...next])
-      setHasMore(pager.hasMore)
-    } catch (e) {
-      setError(e)
-    } finally {
-      loadingRef.current = false
-      setLoading(false)
-    }
-  }, [])
+  const { items, loading, error, hasMore, loadMore, reset: resetList } = useCursorPagerList<GameSummary>()
 
   const search = useCallback(
     (criteria: SearchCriteria) => {
       setTouched(true)
-      setError(null)
       if (!hasUsableCriteria(criteria)) {
-        pagerRef.current = null
-        setItems([])
-        setHasMore(false)
+        resetList(null)
         return
       }
-      pagerRef.current = new CursorPager<GameSummary>((cursor) =>
-        searchGames(buildInput(criteria, cursor)),
-      )
-      setItems([])
-      setHasMore(true)
+      resetList(new CursorPager((cursor) => searchGames(buildInput(criteria, cursor))))
       void loadMore()
     },
-    [loadMore],
+    [resetList, loadMore],
   )
 
   const reset = useCallback(() => {
-    pagerRef.current = null
-    setItems([])
-    setHasMore(false)
-    setError(null)
+    resetList(null)
     setTouched(false)
-  }, [])
+  }, [resetList])
 
   return {
     items,

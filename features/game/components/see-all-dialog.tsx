@@ -17,6 +17,7 @@ import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { useSectionPager } from '../hooks/use-section-pager'
 
+import { GameCard } from './game-card'
 import { GameResultsGrid } from './game-results-grid'
 
 export function SeeAllDialog({
@@ -59,6 +60,7 @@ export function SeeAllDialog({
             error={error}
             hasMore={hasMore}
             onLoadMore={() => void loadMore()}
+            renderItem={(game) => <GameCard game={game} />}
             emptyLabel={dict.app.feed.empty}
             // Fewer columns than the full-width search page → bigger cards in the modal
             // (mobile stays at 3, which the user confirmed is right).

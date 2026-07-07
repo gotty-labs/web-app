@@ -1,14 +1,18 @@
 /**
- * Shared paginated grid of game cards (Phase 5) — the single results surface reused
- * by the see-all dialog (Slice C) and search (Slice D), so both look identical.
+ * Shared paginated grid (Phase 5) — the single results surface reused by the
+ * see-all dialog (Slice C), search (Slice D) and the library (Slice F), so every
+ * paginated grid looks and behaves identically (same load/error/empty states,
+ * same infinite scroll).
  *
- * Owns the load/error/empty presentation; the caller owns the data (items + pager
- * state) and passes `onLoadMore` (which also doubles as "retry" on error). Labels
- * come from the dictionary; the error detail goes through `useErrorMessage`.
+ * Generic over the item type: the caller supplies `renderItem` (game card,
+ * library card, …) and owns the data (items + pager state); `onLoadMore` also
+ * doubles as "retry" on error. Labels come from the dictionary; the error detail
+ * goes through `useErrorMessage`. `emptyAction` lets a screen offer a next step
+ * (e.g. the empty library links to the feed).
  */
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -19,30 +23,33 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
-import type { GameSummary } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 import { cn } from '@/lib/utils'
 
-import { GameCard } from './game-card'
 import { GameCardSkeleton } from './game-card-skeleton'
 
-export function GameResultsGrid({
+export function GameResultsGrid<T extends { id: string }>({
   items,
   loading,
   error,
   hasMore,
   onLoadMore,
+  renderItem,
   emptyLabel,
+  emptyAction,
   skeletonCount = 10,
   gridClassName = 'grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-5 lg:grid-cols-6',
 }: {
-  items: GameSummary[]
+  items: T[]
   loading: boolean
   error: unknown
   hasMore: boolean
   onLoadMore: () => void
+  renderItem: (item: T) => ReactNode
   emptyLabel: string
+  /** Optional call-to-action rendered under the empty state (e.g. "go discover"). */
+  emptyAction?: ReactNode
   skeletonCount?: number
   /** Override the grid columns/gap — e.g. the see-all modal uses bigger cards. */
   gridClassName?: string
@@ -99,6 +106,7 @@ export function GameResultsGrid({
         <EmptyHeader>
           <EmptyTitle>{emptyLabel}</EmptyTitle>
         </EmptyHeader>
+        {emptyAction && <EmptyContent>{emptyAction}</EmptyContent>}
       </Empty>
     )
   }
@@ -106,8 +114,10 @@ export function GameResultsGrid({
   return (
     <div className="flex flex-col gap-4">
       <div className={cn('grid', gridClassName)}>
-        {items.map((game) => (
-          <GameCard key={game.id} game={game} />
+        {items.map((item) => (
+          <div key={item.id} className="min-w-0">
+            {renderItem(item)}
+          </div>
         ))}
         {loading &&
           items.length === 0 &&

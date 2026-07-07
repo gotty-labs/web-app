@@ -13,7 +13,7 @@ import { AppImage } from '@/components/app-image'
 
 import { getDictionary, type Locale } from '@/lib/i18n'
 
-import { getPublicGame } from '../services/seo'
+import { findPublicGame } from '../services/seo'
 import { gameGenreLabel, gameStatusLabel, gameThemeLabel } from '../utils/labels'
 
 import { ConsoleBadge } from './console-badge'
@@ -23,10 +23,7 @@ import { RatingBadge } from './rating-badge'
 import { StatusBadge } from './status-badge'
 
 export async function GameDetail({ slug, locale }: { slug: string; locale: Locale }) {
-  const [game, dict] = await Promise.all([
-    getPublicGame(slug, locale).catch(() => null),
-    getDictionary(locale),
-  ])
+  const [game, dict] = await Promise.all([findPublicGame(slug, locale), getDictionary(locale)])
   if (!game) notFound()
 
   const cover = game.media?.cover

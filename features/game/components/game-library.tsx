@@ -1,22 +1,18 @@
 /**
  * Library screen (Phase 5, Slice F). Two views over the same data — Library (SAVED)
  * and Whitelist (WHITELIST) — switched with a ToggleGroup, plus an optional custom-
- * list filter. Renders `LibraryGameCard`s (cover + progress badge + pen) and opens
- * the shared `ProgressUpdateModal` from the pen; a successful update reloads the
- * current view so the progress badge refreshes.
+ * list filter. Results render through the shared `GameResultsGrid` (same states +
+ * infinite scroll as search/see-all) with `LibraryGameCard`s (cover + progress badge
+ * + pen). The pen opens the shared `ProgressUpdateModal`; a successful update reloads
+ * the current view so the progress badge refreshes. The empty state links back to the
+ * feed so a fresh library isn't a dead end.
  */
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from '@/components/ui/empty'
 import {
   Select,
   SelectContent,
@@ -24,17 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Spinner } from '@/components/ui/spinner'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { AppTopBar } from '@/components/app-top-bar'
 import type { UserGameLibraryStatus } from '@/lib/domain/enums'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
-import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { useLibrary } from '../hooks/use-library'
 import { useLibraryLists } from '../hooks/use-library-lists'
 
-import { GameCardSkeleton } from './game-card-skeleton'
+import { GameResultsGrid } from './game-results-grid'
 import { LibraryGameCard } from './library-game-card'
 import { ProgressUpdateModal } from './progress-update-modal'
 
@@ -43,7 +37,6 @@ const ALL_LISTS = '__all__'
 export function GameLibrary() {
   const dict = useDictionary()
   const t = dict.app.library
-  const toMessage = useErrorMessage()
 
   const lists = useLibraryLists()
   const { items, loading, error, hasMore, criteria, apply, loadMore, reload } = useLibrary('SAVED')
@@ -92,49 +85,26 @@ export function GameLibrary() {
           )}
         </div>
 
-        {error && items.length === 0 ? (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{dict.app.feed.error}</EmptyTitle>
-              <EmptyDescription>{toMessage(error)}</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button variant="outline" onClick={loadMore}>
-                {dict.app.actions.retry}
-              </Button>
-            </EmptyContent>
-          </Empty>
-        ) : !loading && items.length === 0 ? (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{emptyLabel}</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
-        ) : (
-          <>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-5 lg:grid-cols-6">
-              {items.map((game) => (
-                <LibraryGameCard
-                  key={game.id}
-                  game={game}
-                  onUpdateProgress={() => setProgressGameId(game.id)}
-                  updateLabel={dict.app.detail.updateProgress}
-                />
-              ))}
-              {loading &&
-                items.length === 0 &&
-                Array.from({ length: 10 }).map((_, i) => <GameCardSkeleton key={i} />)}
-            </div>
-            {hasMore && items.length > 0 && (
-              <div className="flex justify-center">
-                <Button variant="outline" onClick={loadMore} disabled={loading}>
-                  {loading && <Spinner data-icon="inline-start" />}
-                  {dict.app.feed.loadMore}
-                </Button>
-              </div>
-            )}
-          </>
-        )}
+        <GameResultsGrid
+          items={items}
+          loading={loading}
+          error={error}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          renderItem={(game) => (
+            <LibraryGameCard
+              game={game}
+              onUpdateProgress={() => setProgressGameId(game.id)}
+              updateLabel={dict.app.detail.updateProgress}
+            />
+          )}
+          emptyLabel={emptyLabel}
+          emptyAction={
+            <Button asChild variant="outline">
+              <Link href="/home">{t.emptyCta}</Link>
+            </Button>
+          }
+        />
 
         {progressGameId && (
           <ProgressUpdateModal

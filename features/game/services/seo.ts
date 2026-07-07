@@ -10,6 +10,8 @@ import { z } from 'zod'
 import type { Metadata } from 'next'
 
 import { apiRequest } from '@/lib/api/client'
+import { ApiException } from '@/lib/api/envelope'
+import { InternalCode } from '@/lib/api/error-codes'
 import { retryOn429 } from '@/lib/api/retry'
 import { env } from '@/lib/config/env'
 import { defaultLocale, locales, type Locale } from '@/lib/i18n'
@@ -51,6 +53,24 @@ export function getPublicGame(slug: string, locale: Locale = defaultLocale): Pro
   )
 }
 
+/**
+ * Like `getPublicGame` but resolves `null` ONLY for a real "game not found"
+ * (`GAME_NOT_FOUND` / HTTP 404). Anything else (5xx, network, rate-limit after
+ * retries) RETHROWS so the page render errors instead of soft-404ing — a
+ * transient backend outage must never turn indexed game pages into 404s.
+ */
+export async function findPublicGame(slug: string, locale?: Locale): Promise<GameDto | null> {
+  try {
+    return await getPublicGame(slug, locale)
+  } catch (error) {
+    const notFound =
+      error instanceof ApiException &&
+      (error.internalCode === InternalCode.GAME_NOT_FOUND || error.status === 404)
+    if (notFound) return null
+    throw error
+  }
+}
+
 // --- per-locale URLs for the SEO zone (default unprefixed, others under /<locale>) ---
 
 /** SEO path for a game in a given locale, e.g. `/games/x` (en) or `/es/games/x`. */
@@ -71,7 +91,7 @@ export function gameLanguageAlternates(slug: string): Record<string, string> {
 
 /** Per-locale Metadata for a game detail page (title/desc/canonical/hreflang/OG). */
 export async function buildGameMetadata(slug: string, locale: Locale): Promise<Metadata> {
-  const game = await getPublicGame(slug, locale).catch(() => null)
+  const game = await findPublicGame(slug, locale)
   if (!game) return {}
 
   const canonical = `${env.siteUrl}${gamePath(slug, locale)}`

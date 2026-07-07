@@ -127,6 +127,7 @@ export const dictionarySchema = z.object({
       search: z.string(),
       consoleVisibility: z.string(),
       feedback: z.string(),
+      toggleSidebar: z.string(),
     }),
     consoleVisibility: z.object({
       title: z.string(),
@@ -207,6 +208,7 @@ export const dictionarySchema = z.object({
       allLists: z.string(),
       savedEmpty: z.string(),
       whitelistEmpty: z.string(),
+      emptyCta: z.string(),
     }),
     settings: z.object({
       title: z.string(),

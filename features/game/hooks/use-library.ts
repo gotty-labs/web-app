@@ -1,21 +1,22 @@
 /**
  * Library view controller (Phase 5, Slice F). Pages the user's library through
  * `getLibrary`, filtered by `status` (SAVED = library, WHITELIST = whitelist) and an
- * optional custom `listId`.
+ * optional custom `listId`, on top of the shared `useCursorPagerList`.
  *
- * The pager is lazily created at render time for the initial criteria, and the first
- * page loads from a mount effect calling the (stable) `loadMore` — so no `setState`
- * runs synchronously in an effect body. `apply` (an event handler) swaps criteria,
- * rebuilds the pager, and reloads; `reload` re-runs the current criteria (used after
- * a progress update so the badges refresh).
+ * The initial pager is built lazily on first render and page 1 loads from a mount
+ * effect calling the (stable) `loadMore`. `apply` (an event handler) swaps criteria
+ * + pager and reloads; `reload` re-runs the current criteria (used after a progress
+ * update so the badges refresh). Criteria swaps invalidate in-flight pages from the
+ * previous criteria (handled inside the shared hook).
  *
  * NOTE: the backend list input has no sort param, so ordering is backend-defined.
  */
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CursorPager } from '@/lib/api/cursor-pager'
+import { useCursorPagerList } from '@/lib/api/hooks/use-cursor-pager-list'
 import type { UserGameLibraryStatus } from '@/lib/domain/enums'
 import type { GameLibrary } from '@/lib/domain/models'
 
@@ -45,32 +46,9 @@ export interface LibraryState {
 
 export function useLibrary(initialStatus: UserGameLibraryStatus = 'SAVED'): LibraryState {
   const [criteria, setCriteria] = useState<LibraryCriteria>({ status: initialStatus })
-  const [items, setItems] = useState<GameLibrary[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<unknown>(null)
-  const [hasMore, setHasMore] = useState(true)
-
-  const pagerRef = useRef<CursorPager<GameLibrary> | null>(null)
-  if (pagerRef.current === null) pagerRef.current = buildPager(criteria)
-  const loadingRef = useRef(false)
-
-  const loadMore = useCallback(async () => {
-    const pager = pagerRef.current
-    if (!pager || loadingRef.current) return
-    loadingRef.current = true
-    setLoading(true)
-    setError(null)
-    try {
-      const next = await pager.loadMore()
-      setItems([...next])
-      setHasMore(pager.hasMore)
-    } catch (e) {
-      setError(e)
-    } finally {
-      loadingRef.current = false
-      setLoading(false)
-    }
-  }, [])
+  const { items, loading, error, hasMore, loadMore, reset } = useCursorPagerList<GameLibrary>(
+    () => buildPager({ status: initialStatus }),
+  )
 
   useEffect(() => {
     void loadMore()
@@ -79,21 +57,16 @@ export function useLibrary(initialStatus: UserGameLibraryStatus = 'SAVED'): Libr
   const apply = useCallback(
     (next: LibraryCriteria) => {
       setCriteria(next)
-      setError(null)
-      pagerRef.current = buildPager(next)
-      setItems([])
-      setHasMore(true)
+      reset(buildPager(next))
       void loadMore()
     },
-    [loadMore],
+    [reset, loadMore],
   )
 
   const reload = useCallback(() => {
-    pagerRef.current = buildPager(criteria)
-    setItems([])
-    setHasMore(true)
+    reset(buildPager(criteria))
     void loadMore()
-  }, [criteria, loadMore])
+  }, [criteria, reset, loadMore])
 
   return { items, loading, error, hasMore, criteria, apply, loadMore: () => void loadMore(), reload }
 }
