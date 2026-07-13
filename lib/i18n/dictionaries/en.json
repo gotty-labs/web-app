@@ -110,7 +110,8 @@
       "continue": "Continue",
       "cancel": "Cancel",
       "back": "Back",
-      "retry": "Try again"
+      "retry": "Try again",
+      "close": "Close"
     },
     "landing": {
       "heroBadge": "Free · Every platform · One library",
@@ -325,6 +326,12 @@
       "googleContinue": "Continue with Google",
       "googleUnavailable": "Google sign-in isn't set up yet.",
       "orSeparator": "or",
+      "socialSeparator": "Or continue with",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "errEmail": "Enter a valid email address.",
+      "errPassword": "Password must be 8–16 characters.",
+      "errNickname": "Choose a nickname.",
       "noAccountPrompt": "Don't have an account?",
       "haveAccountPrompt": "Already have an account?",
       "forgotSentTitle": "Check your inbox",

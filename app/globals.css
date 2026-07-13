@@ -145,3 +145,32 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Chrome/Safari autofill leaves its own opaque (near-white) background and text color
+ * on the input even after blur — in our dark theme that renders the field "blank".
+ * There's no real background property to override (it's a UA overlay); the canonical
+ * fix is a huge inset box-shadow painted with our own token, plus a text-fill-color and
+ * a ~infinite transition so the overlay never re-appears.
+ *
+ * This rule MUST stay UNLAYERED (outside every `@layer`): with CSS cascade layers, layer
+ * order beats specificity, so Tailwind's `shadow-none` (utilities layer) would otherwise
+ * win over a more-specific autofill selector living in `@layer base`. Unlayered CSS
+ * outranks all layered utilities regardless of specificity, so the fix sticks. The
+ * `!important` is belt-and-suspenders against the UA overlay itself.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  /*
+   * Match the filled input look (`bg-muted/40` over the modal's `--background`) so an
+   * autofilled field is visually identical to an empty one — not a solid black block.
+   */
+  --autofill-bg: color-mix(in oklab, var(--muted) 40%, var(--background));
+  -webkit-text-fill-color: var(--foreground) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
+  caret-color: var(--foreground);
+  transition: background-color 9999s ease-in-out 0s;
+}

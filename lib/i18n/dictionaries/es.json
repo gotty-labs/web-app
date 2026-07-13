@@ -110,7 +110,8 @@
       "continue": "Continuar",
       "cancel": "Cancelar",
       "back": "Atrás",
-      "retry": "Reintentar"
+      "retry": "Reintentar",
+      "close": "Cerrar"
     },
     "landing": {
       "heroBadge": "Gratis · Todas las plataformas · Una biblioteca",
@@ -325,6 +326,12 @@
       "googleContinue": "Continuar con Google",
       "googleUnavailable": "El acceso con Google aún no está configurado.",
       "orSeparator": "o",
+      "socialSeparator": "O continúa con",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "errEmail": "Introduce un email válido.",
+      "errPassword": "La contraseña debe tener entre 8 y 16 caracteres.",
+      "errNickname": "Elige un nombre de usuario.",
       "noAccountPrompt": "¿No tienes cuenta?",
       "haveAccountPrompt": "¿Ya tienes cuenta?",
       "forgotSentTitle": "Revisa tu bandeja de entrada",
