@@ -282,6 +282,7 @@
         "sentTo": "Hemos enviado un código de 6 dígitos a",
         "confirm": "Confirmar",
         "resend": "Reenviar código",
+        "resendIn": "Reenviar en",
         "successToast": "Email verificado"
       },
       "consoles": {
@@ -294,7 +295,13 @@
         "title": "Contraseña",
         "description": "Te enviaremos un enlace seguro para cambiarla.",
         "cta": "Cambiar contraseña",
+        "retryIn": "Reinténtalo en",
         "sentToast": "Revisa tu email para cambiar la contraseña"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Recibe avisos de novedades y actualizaciones.",
+        "enable": "Activar notificaciones"
       }
     },
     "onboarding": {
@@ -305,6 +312,16 @@
     "errorModal": {
       "title": "Algo ha ido mal",
       "dismiss": "Entendido"
+    },
+    "sessionExpired": {
+      "title": "Sesión caducada",
+      "description": "Tu sesión ha caducado. Vuelve a iniciar sesión.",
+      "action": "Volver al inicio"
+    },
+    "verifyBanner": {
+      "text": "Verifica tu email para asegurar tu cuenta.",
+      "cta": "Verificar email",
+      "dismiss": "Descartar"
     },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",

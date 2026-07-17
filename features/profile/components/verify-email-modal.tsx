@@ -11,7 +11,7 @@
  */
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -26,11 +26,13 @@ import {
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { Spinner } from '@/components/ui/spinner'
 import { useReportError } from '@/hooks/use-report-error'
+import { useSession } from '@/features/auth'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { startVerifyEmail, verifyEmail } from '../services/profile'
 
 const OTP_LENGTH = 6
+const RESEND_COOLDOWN = 60
 
 export function VerifyEmailModal({
   onClose,
@@ -42,33 +44,45 @@ export function VerifyEmailModal({
   const dict = useDictionary()
   const t = dict.app.settings.email
   const report = useReportError()
+  const { markEmailVerified } = useSession()
 
   const [recipient, setRecipient] = useState<string | null>(null)
   const [code, setCode] = useState('')
   const [sending, setSending] = useState(false)
   const [pending, setPending] = useState(false)
+  const [cooldown, setCooldown] = useState(0)
+  const started = useRef(false)
 
-  // Initial send: setState only inside `.then`/`.catch`, never synchronously in the
-  // effect body (the set-state-in-effect rule). The spinner is for `resend` only.
+  // Initial send: fire ONCE. The ref guard survives React StrictMode's double effect
+  // invocation (dev) AND any re-run from an unstable dep, so the OTP endpoint is hit a
+  // single time per open — sending twice back-to-back raced on the backend. setState
+  // lives in `.then`/`.catch`, never synchronously in the effect body. A successful send
+  // opens the resend cooldown so the user can't spam the endpoint.
   useEffect(() => {
-    let active = true
+    if (started.current) return
+    started.current = true
     startVerifyEmail()
       .then(({ recipient: to }) => {
-        if (active) setRecipient(to)
+        setRecipient(to)
+        setCooldown(RESEND_COOLDOWN)
       })
-      .catch((e) => {
-        if (active) report(e)
-      })
-    return () => {
-      active = false
-    }
+      .catch((e) => report(e))
   }, [report])
+
+  // Tick the resend cooldown down once per second. setState lives in the timer callback
+  // (not synchronously in the effect body); the effect self-stops when it reaches 0.
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const id = setTimeout(() => setCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(id)
+  }, [cooldown])
 
   async function resend() {
     setSending(true)
     try {
       const { recipient: to } = await startVerifyEmail()
       setRecipient(to)
+      setCooldown(RESEND_COOLDOWN)
     } catch (e) {
       report(e)
     } finally {
@@ -80,7 +94,8 @@ export function VerifyEmailModal({
     setPending(true)
     try {
       await verifyEmail({ otp: Number(code) })
-      toast.success(t.successToast)
+      markEmailVerified()
+      toast.success(t.successToast, { position: 'bottom-center' })
       onVerified?.()
       onClose()
     } catch (e) {
@@ -116,9 +131,9 @@ export function VerifyEmailModal({
         </div>
 
         <DialogFooter className="sm:justify-between">
-          <Button variant="ghost" onClick={() => void resend()} disabled={sending}>
+          <Button variant="ghost" onClick={() => void resend()} disabled={sending || cooldown > 0}>
             {sending && <Spinner data-icon="inline-start" />}
-            {t.resend}
+            {cooldown > 0 ? `${t.resendIn} ${cooldown}s` : t.resend}
           </Button>
           <Button onClick={confirm} disabled={pending || code.length < OTP_LENGTH}>
             {pending && <Spinner data-icon="inline-start" />}

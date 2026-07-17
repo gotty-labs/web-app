@@ -13,7 +13,9 @@
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ErrorProvider } from '@/contexts/error-provider'
+import { StartupProvider } from '@/features/app-config'
 import { AuthGate, SessionProvider } from '@/features/auth'
+import { VerifyEmailNudge } from '@/features/profile'
 import { AppShell } from '@/features/shell'
 import { getDictionary } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
@@ -29,7 +31,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <SessionProvider>
           <TooltipProvider>
             <AuthGate>
-              <AppShell>{children}</AppShell>
+              <StartupProvider>
+                <VerifyEmailNudge />
+                <AppShell>{children}</AppShell>
+              </StartupProvider>
             </AuthGate>
             <Toaster theme="dark" position="top-center" />
           </TooltipProvider>

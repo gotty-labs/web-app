@@ -226,6 +226,7 @@ export const dictionarySchema = z.object({
         sentTo: z.string(),
         confirm: z.string(),
         resend: z.string(),
+        resendIn: z.string(),
         successToast: z.string(),
       }),
       consoles: z.object({
@@ -238,7 +239,13 @@ export const dictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
         cta: z.string(),
+        retryIn: z.string(),
         sentToast: z.string(),
+      }),
+      notifications: z.object({
+        title: z.string(),
+        description: z.string(),
+        enable: z.string(),
       }),
     }),
     onboarding: z.object({
@@ -248,6 +255,16 @@ export const dictionarySchema = z.object({
     }),
     errorModal: z.object({
       title: z.string(),
+      dismiss: z.string(),
+    }),
+    sessionExpired: z.object({
+      title: z.string(),
+      description: z.string(),
+      action: z.string(),
+    }),
+    verifyBanner: z.object({
+      text: z.string(),
+      cta: z.string(),
       dismiss: z.string(),
     }),
     auth: z.object({

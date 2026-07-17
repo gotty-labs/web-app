@@ -9,7 +9,8 @@
  *   4. If the backend answers 401 / `REAUTHENTICATION_REQUIRED_TOKEN` (50042),
  *      refresh and replay the request once.
  *   5. On `INVALID_TOKEN` (50041) or `FORCE_NEW_MANUAL_LOGIN` (50043), the
- *      session is unrecoverable → clear it and signal the app to route to login.
+ *      session is unrecoverable → signal the app (expiry alert). The store is NOT
+ *      cleared here — see `signalSessionExpired`.
  *
  * SINGLE-FLIGHT is the critical correctness property: many components can hit a
  * 401 at once, but they must share ONE refresh promise and then all replay —
@@ -36,7 +37,7 @@ const refreshPayloadSchema = z.object({
   accessToken: z.string(),
 })
 
-/** Set by the app shell to redirect to the login screen on hard session loss. */
+/** Set by `SessionProvider` to surface the expiry alert on hard session loss. */
 let onSessionExpired: (() => void) | null = null
 export function setOnSessionExpired(handler: (() => void) | null): void {
   onSessionExpired = handler
@@ -52,8 +53,7 @@ export class SessionExpiredError extends Error {
 
 let refreshInFlight: Promise<string> | null = null
 
-function hardLogout(): void {
-  sessionStore.clear()
+function signalSessionExpired(): void {
   onSessionExpired?.()
 }
 
@@ -66,8 +66,9 @@ async function performRefresh(): Promise<string> {
     sessionStore.setAccess(data)
     return data.accessToken
   } catch {
-    // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). Clear client too.
-    hardLogout()
+    // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). Signal expiry; the
+    // client session is cleared on the alert's acknowledgment, not here.
+    signalSessionExpired()
     throw new SessionExpiredError()
   }
 }
@@ -90,7 +91,7 @@ function refresh(): Promise<string> {
 export async function authedRequest<T>(options: Omit<ApiRequestOptions<T>, 'token'>): Promise<T> {
   let token = sessionStore.getAccessToken()
   if (!token) {
-    hardLogout()
+    signalSessionExpired()
     throw new SessionExpiredError('No active session')
   }
 
@@ -114,7 +115,7 @@ export async function authedRequest<T>(options: Omit<ApiRequestOptions<T>, 'toke
         error.internalCode === InternalCode.INVALID_TOKEN ||
         error.internalCode === InternalCode.FORCE_NEW_MANUAL_LOGIN
       ) {
-        hardLogout()
+        signalSessionExpired()
         throw new SessionExpiredError()
       }
     }

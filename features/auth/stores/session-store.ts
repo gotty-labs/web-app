@@ -107,5 +107,16 @@ export const sessionStore = {
       user: clientSnapshot.session?.user ?? null,
     })
   },
+  // Persist a verified email onto the stored profile so a reload (which paints the user
+  // from localStorage) doesn't fall back to the stale `verifiedEmail: false`.
+  setEmailVerified: (): void => {
+    load()
+    const current = clientSnapshot.session
+    if (!current?.user) return
+    write({
+      ...current,
+      user: { ...current.user, twoFa: { ...current.user.twoFa, verifiedEmail: true } },
+    })
+  },
   clear: (): void => write(null),
 }

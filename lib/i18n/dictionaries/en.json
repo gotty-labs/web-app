@@ -282,6 +282,7 @@
         "sentTo": "We sent a 6-digit code to",
         "confirm": "Confirm",
         "resend": "Resend code",
+        "resendIn": "Resend in",
         "successToast": "Email verified"
       },
       "consoles": {
@@ -294,7 +295,13 @@
         "title": "Password",
         "description": "We'll email you a secure link to change it.",
         "cta": "Change password",
+        "retryIn": "Try again in",
         "sentToast": "Check your email to change your password"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Get notified about new releases and updates.",
+        "enable": "Enable notifications"
       }
     },
     "onboarding": {
@@ -305,6 +312,16 @@
     "errorModal": {
       "title": "Something went wrong",
       "dismiss": "Got it"
+    },
+    "sessionExpired": {
+      "title": "Session expired",
+      "description": "Your session expired. Please sign in again.",
+      "action": "Back to home"
+    },
+    "verifyBanner": {
+      "text": "Verify your email to secure your account.",
+      "cta": "Verify email",
+      "dismiss": "Dismiss"
     },
     "auth": {
       "loginTitle": "Welcome back",
