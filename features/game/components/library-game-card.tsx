@@ -71,7 +71,7 @@ export function LibraryGameCard({
   return (
     <div className={cn('group relative flex w-full flex-col', className)}>
       {target ? (
-        <Link href={target} className="block">
+        <Link href={target} target="_blank" rel="noopener noreferrer" className="block">
           {inner}
         </Link>
       ) : (

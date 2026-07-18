@@ -52,8 +52,7 @@ export function GameCard({
     !showWarning && game.releaseDate && isFutureDate(game.releaseDate)
       ? formatReleaseChip(game.releaseDate, locale)
       : null
-  const showStatus =
-    !showWarning && dateChip === null && INFORMATIVE_STATUSES.includes(game.status)
+  const showStatus = !showWarning && dateChip === null && INFORMATIVE_STATUSES.includes(game.status)
 
   const showRating = game.rating?.value != null
   const hasOverlay = showWarning || dateChip !== null || showStatus || showRating
@@ -110,7 +109,7 @@ export function GameCard({
   )
 
   return target ? (
-    <Link href={target} className="block">
+    <Link href={target} target="_blank" rel="noopener noreferrer" className="block">
       {card}
     </Link>
   ) : (
