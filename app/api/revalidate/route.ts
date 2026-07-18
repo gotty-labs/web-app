@@ -20,6 +20,10 @@ const bodySchema = z.object({
 })
 
 export async function POST(request: Request): Promise<NextResponse> {
+  // Server-only secret read DIRECTLY from the environment — NOT via `lib/config/env`
+  // (that module validates the public `NEXT_PUBLIC_*` vars and is bundled for the
+  // client, where a non-public secret is always `undefined`). This route handler only
+  // ever runs on the server, so `process.env` is the correct, leak-free source.
   const secret = process.env.REVALIDATE_SECRET
   if (!secret || request.headers.get('jg-revalidate-secret') !== secret) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
