@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist_Mono, Montserrat, Source_Sans_3 } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 
 import { env } from '@/lib/config/env'
 
@@ -40,7 +41,10 @@ export default function RootLayout({
       lang="en"
       className={`dark ${sourceSans.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
