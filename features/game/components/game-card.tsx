@@ -109,7 +109,13 @@ export function GameCard({
   )
 
   return target ? (
-    <Link href={target} target="_blank" rel="noopener noreferrer" className="block">
+    <Link
+      href={target}
+      target="_blank"
+      rel="noopener noreferrer"
+      prefetch={false}
+      className="block"
+    >
       {card}
     </Link>
   ) : (

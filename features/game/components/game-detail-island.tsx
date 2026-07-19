@@ -20,10 +20,12 @@ import { GameLibraryActions } from './game-library-actions'
 
 export function GameDetailIsland({
   gameId,
+  slug,
   locale,
   dictionary,
 }: {
   gameId: string
+  slug: string
   locale: Locale
   dictionary: Dictionary
 }) {
@@ -31,7 +33,7 @@ export function GameDetailIsland({
     <I18nProvider locale={locale} dictionary={dictionary}>
       <ErrorProvider>
         <SessionProvider>
-          <GameLibraryActions gameId={gameId} />
+          <GameLibraryActions gameId={gameId} slug={slug} />
           <Toaster theme="dark" position="top-center" />
         </SessionProvider>
       </ErrorProvider>

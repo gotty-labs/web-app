@@ -96,7 +96,12 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
             </dl>
           )}
 
-          <GameDetailIsland gameId={game.id} locale={locale} dictionary={dict} />
+          <GameDetailIsland
+            gameId={game.id}
+            slug={slug}
+            locale={locale}
+            dictionary={dict}
+          />
 
           {game.description && (
             <p className="leading-relaxed text-muted-foreground">{game.description}</p>

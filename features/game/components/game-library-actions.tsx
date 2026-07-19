@@ -7,10 +7,11 @@
  *  - loading        → a disabled save button (no flash).
  *  - unauthenticated→ a "sign in to save" button linking into the app to authenticate.
  *  - authenticated  → the primary save button + a three-dots menu (save / whitelist /
- *                     update progress). Current saved-ness comes from `getGame()`'s
- *                     `savedInLibrary`; richer current state (status/progress) needs a
- *                     backend per-game endpoint that doesn't exist yet — hence no
- *                     "remove" action and no pre-filled progress.
+ *                     update progress). Current saved-ness comes from `getGameForUser()`'s
+ *                     `savedInLibrary` (the public game endpoint read WITH the token);
+ *                     richer current state (status/progress) is up to the backend to add
+ *                     to that same response — hence, for now, no "remove" action and no
+ *                     pre-filled progress. Library writes stay keyed by `gameId`.
  */
 'use client'
 
@@ -32,12 +33,12 @@ import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
-import { getGame } from '../services/catalog'
+import { getGameForUser } from '../services/catalog'
 import { storeGameInLibrary } from '../services/library'
 
 import { ProgressUpdateModal } from './progress-update-modal'
 
-export function GameLibraryActions({ gameId }: { gameId: string }) {
+export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: string }) {
   const dict = useDictionary()
   const t = dict.app.detail
   const report = useReportError()
@@ -50,7 +51,7 @@ export function GameLibraryActions({ gameId }: { gameId: string }) {
   useEffect(() => {
     if (status !== 'authenticated') return
     let active = true
-    getGame(gameId)
+    getGameForUser(slug)
       .then((game) => {
         if (active) setSaved(game.savedInLibrary)
       })
@@ -60,7 +61,7 @@ export function GameLibraryActions({ gameId }: { gameId: string }) {
     return () => {
       active = false
     }
-  }, [gameId, status])
+  }, [slug, status])
 
   if (status === 'loading') {
     return (

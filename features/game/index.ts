@@ -4,7 +4,7 @@ export {
   getFilterOptions,
   searchGames,
   getGamesBySection,
-  getGame,
+  getGameForUser,
 } from './services/catalog'
 export {
   getLibraryLists,
