@@ -13,21 +13,27 @@ import { useState } from 'react'
 import Image, { type ImageProps } from 'next/image'
 
 import { Spinner } from '@/components/ui/spinner'
-import { igdbImageLoader, isIgdbImageUrl } from '@/lib/images/igdb'
+import { igdbImageLoader, igdbScreenshotLoader, isIgdbImageUrl } from '@/lib/images/igdb'
 import { cn } from '@/lib/utils'
 
 export function AppImage({
   className,
   wrapperClassName,
   alt,
+  igdbKind = 'cover',
   ...props
-}: ImageProps & { wrapperClassName?: string }) {
+}: ImageProps & { wrapperClassName?: string; igdbKind?: 'cover' | 'screenshot' }) {
   const [loaded, setLoaded] = useState(false)
 
-  // IGDB covers are served straight from IGDB's CDN via a token-rewriting loader
-  // (skips Vercel Image Optimization). Any other host keeps Next's default optimizer.
+  // IGDB assets are served straight from IGDB's CDN via a token-rewriting loader
+  // (skips Vercel Image Optimization). `igdbKind` picks the size vocabulary: covers
+  // (portrait) vs. landscape artworks/screenshots. Any other host keeps Next's optimizer.
   const loader =
-    typeof props.src === 'string' && isIgdbImageUrl(props.src) ? igdbImageLoader : undefined
+    typeof props.src === 'string' && isIgdbImageUrl(props.src)
+      ? igdbKind === 'screenshot'
+        ? igdbScreenshotLoader
+        : igdbImageLoader
+      : undefined
 
   return (
     <span className={cn('bg-muted relative block overflow-hidden', wrapperClassName)}>

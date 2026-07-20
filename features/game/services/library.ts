@@ -86,3 +86,16 @@ export async function storeGameInLibrary(
     schema: voidDataSchema,
   })
 }
+
+/**
+ * Remove a game from the user's library (undo of save/whitelist). Mirrors the upsert
+ * resource with a DELETE. NOTE: confirm the backend exposes `DELETE /game/user/library/:gameId`;
+ * until then a call surfaces through the normal error reporter rather than failing silently.
+ */
+export async function removeGameFromLibrary(gameId: string): Promise<void> {
+  await authedRequest({
+    method: 'DELETE',
+    path: `/game/user/library/${gameId}`,
+    schema: voidDataSchema,
+  })
+}

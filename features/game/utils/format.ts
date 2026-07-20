@@ -42,6 +42,18 @@ export function formatFullDate(iso: string, locale: Locale): string {
   return date ? date.setLocale(locale).toLocaleString(DateTime.DATE_FULL) : ''
 }
 
+/** Medium date for dense lists, e.g. "Dec 12, 2026" / "12 dic 2026". */
+export function formatMediumDate(iso: string, locale: Locale): string {
+  const date = parseIsoDate(iso)
+  return date ? date.setLocale(locale).toLocaleString(DateTime.DATE_MED) : ''
+}
+
+/** Release year only (for the header) — empty when the date is absent/invalid. */
+export function formatYear(iso?: string): string {
+  const date = parseIsoDate(iso)
+  return date ? String(date.year) : ''
+}
+
 /** Play time from MINUTES (the library's `progress.duration`): "45 min", "8 h", "8 h 30 min". */
 export function formatPlaytime(minutes: number): string {
   const { hours = 0, minutes: rest = 0 } = Duration.fromObject({ minutes })
@@ -56,4 +68,9 @@ export function formatTimeToBeat(seconds: number): string {
   const duration = Duration.fromObject({ seconds })
   const hours = Math.round(duration.as('hours'))
   return hours < 1 ? formatPlaytime(Math.round(duration.as('minutes'))) : `${hours} h`
+}
+
+/** Time-to-beat SECONDS → hours as a number (for chart/bar ratios). */
+export function timeToBeatHours(seconds: number): number {
+  return Duration.fromObject({ seconds }).as('hours')
 }

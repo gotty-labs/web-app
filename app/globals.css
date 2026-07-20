@@ -132,6 +132,17 @@
       transform: translateX(-50%);
     }
   }
+
+  /* Game detail: horizontal bars (time-to-beat) grow in on first paint. Animating
+     `scaleX` (origin-left) is cheaper than `width` and the final scale is the
+     element's own (none), so the bar settles at its inline width. */
+  --animate-bar-grow: bar-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes bar-grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
 }
 
 @layer base {

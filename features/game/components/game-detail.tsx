@@ -1,29 +1,46 @@
 /**
  * Public game detail shared by the en/es SEO pages (Option B). Server Component (no
- * token): fetches the public game + the dictionary for the page's locale, both
- * statically cacheable (no `headers()`), so the page stays SSG.
+ * token): fetches the public game + the dictionary, both statically cacheable (no
+ * `headers()`), so the page stays SSG.
  *
- * The static markup composes the presentational badges (resolving enum labels with
- * the pure `gameXLabel(dict, …)` helpers). The authed library actions live in the
- * `GameDetailIsland` client widget, which brings its own session/i18n/toaster.
+ * It renders a full-bleed hero (artwork background + framed cover) and a stack of
+ * content sections. The server resolves every enum/date to a localized string and
+ * hands the interactive pieces (library actions, media gallery, release calendar,
+ * storyline, DLC) compact plain-object view-models — so those client components ship
+ * behavior, not the whole dictionary. Authed writes still live in `GameDetailIsland`.
  */
 import { notFound } from 'next/navigation'
-
-import { AppImage } from '@/components/app-image'
 
 import { getDictionary, type Locale } from '@/lib/i18n'
 
 import type { GameReleaseDate } from '@/lib/domain/models'
 
 import { findPublicGame } from '../services/seo'
-import { gameGenreLabel, gameStatusLabel, gameThemeLabel } from '../utils/labels'
-import { formatFullDate, formatTimeToBeat, parseIsoDate } from '../utils/format'
+import {
+  gameRegionLabel,
+  gameReleaseStatusLabel,
+} from '../utils/labels'
+import {
+  formatFullDate,
+  formatMediumDate,
+  formatYear,
+  parseIsoDate,
+} from '../utils/format'
+import { youtubeId } from '../utils/media'
 
-import { ConsoleBadge } from './console-badge'
+import { DetailSection } from './detail-section'
+import { GameAdditionalContent, type DlcItem } from './game-additional-content'
+import { GameAgeRating } from './game-age-rating'
 import { GameDetailIsland } from './game-detail-island'
-import { GenreThemeChip } from './genre-theme-chip'
-import { RatingBadge } from './rating-badge'
-import { StatusBadge } from './status-badge'
+import { GameEngines } from './game-engines'
+import { GameHero } from './game-hero'
+import { GameLanguages } from './game-languages'
+import { GameMediaGallery } from './game-media-gallery'
+import { GamePlatforms } from './game-platforms'
+import { GameReleaseDates, type ReleaseRow } from './game-release-dates'
+import { GameTags } from './game-tags'
+import { GameTimeToBeat, type TimeToBeatEntry } from './game-time-to-beat'
+import { StorylineDialog } from './storyline-dialog'
 
 /** Earliest release across consoles/regions — the date a visitor asks about. */
 function earliestRelease(releases: GameReleaseDate[]): string | undefined {
@@ -34,16 +51,59 @@ function earliestRelease(releases: GameReleaseDate[]): string | undefined {
   return dated.reduce((min, entry) => (entry.time < min.time ? entry : min)).iso
 }
 
+/** Ascending by date (undated last), for release lists. */
+function byDateAsc(a: GameReleaseDate, b: GameReleaseDate): number {
+  return (parseIsoDate(a.date)?.toMillis() ?? Infinity) - (parseIsoDate(b.date)?.toMillis() ?? Infinity)
+}
+
 export async function GameDetail({ slug, locale }: { slug: string; locale: Locale }) {
   const [game, dict] = await Promise.all([findPublicGame(slug, locale), getDictionary(locale)])
   if (!game) notFound()
 
   const t = dict.app.detail
-  const cover = game.media?.cover
-
-  // Key facts the backend already sends but the page never surfaced.
   const releaseIso = earliestRelease(game.releaseDates)
-  const timeToBeatSeconds = game.timeToBeat?.average ?? game.timeToBeat?.total
+
+  // --- view-models for the client islands (localized strings, plain objects) ---
+  const releaseRows: ReleaseRow[] = [...game.releaseDates].sort(byDateAsc).map((release, index) => ({
+    id: String(index),
+    dateIso: release.date,
+    dateLabel: formatMediumDate(release.date, locale) || release.date,
+    consoleName: release.console.name,
+    consoleImage: release.console.image ?? undefined,
+    regionLabel: gameRegionLabel(dict, release.region),
+    statusLabel: release.status ? gameReleaseStatusLabel(dict, release.status) : undefined,
+  }))
+
+  const buildDlcItems = (source: typeof game.dlcs): DlcItem[] =>
+    source.map((item, index) => ({
+      id: String(index),
+      name: item.name,
+      cover: item.cover,
+      releases: [...item.releases].sort(byDateAsc).map((release, j) => ({
+        id: String(j),
+        dateLabel: formatMediumDate(release.date, locale) || release.date,
+        consoleName: release.console.name,
+        regionLabel: gameRegionLabel(dict, release.region),
+        statusLabel: release.status ? gameReleaseStatusLabel(dict, release.status) : undefined,
+      })),
+    }))
+  const expansions = buildDlcItems(game.expansions)
+  const dlcs = buildDlcItems(game.dlcs)
+
+  const ttb = game.timeToBeat
+  const timeToBeatEntries: TimeToBeatEntry[] = [
+    ttb?.quick ? { label: t.timeToBeatQuick, seconds: ttb.quick } : null,
+    ttb?.average ? { label: t.timeToBeatAverage, seconds: ttb.average } : null,
+    ttb?.total ? { label: t.timeToBeatTotal, seconds: ttb.total } : null,
+  ].filter((entry): entry is TimeToBeatEntry => entry !== null)
+
+  const artworks = game.media?.artworks ?? []
+  const screenshots = game.media?.screenshots ?? []
+  const videoIds = (game.media?.videos ?? [])
+    .map(youtubeId)
+    .filter((id): id is string => id !== null)
+  const hasMedia = artworks.length + screenshots.length + videoIds.length > 0
+
   const facts = [
     releaseIso ? { label: t.releaseDate, value: formatFullDate(releaseIso, locale) } : null,
     game.companies.develop.length > 0
@@ -52,78 +112,124 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
     game.companies.publish.length > 0
       ? { label: t.publisher, value: game.companies.publish.join(', ') }
       : null,
-    timeToBeatSeconds
-      ? { label: t.timeToBeat, value: formatTimeToBeat(timeToBeatSeconds) }
-      : null,
   ].filter((fact): fact is { label: string; value: string } => fact !== null)
 
   return (
-    <main className="mx-auto max-w-5xl p-4 md:p-8">
-      <div className="flex flex-col gap-6 md:flex-row">
-        {cover && (
-          <div className="relative mx-auto aspect-3/4 w-full max-w-[240px] shrink-0 overflow-hidden rounded-lg md:mx-0">
-            <AppImage
-              src={cover}
-              alt={game.name}
-              fill
-              sizes="240px"
-              wrapperClassName="absolute inset-0"
-              className="object-cover"
-            />
-          </div>
-        )}
+    <main>
+      <GameHero game={game} dict={dict} releaseYear={formatYear(releaseIso)} />
 
-        <div className="flex flex-1 flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-heading text-3xl font-semibold tracking-tight">{game.name}</h1>
-            <div className="flex flex-wrap items-center gap-2">
-              {/* UNKNOWN says nothing — omit it rather than badge the ignorance. */}
-              {game.status !== 'UNKNOWN' && (
-                <StatusBadge status={game.status} label={gameStatusLabel(dict, game.status)} />
-              )}
-              <RatingBadge value={game.rating?.value} quantity={game.rating?.quantity} />
-            </div>
-          </div>
+      <div className="mx-auto max-w-5xl px-4 pb-20 md:px-8">
+        {/* Library actions (authed only) — hidden entirely for signed-out visitors. */}
+        <div className="mb-8 flex justify-center md:justify-start">
+          <GameDetailIsland gameId={game.id} slug={slug} locale={locale} dictionary={dict} />
+        </div>
+
+        <div className="flex flex-col gap-10">
+          {(game.description || game.storyline) && (
+            <DetailSection
+              title={t.about}
+              action={
+                game.storyline ? (
+                  <StorylineDialog
+                    storyline={game.storyline}
+                    title={t.storyline}
+                    triggerLabel={t.readStoryline}
+                  />
+                ) : undefined
+              }
+            >
+              {game.description ? (
+                <p className="leading-relaxed text-muted-foreground">{game.description}</p>
+              ) : null}
+            </DetailSection>
+          )}
 
           {facts.length > 0 && (
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
               {facts.map((fact) => (
                 <div key={fact.label} className="flex flex-col gap-0.5">
-                  <dt className="text-muted-foreground text-xs">{fact.label}</dt>
+                  <dt className="text-xs text-muted-foreground">{fact.label}</dt>
                   <dd className="font-medium">{fact.value}</dd>
                 </div>
               ))}
             </dl>
           )}
 
-          <GameDetailIsland
-            gameId={game.id}
-            slug={slug}
-            locale={locale}
-            dictionary={dict}
-          />
-
-          {game.description && (
-            <p className="leading-relaxed text-muted-foreground">{game.description}</p>
+          {(game.genres.length > 0 || game.themes.length > 0) && (
+            <GameTags dict={dict} genres={game.genres} themes={game.themes} />
           )}
 
-          {(game.genres.length > 0 || game.themes.length > 0) && (
-            <div className="flex flex-wrap gap-2">
-              {game.genres.map((genre) => (
-                <GenreThemeChip key={`genre-${genre}`} label={gameGenreLabel(dict, genre)} />
-              ))}
-              {game.themes.map((theme) => (
-                <GenreThemeChip key={`theme-${theme}`} label={gameThemeLabel(dict, theme)} />
-              ))}
-            </div>
+          {timeToBeatEntries.length > 0 && (
+            <DetailSection title={t.timeToBeat}>
+              <GameTimeToBeat entries={timeToBeatEntries} />
+            </DetailSection>
+          )}
+
+          {game.ageRating.length > 0 && (
+            <DetailSection title={t.ageRating}>
+              <GameAgeRating dict={dict} ratings={game.ageRating} />
+            </DetailSection>
+          )}
+
+          {releaseRows.length > 0 && (
+            <DetailSection title={t.releases}>
+              <GameReleaseDates
+                rows={releaseRows}
+                labels={{
+                  gameName: game.name,
+                  releasesTitle: t.releases,
+                  seeAll: t.seeAll,
+                  addToCalendar: t.addToCalendar,
+                  appleCalendar: t.appleCalendar,
+                  googleCalendar: t.googleCalendar,
+                }}
+              />
+            </DetailSection>
           )}
 
           {game.platforms.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {game.platforms.map((platform) => (
-                <ConsoleBadge key={platform.id} console={platform} />
-              ))}
-            </div>
+            <DetailSection title={t.platforms}>
+              <GamePlatforms platforms={game.platforms} />
+            </DetailSection>
+          )}
+
+          {hasMedia && (
+            <DetailSection title={t.media}>
+              <GameMediaGallery
+                artworks={artworks}
+                screenshots={screenshots}
+                videoIds={videoIds}
+                labels={{
+                  title: t.media,
+                  viewGallery: t.viewGallery,
+                  all: dict.app.search.all,
+                  artworks: t.mediaArtworks,
+                  screenshots: t.mediaScreenshots,
+                  videos: t.mediaVideos,
+                  play: t.playVideo,
+                }}
+              />
+            </DetailSection>
+          )}
+
+          {(expansions.length > 0 || dlcs.length > 0) && (
+            <GameAdditionalContent
+              expansions={expansions}
+              dlcs={dlcs}
+              labels={{ expansions: t.expansions, dlcs: t.dlcs, releasesTitle: t.releases }}
+            />
+          )}
+
+          {game.languages.length > 0 && (
+            <DetailSection title={t.languages}>
+              <GameLanguages dict={dict} languages={game.languages} />
+            </DetailSection>
+          )}
+
+          {game.engines.length > 0 && (
+            <DetailSection title={t.engines}>
+              <GameEngines engines={game.engines} />
+            </DetailSection>
           )}
         </div>
       </div>
