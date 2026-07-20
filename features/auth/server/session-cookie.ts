@@ -12,6 +12,7 @@
  */
 import { cookies } from 'next/headers'
 import { z } from 'zod'
+import { env } from '@/lib/config/env'
 
 const COOKIE_NAME = 'jg_session'
 /** ~6 months, matching the backend refresh-token lifetime (§2.1). */
@@ -29,7 +30,7 @@ export async function persistSession(session: StoredSession): Promise<void> {
   store.set(COOKIE_NAME, JSON.stringify(session), {
     httpOnly: true,
     // localhost is http in dev; `secure` would drop the cookie there.
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.nodeEnv === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: MAX_AGE_SECONDS,

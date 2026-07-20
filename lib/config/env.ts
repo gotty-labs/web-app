@@ -16,14 +16,18 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_API_BASE_URL: z.url(),
   // Public web domain, used for sitemap absolute URLs and canonical/OG metadata.
   NEXT_PUBLIC_SITE_URL: z.url(),
+  // Node environment
+  NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'local']),
 })
 
 const parsed = clientEnvSchema.parse({
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
 })
 
 export const env = {
   apiBaseUrl: parsed.NEXT_PUBLIC_API_BASE_URL,
   siteUrl: parsed.NEXT_PUBLIC_SITE_URL,
+  nodeEnv: parsed.NEXT_PUBLIC_NODE_ENV,
 } as const

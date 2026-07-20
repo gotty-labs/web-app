@@ -48,7 +48,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {/* Dev-only visual feedback tool — tree-shaken out of production builds. */}
-        {process.env.NODE_ENV === 'development' && <Agentation />}
+        {env.nodeEnv === 'development' && <Agentation />}
       </body>
     </html>
   )
