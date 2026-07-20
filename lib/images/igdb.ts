@@ -68,6 +68,21 @@ const COVER_LADDER: readonly IgdbSize[] = [
   IGDB_IMAGE_SIZES.cover_big_2x,
 ]
 
+/**
+ * Ascending width ladder for LANDSCAPE media (artworks + screenshots), which the
+ * detail page renders full-bleed (blurred hero background) or in a gallery. Unlike
+ * covers, these keep IGDB's 16:9-ish box, so we climb into the `screenshot_*`/`1080p`
+ * presets instead of the portrait cover tokens. Capped at 1080p (1920px): a hero
+ * background never needs more, and going to 4K would waste bandwidth on a dimmed,
+ * blurred layer.
+ */
+const SCREENSHOT_LADDER: readonly IgdbSize[] = [
+  IGDB_IMAGE_SIZES.screenshot_med,
+  IGDB_IMAGE_SIZES.screenshot_big,
+  IGDB_IMAGE_SIZES.screenshot_huge,
+  IGDB_IMAGE_SIZES['1080p'],
+]
+
 /** IGDB CDN base path — the invariant prefix every image URL shares. */
 const IGDB_UPLOAD_PATH = '/igdb/image/upload/'
 
@@ -76,9 +91,17 @@ export function isIgdbImageUrl(src: string): boolean {
   return src.includes(`images.igdb.com${IGDB_UPLOAD_PATH}`)
 }
 
-/** Smallest cover preset whose width ≥ the requested width (largest if none fits). */
-function pickCoverSize(width: number): IgdbSize {
-  return COVER_LADDER.find((size) => size.width >= width) ?? COVER_LADDER[COVER_LADDER.length - 1]
+/** Smallest preset in a ladder whose width ≥ the requested width (largest if none fits). */
+function pickSize(ladder: readonly IgdbSize[], width: number): IgdbSize {
+  return ladder.find((size) => size.width >= width) ?? ladder[ladder.length - 1]
+}
+
+/** Rewrite (or insert) the `t_*` size token in an IGDB URL to a chosen preset. */
+function withToken(src: string, token: string): string {
+  return src.replace(
+    /(\/igdb\/image\/upload\/)(t_[^/]+\/)?/,
+    (_match, prefix: string) => `${prefix}${token}/`,
+  )
 }
 
 /**
@@ -87,11 +110,16 @@ function pickCoverSize(width: number): IgdbSize {
  * one right after `/upload/` when absent. `quality` is unused (IGDB presets are fixed).
  */
 export function igdbImageLoader({ src, width }: { src: string; width: number }): string {
-  const { token } = pickCoverSize(width)
-  return src.replace(
-    /(\/igdb\/image\/upload\/)(t_[^/]+\/)?/,
-    (_match, prefix: string) => `${prefix}${token}/`,
-  )
+  return withToken(src, pickSize(COVER_LADDER, width).token)
+}
+
+/**
+ * `next/image` custom loader for IGDB landscape media (artworks + screenshots) —
+ * climbs the `screenshot_*`/`1080p` ladder so a full-bleed hero or a gallery frame
+ * fetches an appropriately-sized wide asset instead of a cropped portrait cover.
+ */
+export function igdbScreenshotLoader({ src, width }: { src: string; width: number }): string {
+  return withToken(src, pickSize(SCREENSHOT_LADDER, width).token)
 }
 
 /**

@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
         hostname: 'tbd',
         pathname: '/**',
       },
+      // YouTube video thumbnails for the media gallery (IGDB videos are YouTube ids).
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        pathname: '/vi/**',
+      },
     ],
   },
 }

@@ -1,42 +1,79 @@
 /**
- * Authed library actions for the game detail (Phase 5, Slice E). Rendered inside the
- * detail's client island (which supplies session + i18n + toaster on the otherwise
- * static SEO page).
+ * Library actions, JustWatch-style: a horizontal row of round icon buttons with a
+ * label underneath, instead of the old save button + three-dots menu. Rendered inside
+ * the detail's client island (session + i18n + toaster on the otherwise-static page).
  *
- * States from `useSession()`:
- *  - loading        → a disabled save button (no flash).
- *  - unauthenticated→ a "sign in to save" button linking into the app to authenticate.
- *  - authenticated  → the primary save button + a three-dots menu (save / whitelist /
- *                     update progress). Current saved-ness comes from `getGameForUser()`'s
- *                     `savedInLibrary` (the public game endpoint read WITH the token);
- *                     richer current state (status/progress) is up to the backend to add
- *                     to that same response — hence, for now, no "remove" action and no
- *                     pre-filled progress. Library writes stay keyed by `gameId`.
+ * The button SET depends on library membership (`savedInLibrary`, read WITH the token):
+ *  - unauthenticated → the row is hidden entirely (no actions for signed-out visitors).
+ *  - saved = false   → Save · Whitelist.
+ *  - saved = true    → Remove · Lists · Progress.
+ * Swapping sets re-keys the row so it animates in; each icon reacts on hover/press so
+ * the active↔inactive change is felt, not just shown. Lists/Progress are placeholders
+ * (a "coming soon" toast) until their flows land; Save/Whitelist/Remove hit the backend.
  */
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { CheckIcon, EllipsisVerticalIcon, PlusIcon } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import {
+  BookmarkPlusIcon,
+  BookmarkXIcon,
+  EyeIcon,
+  GaugeIcon,
+  ListPlusIcon,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
 import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
+import { cn } from '@/lib/utils'
 
 import { getGameForUser } from '../services/catalog'
-import { storeGameInLibrary } from '../services/library'
+import { removeGameFromLibrary, storeGameInLibrary } from '../services/library'
 
-import { ProgressUpdateModal } from './progress-update-modal'
+type Tone = 'primary' | 'default' | 'destructive'
+
+type Action = {
+  key: string
+  label: string
+  icon: ReactNode
+  tone: Tone
+  onClick: () => void
+}
+
+const TONE_CLASS: Record<Tone, string> = {
+  primary: 'bg-primary/15 text-primary ring-primary/30 group-hover:bg-primary/25',
+  default: 'bg-muted/60 text-foreground ring-border group-hover:bg-muted',
+  destructive:
+    'bg-destructive/10 text-destructive ring-destructive/25 group-hover:bg-destructive/20',
+}
+
+function ActionItem({ action, disabled, busy }: { action: Action; disabled: boolean; busy: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={action.onClick}
+      disabled={disabled}
+      className="group flex w-16 flex-col items-center gap-2 outline-none disabled:pointer-events-none disabled:opacity-60"
+    >
+      <span
+        className={cn(
+          'flex size-12 items-center justify-center rounded-full ring-1 transition-all duration-200',
+          'group-hover:-translate-y-0.5 group-active:scale-90 group-focus-visible:ring-2 group-focus-visible:ring-ring',
+          '[&_svg]:size-5 [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:scale-110',
+          TONE_CLASS[action.tone],
+        )}
+      >
+        {busy ? <Spinner className="size-5" /> : action.icon}
+      </span>
+      <span className="text-center text-xs font-medium text-muted-foreground group-hover:text-foreground">
+        {action.label}
+      </span>
+    </button>
+  )
+}
 
 export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: string }) {
   const dict = useDictionary()
@@ -45,8 +82,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const { status } = useSession()
 
   const [saved, setSaved] = useState(false)
-  const [pending, setPending] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [pendingKey, setPendingKey] = useState<string | null>(null)
 
   useEffect(() => {
     if (status !== 'authenticated') return
@@ -63,75 +99,77 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     }
   }, [slug, status])
 
-  if (status === 'loading') {
-    return (
-      <Button disabled className="w-fit">
-        <Spinner data-icon="inline-start" />
-        {t.save}
-      </Button>
-    )
-  }
+  if (status !== 'authenticated') return null
 
-  if (status === 'unauthenticated') {
-    return (
-      <Button asChild className="w-fit">
-        <Link href="/home">{t.signInToSave}</Link>
-      </Button>
-    )
-  }
+  const pending = pendingKey !== null
 
-  async function store(input: StoreGameLibraryInput, successMsg: string) {
-    setPending(true)
+  async function run(key: string, task: () => Promise<void>, onDone: () => void, successMsg: string) {
+    setPendingKey(key)
     try {
-      await storeGameInLibrary(gameId, input)
-      setSaved(true)
+      await task()
+      onDone()
       toast.success(successMsg)
     } catch (e) {
       report(e)
     } finally {
-      setPending(false)
+      setPendingKey(null)
     }
   }
 
+  const store = (key: string, input: StoreGameLibraryInput, msg: string) =>
+    run(key, () => storeGameInLibrary(gameId, input), () => setSaved(true), msg)
+
+  const comingSoon = () => toast(t.comingSoon)
+
+  const actions: Action[] = saved
+    ? [
+        {
+          key: 'remove',
+          label: t.remove,
+          tone: 'destructive',
+          icon: <BookmarkXIcon />,
+          onClick: () =>
+            run('remove', () => removeGameFromLibrary(gameId), () => setSaved(false), t.removedToast),
+        },
+        { key: 'lists', label: t.lists, tone: 'default', icon: <ListPlusIcon />, onClick: comingSoon },
+        {
+          key: 'progress',
+          label: t.progressLabel,
+          tone: 'default',
+          icon: <GaugeIcon />,
+          onClick: comingSoon,
+        },
+      ]
+    : [
+        {
+          key: 'save',
+          label: t.save,
+          tone: 'primary',
+          icon: <BookmarkPlusIcon />,
+          onClick: () => store('save', { status: 'SAVED' }, t.savedToast),
+        },
+        {
+          key: 'whitelist',
+          label: t.whitelistShort,
+          tone: 'default',
+          icon: <EyeIcon />,
+          onClick: () => store('whitelist', { status: 'WHITELIST' }, t.whitelistToast),
+        },
+      ]
+
   return (
-    <div className="flex items-center gap-2">
-      <Button onClick={() => store({ status: 'SAVED' }, t.savedToast)} disabled={pending}>
-        {pending ? (
-          <Spinner data-icon="inline-start" />
-        ) : saved ? (
-          <CheckIcon data-icon="inline-start" />
-        ) : (
-          <PlusIcon data-icon="inline-start" />
-        )}
-        {saved ? t.saved : t.save}
-      </Button>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" aria-label={t.moreActions}>
-            <EllipsisVerticalIcon />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => store({ status: 'SAVED' }, t.savedToast)}>
-            {t.save}
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => store({ status: 'WHITELIST' }, t.whitelistToast)}>
-            {t.whitelist}
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setModalOpen(true)}>
-            {t.updateProgress}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {modalOpen && (
-        <ProgressUpdateModal
-          gameId={gameId}
-          onClose={() => setModalOpen(false)}
-          onUpdated={() => setSaved(true)}
+    <div
+      key={saved ? 'saved' : 'unsaved'}
+      className="flex flex-wrap gap-2 duration-300 animate-in fade-in-50 zoom-in-95"
+    >
+      {actions.map((action) => (
+        <ActionItem
+          key={action.key}
+          action={action}
+          disabled={pending}
+          busy={pendingKey === action.key}
         />
-      )}
+      ))}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist_Mono, Montserrat, Source_Sans_3 } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Agentation } from 'agentation'
 
 import { env } from '@/lib/config/env'
 
@@ -46,6 +47,8 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        {/* Dev-only visual feedback tool — tree-shaken out of production builds. */}
+        {process.env.NODE_ENV === 'development' && <Agentation />}
       </body>
     </html>
   )
