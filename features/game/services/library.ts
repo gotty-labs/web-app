@@ -88,14 +88,16 @@ export async function storeGameInLibrary(
 }
 
 /**
- * Remove a game from the user's library (undo of save/whitelist). Mirrors the upsert
- * resource with a DELETE. NOTE: confirm the backend exposes `DELETE /game/user/library/:gameId`;
- * until then a call surfaces through the normal error reporter rather than failing silently.
+ * Remove a game from the user's library (undo of save/whitelist). The backend has no
+ * DELETE route (404); removal is a PATCH on the same upsert resource that clears the
+ * status (`{ status: null }` drops the entry). Sent raw (not through
+ * `storeGameLibraryInputSchema`, which doesn't model the null-clear).
  */
 export async function removeGameFromLibrary(gameId: string): Promise<void> {
   await authedRequest({
-    method: 'DELETE',
+    method: 'PATCH',
     path: `/game/user/library/${gameId}`,
+    body: { status: null },
     schema: voidDataSchema,
   })
 }
