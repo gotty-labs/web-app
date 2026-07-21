@@ -16,17 +16,28 @@ export type CalendarEvent = {
   details?: string
 }
 
-/** `YYYYMMDD` for an ISO date; empty when the date is absent/invalid. */
-function toAllDayStamp(iso: string): string | null {
-  const date = DateTime.fromISO(iso)
-  return date.isValid ? date.toFormat('yyyyMMdd') : null
+/**
+ * Parse a release date leniently: ISO first (the contract), then a numeric epoch in
+ * millis or seconds as a fallback, so a non-ISO backend value still lands the event on
+ * the real date instead of failing to today.
+ */
+function parseEventDate(value: string): DateTime | null {
+  const iso = DateTime.fromISO(value)
+  if (iso.isValid) return iso
+  const numeric = Number(value)
+  if (Number.isFinite(numeric)) {
+    const asMillis = DateTime.fromMillis(numeric > 1e12 ? numeric : numeric * 1000)
+    if (asMillis.isValid) return asMillis
+  }
+  return null
 }
 
 /** Google Calendar "template" URL for an all-day event (opens the compose screen). */
 export function buildGoogleCalendarUrl(event: CalendarEvent): string | null {
-  const start = toAllDayStamp(event.date)
-  if (!start) return null
-  const end = DateTime.fromISO(event.date).plus({ days: 1 }).toFormat('yyyyMMdd')
+  const date = parseEventDate(event.date)
+  if (!date) return null
+  const start = date.toFormat('yyyyMMdd')
+  const end = date.plus({ days: 1 }).toFormat('yyyyMMdd')
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: event.title,
@@ -36,31 +47,48 @@ export function buildGoogleCalendarUrl(event: CalendarEvent): string | null {
   return `https://calendar.google.com/calendar/render?${params.toString()}`
 }
 
+/** Fold a content line to <=75 octets per RFC 5545 (continuation lines start with a space). */
+function foldLine(line: string): string {
+  if (line.length <= 74) return line
+  const chunks: string[] = []
+  let rest = line
+  chunks.push(rest.slice(0, 74))
+  rest = rest.slice(74)
+  while (rest.length > 0) {
+    chunks.push(` ${rest.slice(0, 73)}`)
+    rest = rest.slice(73)
+  }
+  return chunks.join('\r\n')
+}
+
 /** A minimal, spec-valid iCalendar (`.ics`) document for a single all-day event. */
 export function buildIcs(event: CalendarEvent): string | null {
-  const start = toAllDayStamp(event.date)
-  if (!start) return null
-  const end = DateTime.fromISO(event.date).plus({ days: 1 }).toFormat('yyyyMMdd')
+  const date = parseEventDate(event.date)
+  if (!date) return null
+  const start = date.toFormat('yyyyMMdd')
+  const end = date.plus({ days: 1 }).toFormat('yyyyMMdd')
   const stamp = DateTime.utc().toFormat("yyyyMMdd'T'HHmmss'Z'")
   const uid = `${start}-${Math.random().toString(36).slice(2)}@justgame`
-  // Fold nothing (short lines) and escape commas/semicolons per RFC 5545.
   const esc = (text: string) => text.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n')
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//JustGame//Release//EN',
-    'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTAMP:${stamp}`,
-    `DTSTART;VALUE=DATE:${start}`,
-    `DTEND;VALUE=DATE:${end}`,
-    `SUMMARY:${esc(event.title)}`,
-    event.details ? `DESCRIPTION:${esc(event.details)}` : '',
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ]
-    .filter(Boolean)
-    .join('\r\n')
+  return (
+    [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'CALSCALE:GREGORIAN',
+      'PRODID:-//JustGame//Release//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${start}`,
+      `DTEND;VALUE=DATE:${end}`,
+      foldLine(`SUMMARY:${esc(event.title)}`),
+      event.details ? foldLine(`DESCRIPTION:${esc(event.details)}`) : '',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ]
+      .filter(Boolean)
+      .join('\r\n') + '\r\n'
+  )
 }
 
 /** Trigger a browser download of an `.ics` file (client-only). */
@@ -76,11 +104,4 @@ export function downloadIcs(event: CalendarEvent, filename = 'release.ics'): voi
   anchor.click()
   anchor.remove()
   URL.revokeObjectURL(url)
-}
-
-/** True on Apple platforms (Mac/iOS) — used to lead with Apple Calendar. */
-export function isApplePlatform(): boolean {
-  if (typeof navigator === 'undefined') return false
-  const ua = `${navigator.platform ?? ''} ${navigator.userAgent ?? ''}`
-  return /Mac|iPhone|iPad|iPod/i.test(ua)
 }

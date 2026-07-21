@@ -23,12 +23,14 @@ import {
 import {
   formatFullDate,
   formatMediumDate,
+  formatTimeToBeat,
   formatYear,
   parseIsoDate,
 } from '../utils/format'
 import { youtubeId } from '../utils/media'
 
 import { DetailSection } from './detail-section'
+import { ExpandableText } from './expandable-text'
 import { GameAdditionalContent, type DlcItem } from './game-additional-content'
 import { GameAgeRating } from './game-age-rating'
 import { GameDetailIsland } from './game-detail-island'
@@ -81,6 +83,7 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
       cover: item.cover,
       releases: [...item.releases].sort(byDateAsc).map((release, j) => ({
         id: String(j),
+        dateIso: release.date,
         dateLabel: formatMediumDate(release.date, locale) || release.date,
         consoleName: release.console.name,
         regionLabel: gameRegionLabel(dict, release.region),
@@ -92,10 +95,12 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
 
   const ttb = game.timeToBeat
   const timeToBeatEntries: TimeToBeatEntry[] = [
-    ttb?.quick ? { label: t.timeToBeatQuick, seconds: ttb.quick } : null,
-    ttb?.average ? { label: t.timeToBeatAverage, seconds: ttb.average } : null,
-    ttb?.total ? { label: t.timeToBeatTotal, seconds: ttb.total } : null,
-  ].filter((entry): entry is TimeToBeatEntry => entry !== null)
+    ttb?.quick ? { kind: 'quick' as const, label: t.timeToBeatQuick, seconds: ttb.quick } : null,
+    ttb?.average ? { kind: 'average' as const, label: t.timeToBeatAverage, seconds: ttb.average } : null,
+    ttb?.total ? { kind: 'total' as const, label: t.timeToBeatTotal, seconds: ttb.total } : null,
+  ]
+    .filter((entry): entry is Omit<TimeToBeatEntry, 'value'> => entry !== null)
+    .map((entry) => ({ ...entry, value: formatTimeToBeat(entry.seconds) }))
 
   const artworks = game.media?.artworks ?? []
   const screenshots = game.media?.screenshots ?? []
@@ -139,7 +144,11 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
               }
             >
               {game.description ? (
-                <p className="leading-relaxed text-muted-foreground">{game.description}</p>
+                <ExpandableText
+                  text={game.description}
+                  moreLabel={t.showMore}
+                  lessLabel={t.showLess}
+                />
               ) : null}
             </DetailSection>
           )}
@@ -157,6 +166,12 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
 
           {(game.genres.length > 0 || game.themes.length > 0) && (
             <GameTags dict={dict} genres={game.genres} themes={game.themes} />
+          )}
+
+          {game.platforms.length > 0 && (
+            <DetailSection title={t.platforms}>
+              <GamePlatforms platforms={game.platforms} />
+            </DetailSection>
           )}
 
           {timeToBeatEntries.length > 0 && (
@@ -187,12 +202,6 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
             </DetailSection>
           )}
 
-          {game.platforms.length > 0 && (
-            <DetailSection title={t.platforms}>
-              <GamePlatforms platforms={game.platforms} />
-            </DetailSection>
-          )}
-
           {hasMedia && (
             <DetailSection title={t.media}>
               <GameMediaGallery
@@ -207,6 +216,9 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                   screenshots: t.mediaScreenshots,
                   videos: t.mediaVideos,
                   play: t.playVideo,
+                  fullscreen: t.fullscreen,
+                  previous: t.previous,
+                  next: t.next,
                 }}
               />
             </DetailSection>
@@ -216,7 +228,14 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
             <GameAdditionalContent
               expansions={expansions}
               dlcs={dlcs}
-              labels={{ expansions: t.expansions, dlcs: t.dlcs, releasesTitle: t.releases }}
+              labels={{
+                expansions: t.expansions,
+                dlcs: t.dlcs,
+                releasesTitle: t.releases,
+                addToCalendar: t.addToCalendar,
+                appleCalendar: t.appleCalendar,
+                googleCalendar: t.googleCalendar,
+              }}
             />
           )}
 

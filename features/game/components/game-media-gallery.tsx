@@ -4,22 +4,18 @@
  * lightbox dialog with a shared stage (a large image, or a YouTube player embedded
  * so videos play WITHOUT leaving the site) plus a category-filterable thumbnail grid.
  *
- * Video ids are normalized on the server (invalid ones dropped) so this component just
- * embeds them. Landscape images use `igdbKind="screenshot"` so the IGDB loader fetches
- * wide presets rather than cropped portrait covers.
+ * The dialog is height-capped to the viewport (only the thumbnail rail scrolls, so it
+ * never overflows the screen); the stage has prev/next arrows (also ← / → keyboard) and
+ * a fullscreen control for images. Video ids are normalized on the server. Landscape
+ * images use `igdbKind="screenshot"` so the loader fetches wide presets.
  */
 'use client'
 
-import { useMemo, useState, type ReactNode } from 'react'
-import { PlayIcon } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { ChevronLeftIcon, ChevronRightIcon, ExpandIcon, PlayIcon, ShrinkIcon } from 'lucide-react'
 
 import { AppImage } from '@/components/app-image'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 
 import { youtubeEmbedUrl, youtubeThumbUrl } from '../utils/media'
@@ -36,17 +32,24 @@ type Labels = {
   screenshots: string
   videos: string
   play: string
+  fullscreen: string
+  previous: string
+  next: string
 }
 
 function Thumb({
   item,
   label,
+  sizeClass = 'aspect-video',
   className,
   onClick,
   overlay,
 }: {
   item: MediaItem
   label: string
+  /** Sizing utility for the tile. Fixed height in the scrollable dialog grid (an
+   *  `aspect-ratio` box with a `fill` image collapses grid `auto` rows → overlap). */
+  sizeClass?: string
   className?: string
   onClick: () => void
   overlay?: ReactNode
@@ -58,7 +61,8 @@ function Thumb({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        'group relative aspect-video overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-all hover:ring-primary/50',
+        'group relative overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-all hover:ring-primary/50',
+        sizeClass,
         className,
       )}
     >
@@ -66,7 +70,7 @@ function Thumb({
         src={thumbSrc}
         alt=""
         fill
-        sizes="(max-width: 640px) 33vw, 240px"
+        sizes="(max-width: 640px) 33vw, 200px"
         igdbKind="screenshot"
         wrapperClassName="absolute inset-0"
         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -106,8 +110,50 @@ export function GameMediaGallery({
   const [activeKey, setActiveKey] = useState<string | null>(null)
   const [filter, setFilter] = useState<Category | 'all'>('all')
 
+  const filtered = useMemo(
+    () => (filter === 'all' ? items : items.filter((item) => item.category === filter)),
+    [items, filter],
+  )
   const active = items.find((item) => item.key === activeKey) ?? items[0]
-  const filtered = filter === 'all' ? items : items.filter((item) => item.category === filter)
+
+  const go = useCallback(
+    (delta: number) => {
+      if (filtered.length === 0) return
+      const current = filtered.findIndex((item) => item.key === active?.key)
+      const nextIndex = (((current === -1 ? 0 : current) + delta) % filtered.length + filtered.length) % filtered.length
+      setActiveKey(filtered[nextIndex].key)
+    },
+    [filtered, active],
+  )
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        go(1)
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        go(-1)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, go])
+
+  const [stage, setStage] = useState<HTMLDivElement | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(document.fullscreenElement === stage)
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [stage])
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) void document.exitFullscreen()
+    else void stage?.requestFullscreen?.()
+  }
 
   const categories: { id: Category | 'all'; label: string }[] = [
     { id: 'all', label: labels.all },
@@ -149,13 +195,16 @@ export function GameMediaGallery({
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-3xl lg:max-w-4xl">
+        <DialogContent className="flex max-h-[90svh] flex-col gap-3 sm:max-w-3xl lg:max-w-5xl">
           <DialogHeader>
             <DialogTitle>{labels.title}</DialogTitle>
           </DialogHeader>
 
           {active ? (
-            <div className="relative aspect-video overflow-hidden rounded-xl bg-black ring-1 ring-border">
+            <div
+              ref={setStage}
+              className="relative h-[40svh] shrink-0 overflow-hidden rounded-xl bg-black ring-1 ring-border sm:h-[46svh]"
+            >
               {active.kind === 'video' ? (
                 <iframe
                   key={active.key}
@@ -173,10 +222,47 @@ export function GameMediaGallery({
                   fill
                   sizes="(max-width: 1024px) 100vw, 1024px"
                   igdbKind="screenshot"
-                  wrapperClassName="absolute inset-0"
+                  wrapperClassName="absolute inset-0 !bg-transparent"
                   className="object-contain"
                 />
               )}
+
+              {active.kind === 'image' ? (
+                <button
+                  type="button"
+                  aria-label={labels.fullscreen}
+                  aria-pressed={isFullscreen}
+                  onClick={toggleFullscreen}
+                  className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center rounded-lg bg-black/50 text-white ring-1 ring-white/20 transition-colors hover:bg-black/70"
+                >
+                  {isFullscreen ? (
+                    <ShrinkIcon className="size-4" />
+                  ) : (
+                    <ExpandIcon className="size-4" />
+                  )}
+                </button>
+              ) : null}
+
+              {filtered.length > 1 ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label={labels.previous}
+                    onClick={() => go(-1)}
+                    className="absolute top-1/2 left-2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white ring-1 ring-white/20 transition-colors hover:bg-black/70"
+                  >
+                    <ChevronLeftIcon className="size-5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={labels.next}
+                    onClick={() => go(1)}
+                    className="absolute top-1/2 right-2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white ring-1 ring-white/20 transition-colors hover:bg-black/70"
+                  >
+                    <ChevronRightIcon className="size-5" />
+                  </button>
+                </>
+              ) : null}
             </div>
           ) : null}
 
@@ -200,12 +286,13 @@ export function GameMediaGallery({
             </div>
           ) : null}
 
-          <div className="grid max-h-[45svh] grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4">
+          <div className="grid min-h-0 flex-1 grid-cols-3 content-start gap-2 overflow-y-auto overscroll-contain p-1 sm:grid-cols-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {filtered.map((item) => (
               <Thumb
                 key={item.key}
                 item={item}
                 label={item.kind === 'video' ? labels.play : labels.viewGallery}
+                sizeClass="h-20 sm:h-24"
                 className={cn(active?.key === item.key && 'ring-2 ring-primary')}
                 onClick={() => setActiveKey(item.key)}
               />

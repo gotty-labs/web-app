@@ -1,24 +1,23 @@
 /**
  * DLC and expansions, grouped and clearly labelled. Each item is a cover card; opening
- * one reveals its sub-data (per-console/region release dates) in a dialog, so the page
- * shows the catalogue compactly and the detail lives one tap away.
+ * one slides up a bottom sheet with the full cover and its sub-data (per-console/region
+ * release dates, each with an "add to calendar" control).
  *
- * View-models (name/cover + localized release rows) are built on the server.
+ * View-models (name/cover + localized release rows incl. the raw ISO date for calendar
+ * events) are built on the server.
  */
 'use client'
 
 import { useState } from 'react'
 
 import { AppImage } from '@/components/app-image'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+
+import { CalendarMenu, type CalendarLabels } from './calendar-menu'
 
 export type DlcRelease = {
   id: string
+  dateIso: string
   dateLabel: string
   consoleName: string
   regionLabel: string
@@ -32,7 +31,7 @@ export type DlcItem = {
   releases: DlcRelease[]
 }
 
-type Labels = { expansions: string; dlcs: string; releasesTitle: string }
+type Labels = CalendarLabels & { expansions: string; dlcs: string; releasesTitle: string }
 
 function ItemGroup({
   title,
@@ -94,24 +93,25 @@ export function GameAdditionalContent({
       <ItemGroup title={labels.expansions} items={expansions} onOpen={setActive} />
       <ItemGroup title={labels.dlcs} items={dlcs} onOpen={setActive} />
 
-      <Dialog open={active !== null} onOpenChange={(next) => !next && setActive(null)}>
-        <DialogContent className="sm:max-w-md">
+      <Sheet open={active !== null} onOpenChange={(next) => !next && setActive(null)}>
+        <SheetContent side="bottom" className="max-h-[85svh]">
           {active ? (
             <>
-              <DialogHeader>
-                <DialogTitle>{active.name}</DialogTitle>
-              </DialogHeader>
-              <div className="flex gap-4">
-                <span className="relative aspect-3/4 w-24 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border">
+              <SheetHeader className="border-b border-border">
+                <SheetTitle>{active.name}</SheetTitle>
+              </SheetHeader>
+              <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 overflow-y-auto overscroll-contain px-4 pb-6 sm:flex-row [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <span className="relative aspect-3/4 w-40 shrink-0 self-center overflow-hidden rounded-xl bg-muted ring-1 ring-border sm:w-48 sm:self-start">
                   <AppImage
                     src={active.cover}
                     alt={active.name}
                     fill
-                    sizes="96px"
+                    sizes="192px"
                     wrapperClassName="absolute inset-0"
                     className="object-cover"
                   />
                 </span>
+
                 <div className="min-w-0 flex-1">
                   {active.releases.length > 0 ? (
                     <>
@@ -120,12 +120,33 @@ export function GameAdditionalContent({
                       </span>
                       <ul className="mt-2 flex flex-col gap-2">
                         {active.releases.map((release) => (
-                          <li key={release.id} className="text-sm">
-                            <span className="font-medium">{release.consoleName}</span>
-                            <span className="block text-xs text-muted-foreground">
-                              {release.regionLabel} · {release.dateLabel}
-                              {release.statusLabel ? ` · ${release.statusLabel}` : ''}
-                            </span>
+                          <li
+                            key={release.id}
+                            className="flex items-center gap-3 rounded-xl bg-card px-3.5 py-2.5 ring-1 ring-border"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                <span className="truncate text-sm font-medium">
+                                  {release.consoleName}
+                                </span>
+                                {release.statusLabel ? (
+                                  <span className="rounded-full bg-primary/12 px-2 py-0.5 text-[0.7rem] font-medium text-primary">
+                                    {release.statusLabel}
+                                  </span>
+                                ) : null}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {release.regionLabel} · {release.dateLabel}
+                              </div>
+                            </div>
+                            <CalendarMenu
+                              event={{
+                                title: `${active.name} — ${release.consoleName}`,
+                                date: release.dateIso,
+                                details: `${release.regionLabel} · ${release.consoleName}`,
+                              }}
+                              labels={labels}
+                            />
                           </li>
                         ))}
                       </ul>
@@ -135,8 +156,8 @@ export function GameAdditionalContent({
               </div>
             </>
           ) : null}
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }

@@ -11,23 +11,11 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { CalendarPlusIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
-import { buildGoogleCalendarUrl, downloadIcs } from '../utils/calendar'
+import { CalendarMenu, type CalendarLabels } from './calendar-menu'
 
 export type ReleaseRow = {
   id: string
@@ -39,23 +27,13 @@ export type ReleaseRow = {
   statusLabel?: string
 }
 
-type Labels = {
+type Labels = CalendarLabels & {
   gameName: string
   releasesTitle: string
   seeAll: string
-  addToCalendar: string
-  appleCalendar: string
-  googleCalendar: string
 }
 
 function ReleaseRowItem({ row, labels }: { row: ReleaseRow; labels: Labels }) {
-  const event = {
-    title: `${labels.gameName} — ${row.consoleName}`,
-    date: row.dateIso,
-    details: `${row.regionLabel} · ${row.consoleName}`,
-  }
-  const googleUrl = buildGoogleCalendarUrl(event)
-
   return (
     <div className="flex items-center gap-3 rounded-xl bg-card px-3.5 py-2.5 ring-1 ring-border">
       {row.consoleImage ? (
@@ -84,25 +62,14 @@ function ReleaseRowItem({ row, labels }: { row: ReleaseRow; labels: Labels }) {
         </div>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon-sm" aria-label={labels.addToCalendar}>
-            <CalendarPlusIcon />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => downloadIcs(event, 'release.ics')}>
-            {labels.appleCalendar}
-          </DropdownMenuItem>
-          {googleUrl ? (
-            <DropdownMenuItem
-              onSelect={() => window.open(googleUrl, '_blank', 'noopener,noreferrer')}
-            >
-              {labels.googleCalendar}
-            </DropdownMenuItem>
-          ) : null}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <CalendarMenu
+        event={{
+          title: `${labels.gameName} — ${row.consoleName}`,
+          date: row.dateIso,
+          details: `${row.regionLabel} · ${row.consoleName}`,
+        }}
+        labels={labels}
+      />
     </div>
   )
 }
@@ -128,7 +95,7 @@ export function GameReleaseDates({ rows, labels }: { rows: ReleaseRow[]; labels:
               <DialogHeader>
                 <DialogTitle>{labels.releasesTitle}</DialogTitle>
               </DialogHeader>
-              <div className="flex max-h-[70svh] flex-col gap-2.5 overflow-y-auto">
+              <div className="flex max-h-[70svh] flex-col gap-2.5 overflow-y-auto overscroll-contain px-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {rows.map((row) => (
                   <ReleaseRowItem key={row.id} row={row} labels={labels} />
                 ))}

@@ -82,11 +82,17 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const { status } = useSession()
 
   const [saved, setSaved] = useState(false)
+  const [ready, setReady] = useState(false)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
 
   useEffect(() => {
     if (status !== 'authenticated') return
     let active = true
+    // NOTE: `savedInLibrary` on the public game endpoint is currently user-agnostic
+    // (served from a shared `Cache-Control: public` cache), so it can read false for a
+    // game the user has actually saved, and revert after a refresh. This is a known
+    // BACKEND limitation to be fixed there (make it per-user, or add a per-game
+    // library-state endpoint); the island stays on the intended contract meanwhile.
     getGameForUser(slug)
       .then((game) => {
         if (active) setSaved(game.savedInLibrary)
@@ -94,12 +100,31 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
       .catch(() => {
         // savedInLibrary is a nicety; failing to read it shouldn't block actions.
       })
+      .finally(() => {
+        if (active) setReady(true)
+      })
     return () => {
       active = false
     }
   }, [slug, status])
 
+  // Hidden entirely for signed-out visitors; nothing to reserve while auth resolves.
   if (status !== 'authenticated') return null
+
+  // Wait until we know the real library state before painting a button set, so we
+  // never flash "Save" for a game that's already saved.
+  if (!ready) {
+    return (
+      <div className="flex gap-2 pt-1">
+        {[0, 1].map((i) => (
+          <div key={i} className="flex w-16 flex-col items-center gap-2">
+            <span className="size-12 animate-pulse rounded-full bg-muted" />
+            <span className="h-3 w-10 animate-pulse rounded bg-muted" />
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   const pending = pendingKey !== null
 
@@ -160,7 +185,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   return (
     <div
       key={saved ? 'saved' : 'unsaved'}
-      className="flex flex-wrap gap-2 duration-300 animate-in fade-in-50 zoom-in-95"
+      className="flex flex-wrap gap-2 pt-1 duration-300 animate-in fade-in-50"
     >
       {actions.map((action) => (
         <ActionItem

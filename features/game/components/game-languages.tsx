@@ -22,7 +22,7 @@ export function GameLanguages({
 }) {
   return (
     <div className="overflow-hidden rounded-xl ring-1 ring-border">
-      <div className="max-h-96 overflow-y-auto [scrollbar-width:thin]">
+      <div className="max-h-96 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
         <table className="w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-card">
             <tr className="border-b border-border">
