@@ -3,17 +3,18 @@
  * label underneath, instead of the old save button + three-dots menu. Rendered inside
  * the detail's client island (session + i18n + toaster on the otherwise-static page).
  *
- * The button SET depends on library membership (`savedInLibrary`, read WITH the token):
- *  - unauthenticated → the row is hidden entirely (no actions for signed-out visitors).
+ * The button set depends on `stored`, read WITH the token. It is omitted by the
+ * public endpoint for visitors without a session, so the row stays hidden for them.
  *  - saved = false   → Save · Whitelist.
  *  - saved = true    → Remove · Lists · Progress.
  * Swapping sets re-keys the row so it animates in; each icon reacts on hover/press so
  * the active↔inactive change is felt, not just shown. Lists/Progress are placeholders
- * (a "coming soon" toast) until their flows land; Save/Whitelist/Remove hit the backend.
+ * (a "coming soon" toast) until their flows land; Save/Whitelist/Remove and custom
+ * list membership hit the backend.
  */
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import {
   BookmarkPlusIcon,
   BookmarkXIcon,
@@ -23,15 +24,25 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
+import type { GameLibraryList } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 import { getGameForUser } from '../services/catalog'
-import { removeGameFromLibrary, storeGameInLibrary } from '../services/library'
+import { removeGameFromLibrary, storeGameInLibrary, updateLibraryList } from '../services/library'
 
 type Tone = 'primary' | 'default' | 'destructive'
 
@@ -82,23 +93,24 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const { status } = useSession()
 
   const [saved, setSaved] = useState(false)
+  const [hasStored, setHasStored] = useState(false)
+  const [lists, setLists] = useState<GameLibraryList[] | undefined>()
   const [ready, setReady] = useState(false)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
+  const [listSheetOpen, setListSheetOpen] = useState(false)
 
   useEffect(() => {
     if (status !== 'authenticated') return
     let active = true
-    // NOTE: `savedInLibrary` on the public game endpoint is currently user-agnostic
-    // (served from a shared `Cache-Control: public` cache), so it can read false for a
-    // game the user has actually saved, and revert after a refresh. This is a known
-    // BACKEND limitation to be fixed there (make it per-user, or add a per-game
-    // library-state endpoint); the island stays on the intended contract meanwhile.
     getGameForUser(slug)
       .then((game) => {
-        if (active) setSaved(game.savedInLibrary)
+        if (!active || !game.stored) return
+        setHasStored(true)
+        setSaved(game.stored.saved)
+        setLists(game.stored.lists)
       })
       .catch(() => {
-        // savedInLibrary is a nicety; failing to read it shouldn't block actions.
+        // The public response can legitimately omit `stored`; do not show actions.
       })
       .finally(() => {
         if (active) setReady(true)
@@ -118,13 +130,16 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
       <div className="flex gap-2 pt-1">
         {[0, 1].map((i) => (
           <div key={i} className="flex w-16 flex-col items-center gap-2">
-            <span className="size-12 animate-pulse rounded-full bg-muted" />
-            <span className="h-3 w-10 animate-pulse rounded bg-muted" />
+            <Skeleton className="size-12 rounded-full" />
+            <Skeleton className="h-3 w-10" />
           </div>
         ))}
       </div>
     )
   }
+
+  // `stored` is deliberately absent from unauthenticated public responses.
+  if (!hasStored) return null
 
   const pending = pendingKey !== null
 
@@ -144,6 +159,21 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const store = (key: string, input: StoreGameLibraryInput, msg: string) =>
     run(key, () => storeGameInLibrary(gameId, input), () => setSaved(true), msg)
 
+  const openListSheet = () => {
+    setListSheetOpen(true)
+  }
+
+  const saveToList = (listId: string) => {
+    if (pending) return
+    setListSheetOpen(false)
+    run(
+      'lists',
+      () => updateLibraryList(listId, { gameIds: [gameId], save: true }),
+      () => undefined,
+      t.listSavedToast,
+    )
+  }
+
   const comingSoon = () => toast(t.comingSoon)
 
   const actions: Action[] = saved
@@ -156,7 +186,17 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
           onClick: () =>
             run('remove', () => removeGameFromLibrary(gameId), () => setSaved(false), t.removedToast),
         },
-        { key: 'lists', label: t.lists, tone: 'default', icon: <ListPlusIcon />, onClick: comingSoon },
+        ...(lists && lists.length > 0
+          ? [
+              {
+                key: 'lists',
+                label: t.lists,
+                tone: 'default' as const,
+                icon: <ListPlusIcon />,
+                onClick: openListSheet,
+              },
+            ]
+          : []),
         {
           key: 'progress',
           label: t.progressLabel,
@@ -183,18 +223,61 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
       ]
 
   return (
-    <div
-      key={saved ? 'saved' : 'unsaved'}
-      className="flex flex-wrap gap-2 pt-1 duration-300 animate-in fade-in-50"
-    >
-      {actions.map((action) => (
-        <ActionItem
-          key={action.key}
-          action={action}
-          disabled={pending}
-          busy={pendingKey === action.key}
-        />
-      ))}
-    </div>
+    <>
+      <div
+        key={saved ? 'saved' : 'unsaved'}
+        className="flex flex-wrap gap-2 pt-1 duration-300 animate-in fade-in-50"
+      >
+        {actions.map((action) => (
+          <ActionItem
+            key={action.key}
+            action={action}
+            disabled={pending}
+            busy={pendingKey === action.key}
+          />
+        ))}
+      </div>
+
+      <Sheet open={listSheetOpen} onOpenChange={setListSheetOpen}>
+        <SheetContent side="bottom">
+          <SheetHeader>
+            <SheetTitle>{t.listDialogTitle}</SheetTitle>
+            <SheetDescription>{t.listLibraryDisclaimer}</SheetDescription>
+          </SheetHeader>
+
+          <div className="flex max-h-[60dvh] flex-col gap-3 overflow-y-auto px-4 pb-4">
+            {lists?.map((list) => (
+              <Card
+                key={list.id}
+                size="sm"
+                role="button"
+                tabIndex={pending ? -1 : 0}
+                aria-disabled={pending}
+                className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => saveToList(list.id)}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return
+                  event.preventDefault()
+                  saveToList(list.id)
+                }}
+              >
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <span
+                      aria-hidden
+                      className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg break-all text-center text-xs leading-none"
+                      style={{ backgroundColor: list.hexColor } as CSSProperties}
+                    >
+                      {list.icon}
+                    </span>
+                    <CardTitle className="truncate">{list.name}</CardTitle>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }

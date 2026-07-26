@@ -3,7 +3,7 @@
  * app these go through `authedRequest` — a token is sent (the backend allows it on
  * Guest routes). Game detail reads hit the SINGLE canonical public endpoint
  * (`GET /game/public/:slug`, same as the SEO zone); passing the token lets the
- * backend enrich the response with user-specific fields (`savedInLibrary`, and
+ * backend enrich the response with user-specific fields (`stored`, and
  * future per-user data) when present, and return the plain public shape otherwise.
  *
  * Query inputs are Zod-parsed before sending (client-side UX validation, e.g.
@@ -75,7 +75,7 @@ export function getGamesBySection(input: GameFilterSectionInput): Promise<Pagina
 /**
  * Game detail read CLIENT-SIDE with the user's token. Hits the SAME public endpoint
  * the SEO zone reads (`/game/public/:slug`), but via `authedRequest` so the JWT rides
- * along and the backend can add user-specific fields (`savedInLibrary`, …). One
+ * along and the backend can add user-specific fields (`stored`, …). One
  * canonical game endpoint for the whole web — no `/game/:id` split. The cached SSG
  * render (no token) still shows the plain public shape.
  */

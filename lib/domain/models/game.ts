@@ -26,6 +26,7 @@ import {
   engineSchema,
   gameConsoleSchema,
   gameDlcSchema,
+  gameLibraryListSchema,
   gameReleaseDateSchema,
   ratingSchema,
   timeToBeatSchema,
@@ -112,7 +113,14 @@ export const gameDtoSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   storyline: z.string().optional(),
-  savedInLibrary: z.boolean(),
+  // User-specific library data is omitted altogether for a guest request.
+  stored: z
+    .object({
+      saved: z.boolean(),
+      // Optional while the enriched public endpoint is rolled out independently.
+      lists: z.array(gameLibraryListSchema).optional(),
+    })
+    .optional(),
   ageRating: z.array(z.object({ organization: gameAgeRatingSchema, rate: z.string() })),
   rating: ratingSchema.optional(),
   timeToBeat: timeToBeatSchema.optional(),
