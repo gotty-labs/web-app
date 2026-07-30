@@ -13,6 +13,7 @@ export {
   updateLibraryList,
   deleteLibraryList,
   storeGameInLibrary,
+  removeGameFromLibrary,
 } from './services/library'
 export { getSitemapEntries, getPublicGame, SEO_REVALIDATE_SECONDS } from './services/seo'
 

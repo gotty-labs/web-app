@@ -95,7 +95,7 @@
     },
     "libraryStatus": {
       "SAVED": "Guardado",
-      "WHITELIST": "Whitelist"
+      "WHITELIST": "Deseados"
     },
     "region": {
       "EUROPE": "Europa",
@@ -209,7 +209,7 @@
         },
         "library": {
           "title": "Tu biblioteca, tus reglas",
-          "description": "Guarda los juegos que tienes, añade a tu whitelist los que sigues y tenlo todo ordenado en un solo sitio."
+          "description": "Guarda los juegos que tienes, añade a deseados los que sigues y tenlo todo ordenado en un solo sitio."
         },
         "progress": {
           "title": "Sigue cada partida",
@@ -226,7 +226,7 @@
           },
           {
             "title": "Guarda lo que quieres jugar",
-            "description": "Explora el feed o busca cualquier título y añádelo a tu biblioteca o whitelist con un toque."
+            "description": "Explora el feed o busca cualquier título y añádelo a tu biblioteca o a deseados con un toque."
           },
           {
             "title": "Sigue tu progreso hasta los créditos",
@@ -369,13 +369,73 @@
       "timeToBeat": "Duración estimada"
     },
     "library": {
+      "title": "Mi Biblioteca",
       "savedTab": "Biblioteca",
-      "whitelistTab": "Whitelist",
+      "whitelistTab": "Deseados",
       "listsLabel": "Lista",
       "allLists": "Todas las listas",
-      "savedEmpty": "Tu biblioteca está vacía. Guarda un juego para verlo aquí.",
-      "whitelistEmpty": "Tu whitelist está vacía.",
-      "emptyCta": "Descubrir juegos"
+      "newList": "Nueva lista",
+      "newListDescription": "Crea una estantería a tu gusto y añade juegos ahora o más adelante.",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Nombre de la lista",
+      "nameRequired": "Escribe un nombre para la lista.",
+      "nameTooLong": "El nombre puede tener hasta 60 caracteres.",
+      "nameExists": "Ya tienes una lista con ese nombre.",
+      "colorLabel": "Color",
+      "customColorLabel": "Elegir cualquier color",
+      "colorHexLabel": "Color hexadecimal",
+      "colorInvalid": "Usa un color #RGB o #RRGGBB válido.",
+      "iconLabel": "Icono",
+      "gameSearchLabel": "Añadir juegos",
+      "gameSearchPlaceholder": "Buscar juegos para añadir…",
+      "gameSearchNoResults": "No se encontraron juegos.",
+      "gameSearchHint": "Escribe al menos 3 caracteres.",
+      "selectedGames": "Juegos seleccionados",
+      "createList": "Crear lista",
+      "listCreatedToast": "Lista creada",
+      "deleteList": "Eliminar lista",
+      "deleteListTitle": "¿Eliminar esta lista?",
+      "deleteListDescription": "¿Quieres eliminar la lista {list}? Los juegos seguirán en tu biblioteca.",
+      "listDeletedToast": "Lista eliminada",
+      "savedEmpty": "Tu biblioteca está vacía",
+      "savedEmptyDescription": "Explora y guarda juegos para empezar tu colección personal.",
+      "whitelistEmpty": "Tu lista de deseos está vacía",
+      "whitelistEmptyDescription": "Guarda juegos que te interesen para no perderles la pista.",
+      "listEmpty": "Esta lista no tiene juegos todavía.",
+      "emptyCta": "Explorar juegos",
+      "loadError": "No pudimos cargar tu biblioteca.",
+      "actionsTitle": "Acciones del juego",
+      "moreInfo": "Más información",
+      "viewProgress": "Ver progreso",
+      "updateProgress": "Actualizar estado y progreso",
+      "addToList": "Añadir a una lista",
+      "removeFromLibrary": "Eliminar de la biblioteca",
+      "removeFromWhitelist": "Eliminar de deseados",
+      "addToLibrary": "Añadir a la biblioteca",
+      "removeFromList": "Eliminar de esta lista",
+      "noProgress": "Sin progreso registrado.",
+      "progressSummary": "Estado: {state} · {hours} h de {total} h",
+      "progressStateLabel": "Estado",
+      "progressDurationLabel": "Horas jugadas",
+      "progressDurationHint": "Máximo: {hours} h",
+      "progressCardLabel": "{current} h jugadas de {total} h",
+      "saveChanges": "Guardar cambios",
+      "listChoiceLabel": "Elige una lista",
+      "openGame": "Abrir detalles del juego",
+      "transferListTitle": "¿Transferir el juego a esta lista?",
+      "transferListDescription": "Un juego solo puede estar en una lista personalizada. {game} se eliminará de su lista actual y se moverá a {list}.",
+      "confirmTransfer": "Transferir juego",
+      "confirmRemoveTitle": "¿Eliminar juego?",
+      "confirmRemoveDescription": "¿Quieres eliminar {game} de tu biblioteca?",
+      "confirmRemoveListDescription": "¿Quieres eliminar {game} de esta lista? Seguirá en tu biblioteca.",
+      "confirmRemove": "Eliminar",
+      "removedToast": "Eliminado de tu biblioteca",
+      "removedWhitelistToast": "Eliminado de deseados",
+      "addedToast": "Añadido a tu biblioteca",
+      "removedFromListToast": "Eliminado de la lista",
+      "actionFailed": "No se pudo completar la acción. Reintenta.",
+      "releaseLabel": "Lanzamiento",
+      "released": "Ya disponible"
     },
     "settings": {
       "title": "Ajustes",

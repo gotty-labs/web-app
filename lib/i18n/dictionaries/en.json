@@ -95,7 +95,7 @@
     },
     "libraryStatus": {
       "SAVED": "Saved",
-      "WHITELIST": "Whitelist"
+      "WHITELIST": "Wishlist"
     },
     "region": {
       "EUROPE": "Europe",
@@ -209,7 +209,7 @@
         },
         "library": {
           "title": "Your library, your rules",
-          "description": "Save the games you own, whitelist the ones you're watching, and keep everything in one tidy place."
+          "description": "Save the games you own, add the ones you're watching to your wishlist, and keep everything in one tidy place."
         },
         "progress": {
           "title": "Track every playthrough",
@@ -226,7 +226,7 @@
           },
           {
             "title": "Save what you want to play",
-            "description": "Browse the feed or search anything, then add it to your library or whitelist in one tap."
+            "description": "Browse the feed or search anything, then add it to your library or wishlist in one tap."
           },
           {
             "title": "Track until the credits roll",
@@ -369,13 +369,73 @@
       "timeToBeat": "Time to beat"
     },
     "library": {
+      "title": "My Library",
       "savedTab": "Library",
-      "whitelistTab": "Whitelist",
+      "whitelistTab": "Wishlist",
       "listsLabel": "List",
       "allLists": "All lists",
-      "savedEmpty": "Your library is empty. Save a game to see it here.",
-      "whitelistEmpty": "Your whitelist is empty.",
-      "emptyCta": "Discover games"
+      "newList": "New list",
+      "newListDescription": "Create a curated shelf and add games now or later.",
+      "nameLabel": "Name",
+      "namePlaceholder": "List name",
+      "nameRequired": "Enter a name for your list.",
+      "nameTooLong": "The name can contain up to 60 characters.",
+      "nameExists": "You already have a list with that name.",
+      "colorLabel": "Color",
+      "customColorLabel": "Choose any color",
+      "colorHexLabel": "Hex color",
+      "colorInvalid": "Use a valid #RGB or #RRGGBB color.",
+      "iconLabel": "Icon",
+      "gameSearchLabel": "Add games",
+      "gameSearchPlaceholder": "Search games to add…",
+      "gameSearchNoResults": "No games found.",
+      "gameSearchHint": "Type at least 3 characters.",
+      "selectedGames": "Selected games",
+      "createList": "Create list",
+      "listCreatedToast": "List created",
+      "deleteList": "Delete list",
+      "deleteListTitle": "Delete this list?",
+      "deleteListDescription": "Do you want to delete {list}? Its games will stay in your library.",
+      "listDeletedToast": "List deleted",
+      "savedEmpty": "Your library is empty",
+      "savedEmptyDescription": "Explore and save games to start your personal collection.",
+      "whitelistEmpty": "Your wishlist is empty",
+      "whitelistEmptyDescription": "Save games you are interested in so you do not lose track of them.",
+      "listEmpty": "This list does not have any games yet.",
+      "emptyCta": "Explore games",
+      "loadError": "We could not load your library.",
+      "actionsTitle": "Game actions",
+      "moreInfo": "More info",
+      "viewProgress": "View progress",
+      "updateProgress": "Update status and progress",
+      "addToList": "Add to a list",
+      "removeFromLibrary": "Remove from library",
+      "removeFromWhitelist": "Remove from wishlist",
+      "addToLibrary": "Add to library",
+      "removeFromList": "Remove from this list",
+      "noProgress": "No progress recorded.",
+      "progressSummary": "Status: {state} · {hours} h of {total} h",
+      "progressStateLabel": "Status",
+      "progressDurationLabel": "Hours played",
+      "progressDurationHint": "Maximum: {hours} h",
+      "progressCardLabel": "{current} h played out of {total} h",
+      "saveChanges": "Save changes",
+      "listChoiceLabel": "Choose a list",
+      "openGame": "Open game details",
+      "transferListTitle": "Transfer game to this list?",
+      "transferListDescription": "A game can only belong to one custom list. {game} will be removed from its current list and moved to {list}.",
+      "confirmTransfer": "Transfer game",
+      "confirmRemoveTitle": "Remove game?",
+      "confirmRemoveDescription": "Do you want to remove {game} from your library?",
+      "confirmRemoveListDescription": "Do you want to remove {game} from this list? It will stay in your library.",
+      "confirmRemove": "Remove",
+      "removedToast": "Removed from your library",
+      "removedWhitelistToast": "Removed from your wishlist",
+      "addedToast": "Added to your library",
+      "removedFromListToast": "Removed from the list",
+      "actionFailed": "The action could not be completed. Try again.",
+      "releaseLabel": "Release",
+      "released": "Available now"
     },
     "settings": {
       "title": "Settings",

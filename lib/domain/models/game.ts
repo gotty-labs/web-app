@@ -88,6 +88,12 @@ export const gameLibrarySchema = gameSummarySchema.extend({
     state: gameLibraryProgressStateSchema,
     duration: z.number().optional(),
   }),
+  list: z
+    .object({
+      icon: z.string(),
+      hexColor: z.string(),
+    })
+    .optional(),
   timeToBeat: timeToBeatSchema.optional(),
   engines: z.array(engineSchema),
   companies: companiesSchema,
