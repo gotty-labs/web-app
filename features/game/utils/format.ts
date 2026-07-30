@@ -21,6 +21,12 @@ export function isFutureDate(iso?: string): boolean {
   return date !== null && date > DateTime.now()
 }
 
+/** True only when the date belongs to a calendar day before today. */
+export function isBeforeToday(iso?: string): boolean {
+  const date = parseIsoDate(iso)
+  return date !== null && date.startOf('day') < DateTime.now().startOf('day')
+}
+
 /**
  * Compact release date for card chips: same year → "Dec 12" / "12 dic";
  * later years → "Dec 2026" / "dic 2026" (the month matters less than the year).

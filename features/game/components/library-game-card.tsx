@@ -20,11 +20,11 @@ import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 import { progressStateBadgeClass } from '../config/progress-state-styles'
-import { formatReleaseChip, timeToBeatHours } from '../utils/format'
+import { DEFAULT_MAX_TIME_TO_BEAT } from '../constants/default-max-time-to-beast.const'
+import { formatReleaseChip, isBeforeToday, timeToBeatHours } from '../utils/format'
 import { gameGenreLabel, gameProgressStateLabel } from '../utils/labels'
 
 import { LibraryListIcon } from './library-list-icon'
-import { DEFAULT_MAX_TIME_TO_BEAT } from '../constants/default-max-time-to-beast.const'
 
 function progressMetrics(game: GameLibrary) {
   if (game.progress.state === 'NOT_STARTED') return undefined
@@ -60,9 +60,13 @@ export function LibraryGameCard({
   const dict = useDictionary()
   const locale = useLocale()
   const t = dict.app.library
-  const progress = progressMetrics(game)
-  const releaseDate =
-    mode === 'whitelist' && game.releaseDate ? formatReleaseChip(game.releaseDate, locale) : ''
+  const progress = mode === 'library' ? progressMetrics(game) : undefined
+  const releaseText =
+    mode === 'whitelist' && game.releaseDate
+      ? isBeforeToday(game.releaseDate)
+        ? t.released
+        : `${t.releaseLabel} · ${formatReleaseChip(game.releaseDate, locale)}`
+      : ''
   const developer = game.companies.develop[0]
   const rating = game.rating?.value
   const currentHours = progress?.currentHours.toLocaleString(locale, { maximumFractionDigits: 1 })
@@ -98,16 +102,18 @@ export function LibraryGameCard({
           </div>
         </div>
 
-        <div className="pointer-events-none absolute top-0 left-0 z-10 size-16 overflow-hidden">
-          <Badge
-            className={cn(
-              'absolute top-2.5 -left-7 h-5 w-24 -rotate-45 rounded-none border-0 px-0 text-[7px] leading-none font-bold tracking-[0.06em] uppercase shadow-sm',
-              progressStateBadgeClass[game.progress.state],
-            )}
-          >
-            {gameProgressStateLabel(dict, game.progress.state)}
-          </Badge>
-        </div>
+        {mode === 'library' ? (
+          <div className="pointer-events-none absolute top-0 left-0 z-10 size-16 overflow-hidden">
+            <Badge
+              className={cn(
+                'absolute top-2.5 -left-7 h-5 w-24 -rotate-45 rounded-none border-0 px-0 text-[7px] leading-none font-bold tracking-[0.06em] uppercase shadow-sm',
+                progressStateBadgeClass[game.progress.state],
+              )}
+            >
+              {gameProgressStateLabel(dict, game.progress.state)}
+            </Badge>
+          </div>
+        ) : null}
 
         {game.platforms.length > 0 ? (
           <div className="pointer-events-none absolute top-2 right-2 flex items-center [&>*+*]:-ml-2">
@@ -187,8 +193,10 @@ export function LibraryGameCard({
         ) : null}
       </CardHeader>
 
-      {progress || releaseDate ? (
-        <CardContent className="flex flex-col gap-2.5 pb-4">
+      {progress || releaseText ? (
+        <CardContent className="mt-auto flex flex-col gap-2.5 pb-4">
+          {releaseText ? <p className="text-muted-foreground text-xs">{releaseText}</p> : null}
+
           {progress && currentHours && totalHours ? (
             <div className="relative pt-5">
               <Badge
@@ -221,12 +229,6 @@ export function LibraryGameCard({
                 <span>{totalHours} h</span>
               </div>
             </div>
-          ) : null}
-
-          {releaseDate ? (
-            <p className="text-muted-foreground text-xs">
-              {t.releaseLabel} · {releaseDate}
-            </p>
           ) : null}
         </CardContent>
       ) : null}

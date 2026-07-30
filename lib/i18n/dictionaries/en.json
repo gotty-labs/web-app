@@ -434,7 +434,8 @@
       "addedToast": "Added to your library",
       "removedFromListToast": "Removed from the list",
       "actionFailed": "The action could not be completed. Try again.",
-      "releaseLabel": "Release"
+      "releaseLabel": "Release",
+      "released": "Available now"
     },
     "settings": {
       "title": "Settings",

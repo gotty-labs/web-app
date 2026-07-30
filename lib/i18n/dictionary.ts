@@ -322,6 +322,7 @@ export const dictionarySchema = z.object({
       removedFromListToast: z.string(),
       actionFailed: z.string(),
       releaseLabel: z.string(),
+      released: z.string(),
     }),
     settings: z.object({
       title: z.string(),
