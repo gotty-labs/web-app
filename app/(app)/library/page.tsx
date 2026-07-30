@@ -5,6 +5,14 @@
  */
 import { GameLibrary } from '@/features/game'
 
-export default function LibraryPage() {
-  return <GameLibrary />
+export default async function LibraryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string | string[]; listId?: string | string[] }>
+}) {
+  const query = await searchParams
+  const mode = query.mode === 'whitelist' ? 'whitelist' : 'library'
+  const listId = typeof query.listId === 'string' && mode === 'library' ? query.listId : undefined
+
+  return <GameLibrary initialMode={mode} initialListId={listId} />
 }

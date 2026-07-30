@@ -44,10 +44,10 @@ export interface LibraryState {
   reload: () => void
 }
 
-export function useLibrary(initialStatus: UserGameLibraryStatus = 'SAVED'): LibraryState {
-  const [criteria, setCriteria] = useState<LibraryCriteria>({ status: initialStatus })
-  const { items, loading, error, hasMore, loadMore, reset } = useCursorPagerList<GameLibrary>(
-    () => buildPager({ status: initialStatus }),
+export function useLibrary(initialCriteria: LibraryCriteria = { status: 'SAVED' }): LibraryState {
+  const [criteria, setCriteria] = useState<LibraryCriteria>(initialCriteria)
+  const { items, loading, error, hasMore, loadMore, reset } = useCursorPagerList<GameLibrary>(() =>
+    buildPager(initialCriteria),
   )
 
   useEffect(() => {
@@ -68,5 +68,14 @@ export function useLibrary(initialStatus: UserGameLibraryStatus = 'SAVED'): Libr
     void loadMore()
   }, [criteria, reset, loadMore])
 
-  return { items, loading, error, hasMore, criteria, apply, loadMore: () => void loadMore(), reload }
+  return {
+    items,
+    loading,
+    error,
+    hasMore,
+    criteria,
+    apply,
+    loadMore: () => void loadMore(),
+    reload,
+  }
 }
