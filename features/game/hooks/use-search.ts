@@ -15,7 +15,10 @@
 import { useCallback, useState } from 'react'
 
 import { CursorPager } from '@/lib/api/cursor-pager'
-import { useCursorPagerList } from '@/lib/api/hooks/use-cursor-pager-list'
+import {
+  useCursorPagerList,
+  type CursorPagerLoadResult,
+} from '@/lib/api/hooks/use-cursor-pager-list'
 import type { GameSearchInput } from '@/lib/domain/inputs'
 import type { GameSummary } from '@/lib/domain/models'
 
@@ -29,8 +32,9 @@ export interface SearchCriteria {
 
 function buildInput(criteria: SearchCriteria, cursor?: string): GameSearchInput {
   const query = criteria.query.trim()
+  if (query.length >= 3) return { query, cursor }
+
   return {
-    query: query.length >= 3 ? query : undefined,
     consoleIds: criteria.consoleIds.length > 0 ? criteria.consoleIds : undefined,
     content: criteria.content || undefined,
     cursor,
@@ -49,7 +53,10 @@ export interface SearchState {
   error: unknown
   hasMore: boolean
   touched: boolean
-  search: (criteria: SearchCriteria) => void
+  search: (
+    criteria: SearchCriteria,
+    options?: { preserveItems?: boolean },
+  ) => Promise<CursorPagerLoadResult>
   loadMore: () => void
   /** Clear results AND `touched`, so the next search is a clean interaction. */
   reset: () => void
@@ -57,17 +64,24 @@ export interface SearchState {
 
 export function useSearch(): SearchState {
   const [touched, setTouched] = useState(false)
-  const { items, loading, error, hasMore, loadMore, reset: resetList } = useCursorPagerList<GameSummary>()
+  const {
+    items,
+    loading,
+    error,
+    hasMore,
+    loadMore,
+    reset: resetList,
+  } = useCursorPagerList<GameSummary>()
 
   const search = useCallback(
-    (criteria: SearchCriteria) => {
+    async (criteria: SearchCriteria, options?: { preserveItems?: boolean }) => {
       setTouched(true)
       if (!hasUsableCriteria(criteria)) {
         resetList(null)
-        return
+        return { ok: true } as const
       }
-      resetList(new CursorPager((cursor) => searchGames(buildInput(criteria, cursor))))
-      void loadMore()
+      resetList(new CursorPager((cursor) => searchGames(buildInput(criteria, cursor))), options)
+      return loadMore()
     },
     [resetList, loadMore],
   )
