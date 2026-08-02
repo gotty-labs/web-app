@@ -51,7 +51,7 @@ export function SeeAllDialog({
           width, which is already right. */}
       <DialogContent className="sm:max-w-2xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="font-pixel text-xl font-semibold">{title}</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70svh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <GameResultsGrid

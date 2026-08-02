@@ -21,7 +21,7 @@ export function DetailSection({
   return (
     <section className={cn('flex flex-col gap-4', className)}>
       <div className="flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2.5 font-heading text-lg font-semibold tracking-tight sm:text-xl">
+        <h2 className="flex items-center gap-2.5 font-pixel text-lg font-semibold sm:text-xl">
           <span aria-hidden className="h-5 w-1 rounded-full bg-primary" />
           {title}
         </h2>

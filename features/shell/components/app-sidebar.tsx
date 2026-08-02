@@ -58,7 +58,7 @@ export function AppSidebar() {
               <SidebarMenuButton asChild size="lg" tooltip={dict.app.brand.name}>
                 <Link href="/home" onClick={closeMobile}>
                   <Gamepad2Icon className="text-primary" />
-                  <span className="font-heading text-base font-semibold tracking-tight">
+                  <span className="font-pixel text-base font-semibold">
                     {dict.app.brand.name}
                   </span>
                 </Link>

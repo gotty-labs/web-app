@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist_Mono, Montserrat, Source_Sans_3 } from 'next/font/google'
+import { Geist_Mono, Montserrat, Pixelify_Sans, Source_Sans_3 } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Agentation } from 'agentation'
@@ -18,6 +18,11 @@ const sourceSans = Source_Sans_3({
 // Headings (`font-heading`) — geometric display with more presence.
 const montserrat = Montserrat({
   variable: '--font-montserrat',
+  subsets: ['latin'],
+})
+
+const pixelifySans = Pixelify_Sans({
+  variable: '--font-pixelify-sans',
   subsets: ['latin'],
 })
 
@@ -41,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${sourceSans.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
+      className={`dark ${sourceSans.variable} ${montserrat.variable} ${pixelifySans.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">
         {children}

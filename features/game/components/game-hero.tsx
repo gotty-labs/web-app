@@ -83,7 +83,7 @@ export function GameHero({
               <RatingBadge value={game.rating?.value} quantity={game.rating?.quantity} />
             </div>
 
-            <h1 className="font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl md:text-5xl">
+            <h1 className="font-pixel text-3xl font-bold text-balance sm:text-4xl md:text-5xl">
               {game.name}
             </h1>
 

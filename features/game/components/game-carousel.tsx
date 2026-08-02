@@ -36,13 +36,13 @@ export function GameCarousel({
         <button
           type="button"
           onClick={onSeeAll}
-          className="group flex w-fit items-center gap-1 text-base font-semibold md:text-lg"
+          className="group flex w-fit items-center gap-1 font-pixel text-base font-semibold md:text-lg"
         >
           {title}
           <ChevronRightIcon className="text-muted-foreground size-5 transition-transform group-hover:translate-x-0.5" />
         </button>
       ) : (
-        <h2 className="text-base font-semibold md:text-lg">{title}</h2>
+        <h2 className="font-pixel text-base font-semibold md:text-lg">{title}</h2>
       )}
 
       <Carousel opts={{ align: 'start', dragFree: true, loop: true }} className="w-full">
