@@ -98,6 +98,9 @@
   --progress-blocked-foreground: oklch(0.985 0 0);
   --progress-completed: oklch(0.6 0.16 150);
   --progress-completed-foreground: oklch(0.985 0 0);
+  --filter-header-expanded-height: 5rem;
+  --filter-header-collapsed-height: 3rem;
+  --filter-panel-max-height: min(62svh, 34rem);
 }
 
 /* Dark surfaces = violet-tinted charcoal (never pure black): every neutral
