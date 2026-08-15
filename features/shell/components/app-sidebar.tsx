@@ -10,8 +10,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Gamepad2Icon, MessageSquareIcon, MonitorIcon } from 'lucide-react'
+import { MessageSquareIcon, MonitorIcon } from 'lucide-react'
 
+import { BrandMark } from '@/components/brand-mark'
 import {
   Sidebar,
   SidebarContent,
@@ -57,10 +58,8 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild size="lg" tooltip={dict.app.brand.name}>
                 <Link href="/home" onClick={closeMobile}>
-                  <Gamepad2Icon className="text-primary" />
-                  <span className="font-pixel text-base font-semibold">
-                    {dict.app.brand.name}
-                  </span>
+                  <BrandMark wrapperClassName="size-8 rounded-md" sizes="32px" priority />
+                  <span className="font-pixel text-base font-semibold">{dict.app.brand.name}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

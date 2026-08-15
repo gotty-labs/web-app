@@ -6,7 +6,7 @@
  * the gate to `authenticated` and unmounts this modal — so it never closes itself.
  *
  * One component, four views (login / register / forgot / forgotSent) driven by local
- * state, all sharing the same branded shell: app-icon card over a soft violet gradient
+ * state, all sharing the same branded shell: logo card over a soft violet gradient
  * with a faint tiled-logo watermark, icon-prefixed inputs, a full-width primary CTA and
  * a Google-only social option (Apple/Facebook are intentionally absent). The
  * "reset link sent" view swaps the icon for a Lottie success check.
@@ -23,11 +23,11 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon, XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { BrandMark } from '@/components/brand-mark'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -182,7 +182,7 @@ export function AuthModal() {
           <XIcon className="size-4" />
         </button>
 
-        {/* Decorative branded backdrop: soft violet gradient + faint tiled app-icon. */}
+        {/* Decorative branded backdrop: soft violet gradient + faint tiled logo. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent"
@@ -190,7 +190,10 @@ export function AuthModal() {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-44 opacity-[0.05] [mask-image:linear-gradient(to_bottom,black,transparent)]"
-          style={{ backgroundImage: 'url(/assets/images/app_icon.webp)', backgroundSize: '52px' }}
+          style={{
+            backgroundImage: 'url(/assets/images/app-icon-logo.png)',
+            backgroundSize: '64px',
+          }}
         />
 
         {view === 'forgotSent' ? (
@@ -213,16 +216,7 @@ export function AuthModal() {
         ) : (
           <>
             <div className="relative z-10 flex flex-col items-center gap-3 px-6 pt-10 pb-6">
-              <div className="flex size-16 items-center justify-center rounded-2xl bg-card shadow-lg ring-1 ring-border/50">
-                <Image
-                  src="/assets/images/app_icon.webp"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="rounded-xl"
-                  priority
-                />
-              </div>
+              <BrandMark wrapperClassName="h-16 w-20" sizes="80px" priority />
               <DialogHeader className="items-center gap-1.5 text-center sm:text-center">
                 <DialogTitle className="text-2xl">{titles[view].title}</DialogTitle>
                 <DialogDescription className="text-balance">
