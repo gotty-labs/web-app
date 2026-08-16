@@ -15,14 +15,14 @@ export function GamePlatforms({ platforms }: { platforms: GameConsole[] }) {
           key={platform.id}
           className="group flex items-center gap-2.5 rounded-xl bg-card px-3.5 py-2.5 ring-1 ring-border transition-all hover:-translate-y-0.5 hover:ring-primary/40"
         >
-          {platform.image ? (
-            <span className="flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+          {platform.media.image ? (
+            <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-transparent">
               <Image
-                src={platform.image}
+                src={platform.media.image}
                 alt=""
-                width={20}
-                height={20}
-                className="size-5 object-contain"
+                width={36}
+                height={36}
+                className="size-9 object-contain"
               />
             </span>
           ) : null}

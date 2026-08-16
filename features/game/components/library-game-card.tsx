@@ -118,14 +118,15 @@ export function LibraryGameCard({
         {game.platforms.length > 0 ? (
           <div className="pointer-events-none absolute top-2 right-2 flex items-center [&>*+*]:-ml-2">
             {game.platforms.slice(0, 3).map((platform) =>
-              platform.image ? (
+              platform.media.image ? (
                 <AppImage
                   key={platform.id}
-                  src={platform.image}
+                  src={platform.media.image}
                   alt={platform.name}
                   width={32}
                   height={32}
                   wrapperClassName="size-8 shrink-0 rounded-full border-2 border-card shadow-sm"
+                  wrapperStyle={{ backgroundColor: platform.media.color }}
                   className="size-full object-cover"
                 />
               ) : (

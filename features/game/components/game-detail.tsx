@@ -16,10 +16,7 @@ import { getDictionary, type Locale } from '@/lib/i18n'
 import type { GameReleaseDate } from '@/lib/domain/models'
 
 import { findPublicGame } from '../services/seo'
-import {
-  gameRegionLabel,
-  gameReleaseStatusLabel,
-} from '../utils/labels'
+import { gameRegionLabel, gameReleaseStatusLabel } from '../utils/labels'
 import {
   formatFullDate,
   formatMediumDate,
@@ -55,7 +52,9 @@ function earliestRelease(releases: GameReleaseDate[]): string | undefined {
 
 /** Ascending by date (undated last), for release lists. */
 function byDateAsc(a: GameReleaseDate, b: GameReleaseDate): number {
-  return (parseIsoDate(a.date)?.toMillis() ?? Infinity) - (parseIsoDate(b.date)?.toMillis() ?? Infinity)
+  return (
+    (parseIsoDate(a.date)?.toMillis() ?? Infinity) - (parseIsoDate(b.date)?.toMillis() ?? Infinity)
+  )
 }
 
 export async function GameDetail({ slug, locale }: { slug: string; locale: Locale }) {
@@ -66,15 +65,17 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
   const releaseIso = earliestRelease(game.releaseDates)
 
   // --- view-models for the client islands (localized strings, plain objects) ---
-  const releaseRows: ReleaseRow[] = [...game.releaseDates].sort(byDateAsc).map((release, index) => ({
-    id: String(index),
-    dateIso: release.date,
-    dateLabel: formatMediumDate(release.date, locale) || release.date,
-    consoleName: release.console.name,
-    consoleImage: release.console.image ?? undefined,
-    regionLabel: gameRegionLabel(dict, release.region),
-    statusLabel: release.status ? gameReleaseStatusLabel(dict, release.status) : undefined,
-  }))
+  const releaseRows: ReleaseRow[] = [...game.releaseDates]
+    .sort(byDateAsc)
+    .map((release, index) => ({
+      id: String(index),
+      dateIso: release.date,
+      dateLabel: formatMediumDate(release.date, locale) || release.date,
+      consoleName: release.console.name,
+      consoleImage: release.console.media.image,
+      regionLabel: gameRegionLabel(dict, release.region),
+      statusLabel: release.status ? gameReleaseStatusLabel(dict, release.status) : undefined,
+    }))
 
   const buildDlcItems = (source: typeof game.dlcs): DlcItem[] =>
     source.map((item, index) => ({
@@ -96,7 +97,9 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
   const ttb = game.timeToBeat
   const timeToBeatEntries: TimeToBeatEntry[] = [
     ttb?.quick ? { kind: 'quick' as const, label: t.timeToBeatQuick, seconds: ttb.quick } : null,
-    ttb?.average ? { kind: 'average' as const, label: t.timeToBeatAverage, seconds: ttb.average } : null,
+    ttb?.average
+      ? { kind: 'average' as const, label: t.timeToBeatAverage, seconds: ttb.average }
+      : null,
     ttb?.total ? { kind: 'total' as const, label: t.timeToBeatTotal, seconds: ttb.total } : null,
   ]
     .filter((entry): entry is Omit<TimeToBeatEntry, 'value'> => entry !== null)

@@ -5,11 +5,12 @@
  *
  * Same props as `next/image`, plus `wrapperClassName` to size the wrapper. For `fill`
  * images pass a sized wrapper (e.g. `wrapperClassName="absolute inset-0"` inside a
- * positioned parent); for fixed `width`/`height` the wrapper hugs the image.
+ * positioned parent); for fixed `width`/`height` the wrapper hugs the image. Use
+ * `wrapperStyle` when the wrapper itself needs an inline style, such as a media color.
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import Image, { type ImageProps } from 'next/image'
 
 import { Spinner } from '@/components/ui/spinner'
@@ -19,10 +20,15 @@ import { cn } from '@/lib/utils'
 export function AppImage({
   className,
   wrapperClassName,
+  wrapperStyle,
   alt,
   igdbKind = 'cover',
   ...props
-}: ImageProps & { wrapperClassName?: string; igdbKind?: 'cover' | 'screenshot' }) {
+}: ImageProps & {
+  wrapperClassName?: string
+  wrapperStyle?: CSSProperties
+  igdbKind?: 'cover' | 'screenshot'
+}) {
   const [loaded, setLoaded] = useState(false)
 
   // IGDB assets are served straight from IGDB's CDN via a token-rewriting loader
@@ -36,7 +42,10 @@ export function AppImage({
       : undefined
 
   return (
-    <span className={cn('bg-muted relative block overflow-hidden', wrapperClassName)}>
+    <span
+      style={wrapperStyle}
+      className={cn('bg-muted relative block overflow-hidden', wrapperClassName)}
+    >
       {!loaded && (
         <span className="absolute inset-0 flex items-center justify-center">
           <Spinner className="text-primary size-5" />

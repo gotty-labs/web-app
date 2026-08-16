@@ -24,6 +24,7 @@ import {
 import {
   companiesSchema,
   engineSchema,
+  gameConsoleMediaSchema,
   gameConsoleSchema,
   gameDlcSchema,
   gameLibraryListSchema,
@@ -73,7 +74,7 @@ export const gameFilterOptionsSchema = z.object({
   consoles: z.array(
     z.object({
       id: z.string(),
-      cover: z.string(),
+      media: gameConsoleMediaSchema,
       name: z.string(),
       excluded: z.boolean(),
     }),

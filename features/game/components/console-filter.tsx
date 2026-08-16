@@ -51,11 +51,11 @@ export function ConsoleFilter({
             className="h-auto min-w-0 justify-start gap-2.5 px-3 py-2.5 text-left whitespace-normal"
           >
             <AppImage
-              src={gameConsole.cover}
+              src={gameConsole.media.image}
               alt={gameConsole.name}
-              width={32}
-              height={32}
-              wrapperClassName="size-8 shrink-0 rounded-md"
+              width={40}
+              height={40}
+              wrapperClassName="size-10 shrink-0 rounded-md bg-transparent"
               className="object-contain"
             />
             <span className="min-w-0 flex-1 truncate">{gameConsole.name}</span>
