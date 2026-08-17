@@ -29,7 +29,6 @@ import { youtubeId } from '../utils/media'
 import { DetailSection } from './detail-section'
 import { ExpandableText } from './expandable-text'
 import { GameAdditionalContent, type DlcItem } from './game-additional-content'
-import { GameAgeRating } from './game-age-rating'
 import { GameDetailIsland } from './game-detail-island'
 import { GameEngines } from './game-engines'
 import { GameHero } from './game-hero'
@@ -167,25 +166,18 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
             </dl>
           )}
 
-          {(game.genres.length > 0 || game.themes.length > 0) && (
-            <GameTags dict={dict} genres={game.genres} themes={game.themes} />
+          {(game.genres.length > 0 || game.themes.length > 0 || game.ageRating.length > 0) && (
+            <GameTags
+              dict={dict}
+              genres={game.genres}
+              themes={game.themes}
+              ageRatings={game.ageRating}
+            />
           )}
 
           {game.platforms.length > 0 && (
             <DetailSection title={t.platforms}>
               <GamePlatforms platforms={game.platforms} />
-            </DetailSection>
-          )}
-
-          {timeToBeatEntries.length > 0 && (
-            <DetailSection title={t.timeToBeat}>
-              <GameTimeToBeat entries={timeToBeatEntries} />
-            </DetailSection>
-          )}
-
-          {game.ageRating.length > 0 && (
-            <DetailSection title={t.ageRating}>
-              <GameAgeRating dict={dict} ratings={game.ageRating} />
             </DetailSection>
           )}
 
@@ -202,6 +194,18 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                   googleCalendar: t.googleCalendar,
                 }}
               />
+            </DetailSection>
+          )}
+
+          {game.engines.length > 0 && (
+            <DetailSection title={t.engines}>
+              <GameEngines engines={game.engines} />
+            </DetailSection>
+          )}
+
+          {timeToBeatEntries.length > 0 && (
+            <DetailSection title={t.timeToBeat}>
+              <GameTimeToBeat entries={timeToBeatEntries} />
             </DetailSection>
           )}
 
@@ -245,12 +249,6 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
           {game.languages.length > 0 && (
             <DetailSection title={t.languages}>
               <GameLanguages dict={dict} languages={game.languages} />
-            </DetailSection>
-          )}
-
-          {game.engines.length > 0 && (
-            <DetailSection title={t.engines}>
-              <GameEngines engines={game.engines} />
             </DetailSection>
           )}
         </div>

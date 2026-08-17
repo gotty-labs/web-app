@@ -2,8 +2,7 @@
  * Game engines as chips (logo + name when a logo is available). Presentational +
  * server-safe.
  */
-import Image from 'next/image'
-
+import { AppImage } from '@/components/app-image'
 import type { Engine } from '@/lib/domain/models'
 
 export function GameEngines({ engines }: { engines: Engine[] }) {
@@ -12,15 +11,16 @@ export function GameEngines({ engines }: { engines: Engine[] }) {
       {engines.map((engine) => (
         <div
           key={engine.name}
-          className="flex items-center gap-2 rounded-xl bg-card px-3.5 py-2 ring-1 ring-border"
+          className="flex items-center gap-2.5 rounded-xl bg-card px-3.5 py-2.5 ring-1 ring-border"
         >
           {engine.logo ? (
-            <Image
+            <AppImage
               src={engine.logo}
               alt=""
-              width={18}
-              height={18}
-              className="size-4.5 object-contain"
+              width={36}
+              height={36}
+              wrapperClassName="flex size-10 shrink-0 items-center justify-center rounded-md bg-transparent"
+              className="size-9 object-contain"
             />
           ) : null}
           <span className="text-sm font-medium">{engine.name}</span>

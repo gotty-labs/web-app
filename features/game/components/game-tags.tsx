@@ -1,15 +1,16 @@
 /**
- * Genres and themes as two clearly-differentiated pill groups (the old UI mixed both
- * into one undistinguished row of outline badges). Genres carry the violet brand
- * accent; themes read as neutral chips — so the two taxonomies are visually separate.
- * Presentational + server-safe: labels are resolved from the dictionary by the caller's
- * helpers here (no hooks).
+ * Genres, themes, and age ratings as clearly-differentiated pill groups (the old UI
+ * mixed genres and themes into one undistinguished row of outline badges). Genres
+ * carry the violet brand accent; themes and age ratings use neutral chips.
+ * Presentational + server-safe: labels are resolved from the dictionary by the
+ * caller's helpers here (no hooks).
  */
 import type { GameGenre, GameTheme } from '@/lib/domain/enums'
+import type { GameDto } from '@/lib/domain/models'
 import type { Dictionary } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-import { gameGenreLabel, gameThemeLabel } from '../utils/labels'
+import { gameAgeRatingLabel, gameGenreLabel, gameThemeLabel } from '../utils/labels'
 
 function TagRow({
   label,
@@ -18,7 +19,7 @@ function TagRow({
 }: {
   label: string
   items: string[]
-  tone: 'genre' | 'theme'
+  tone: 'genre' | 'theme' | 'age-rating'
 }) {
   if (items.length === 0) return null
   return (
@@ -49,10 +50,12 @@ export function GameTags({
   dict,
   genres,
   themes,
+  ageRatings,
 }: {
   dict: Dictionary
   genres: GameGenre[]
   themes: GameTheme[]
+  ageRatings: GameDto['ageRating']
 }) {
   return (
     <div className="flex flex-col gap-5">
@@ -65,6 +68,13 @@ export function GameTags({
         label={dict.app.detail.themes}
         tone="theme"
         items={themes.map((theme) => gameThemeLabel(dict, theme))}
+      />
+      <TagRow
+        label={dict.app.detail.ageRating}
+        tone="age-rating"
+        items={ageRatings.map(
+          (rating) => `${gameAgeRatingLabel(dict, rating.organization)}: ${rating.rate}`,
+        )}
       />
     </div>
   )
