@@ -27,7 +27,7 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { ConsoleVisibilityModal } from '@/features/profile'
+import { useConsoleVisibility } from '@/hooks/use-console-visibility'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { NAV_ITEMS } from '../config/shell'
@@ -39,14 +39,15 @@ export function AppSidebar() {
   const dict = useDictionary()
   const pathname = usePathname()
   const { setOpenMobile } = useSidebar()
-  const [modal, setModal] = useState<'consoles' | 'feedback' | null>(null)
+  const { openConsoleVisibility } = useConsoleVisibility()
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   // On mobile the sidebar is an off-canvas sheet; activating any item should dismiss
   // it (navigation or opening a modal). Dismissing an overlay does NOT (handled by the
   // Sheet's onInteractOutside guard).
   const closeMobile = () => setOpenMobile(false)
-  const openModal = (which: 'consoles' | 'feedback') => {
-    setModal(which)
+  const openFeedback = () => {
+    setFeedbackOpen(true)
     closeMobile()
   }
 
@@ -99,7 +100,10 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    onClick={() => openModal('consoles')}
+                    onClick={() => {
+                      openConsoleVisibility()
+                      closeMobile()
+                    }}
                     tooltip={dict.app.nav.consoleVisibility}
                   >
                     <MonitorIcon />
@@ -107,10 +111,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    onClick={() => openModal('feedback')}
-                    tooltip={dict.app.nav.feedback}
-                  >
+                  <SidebarMenuButton onClick={openFeedback} tooltip={dict.app.nav.feedback}>
                     <MessageSquareIcon />
                     <span>{dict.app.nav.feedback}</span>
                   </SidebarMenuButton>
@@ -132,8 +133,7 @@ export function AppSidebar() {
         <SidebarRail />
       </Sidebar>
 
-      {modal === 'consoles' && <ConsoleVisibilityModal onClose={() => setModal(null)} />}
-      {modal === 'feedback' && <FeedbackModal onClose={() => setModal(null)} />}
+      {feedbackOpen && <FeedbackModal onClose={() => setFeedbackOpen(false)} />}
     </>
   )
 }

@@ -292,7 +292,12 @@
     "feed": {
       "loadMore": "Load more",
       "empty": "Nothing here yet.",
-      "error": "We couldn't load this. Please try again."
+      "error": "We couldn't load this. Please try again.",
+      "consoleVisibilityNotice": {
+        "title": "Your feed has console visibility preferences applied",
+        "description": "Some consoles are hidden. You can review or change this setting at any time.",
+        "action": "Change visibility"
+      }
     },
     "search": {
       "placeholder": "Search games…",

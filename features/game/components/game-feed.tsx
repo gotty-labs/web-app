@@ -9,14 +9,24 @@
 'use client'
 
 import { useState } from 'react'
+import { ArrowRightIcon, InfoIcon } from 'lucide-react'
 
+import { Alert, AlertAction, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useConsoleVisibility } from '@/hooks/use-console-visibility'
 import type { GameSection } from '@/lib/domain/enums'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
+import { useCurrentFilterOptions } from '../hooks/use-current-filter-options'
 import { useFeed } from '../hooks/use-feed'
 
 import { GameCardSkeleton } from './game-card-skeleton'
@@ -45,15 +55,44 @@ function FeedSkeleton() {
   )
 }
 
+function ConsoleVisibilityNotice({ onOpen }: { onOpen: () => void }) {
+  const t = useDictionary().app.feed.consoleVisibilityNotice
+
+  return (
+    <Alert>
+      <InfoIcon />
+      <AlertTitle>{t.title}</AlertTitle>
+      <AlertDescription>{t.description}</AlertDescription>
+      <AlertAction className="relative top-auto right-auto col-start-2 row-start-3 mt-2 justify-self-start md:absolute md:top-2 md:right-2 md:col-auto md:row-auto md:mt-0">
+        <Button variant="outline" size="sm" onClick={onOpen}>
+          {t.action}
+          <ArrowRightIcon data-icon="inline-end" />
+        </Button>
+      </AlertAction>
+    </Alert>
+  )
+}
+
 export function GameFeed() {
   const dict = useDictionary()
   const toMessage = useErrorMessage()
-  const { loading, sections, error, reload } = useFeed()
+  const filterOptions = useCurrentFilterOptions()
+  const { openConsoleVisibility, visibilityOverride, visibilityRevision } = useConsoleVisibility()
+  const { loading, sections, error, reload } = useFeed(visibilityRevision)
   const [seeAll, setSeeAll] = useState<{
     section: GameSection
     title: string
     cursor?: string
   } | null>(null)
+
+  const hasAppliedVisibility =
+    visibilityOverride ??
+    filterOptions?.consoles.some((gameConsole) => gameConsole.excluded) ??
+    false
+
+  const consoleVisibilityNotice = hasAppliedVisibility ? (
+    <ConsoleVisibilityNotice onOpen={openConsoleVisibility} />
+  ) : null
 
   if (loading) return <FeedSkeleton />
 
@@ -79,7 +118,8 @@ export function GameFeed() {
 
   if (visible.length === 0) {
     return (
-      <div className="p-4 md:p-6">
+      <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
+        {consoleVisibilityNotice}
         <Empty>
           <EmptyHeader>
             <EmptyTitle>{dict.app.feed.empty}</EmptyTitle>
@@ -91,6 +131,7 @@ export function GameFeed() {
 
   return (
     <div className="flex min-w-0 flex-col gap-6 overflow-x-hidden p-3 md:gap-8 md:p-6">
+      {consoleVisibilityNotice}
       {visible.map((s) => (
         <GameCarousel
           key={s.section}

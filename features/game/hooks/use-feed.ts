@@ -1,7 +1,8 @@
 /**
- * Home feed loader (Phase 5, Slice C). Fetches the Netflix-style sections once on
- * mount via `getFeed()` (authed, client-side — the access token lives in
- * localStorage, so the feed can't be fetched on the server).
+ * Home feed loader (Phase 5, Slice C). Fetches the Netflix-style sections on mount
+ * or when the console visibility revision changes via `getFeed()` (authed,
+ * client-side — the access token lives in localStorage, so the feed can't be
+ * fetched on the server).
  *
  * setState happens only inside the async `.then`/`.catch` (and the `reload` event
  * handler), never synchronously in the effect body — that's what keeps the React 19
@@ -22,7 +23,7 @@ export interface FeedState {
   error: unknown
 }
 
-export function useFeed(): FeedState & { reload: () => void } {
+export function useFeed(refreshKey = 0): FeedState & { reload: () => void } {
   const [state, setState] = useState<FeedState>({ loading: true, sections: [], error: null })
   const [nonce, setNonce] = useState(0)
 
@@ -38,7 +39,7 @@ export function useFeed(): FeedState & { reload: () => void } {
     return () => {
       active = false
     }
-  }, [nonce])
+  }, [nonce, refreshKey])
 
   function reload() {
     setState({ loading: true, sections: [], error: null })

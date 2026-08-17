@@ -292,7 +292,12 @@
     "feed": {
       "loadMore": "Cargar más",
       "empty": "Aquí no hay nada todavía.",
-      "error": "No pudimos cargar esto. Inténtalo de nuevo."
+      "error": "No pudimos cargar esto. Inténtalo de nuevo.",
+      "consoleVisibilityNotice": {
+        "title": "Tu feed tiene una visibilidad de consolas aplicada",
+        "description": "Algunas consolas están ocultas. Puedes revisar o cambiar esta configuración cuando quieras.",
+        "action": "Cambiar visibilidad"
+      }
     },
     "search": {
       "placeholder": "Buscar juegos…",

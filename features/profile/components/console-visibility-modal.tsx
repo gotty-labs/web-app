@@ -26,7 +26,7 @@ import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useReportError } from '@/hooks/use-report-error'
-import { getFilterOptions } from '@/features/game'
+import { getFilterOptions } from '@/features/game/services/catalog'
 import type { GameFilterOptions } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
@@ -35,7 +35,13 @@ import { setConsoleExclusions } from '../services/profile'
 
 type Console = GameFilterOptions['consoles'][number]
 
-export function ConsoleVisibilityModal({ onClose }: { onClose: () => void }) {
+export function ConsoleVisibilityModal({
+  onClose,
+  onSaved,
+}: {
+  onClose: () => void
+  onSaved?: (hasExcludedConsoles: boolean) => void
+}) {
   const dict = useDictionary()
   const t = dict.app.consoleVisibility
   const report = useReportError()
@@ -83,6 +89,7 @@ export function ConsoleVisibilityModal({ onClose }: { onClose: () => void }) {
     try {
       const excluded = consoles.filter((c) => !visible.has(c.id)).map((c) => c.id)
       await setConsoleExclusions({ consoleIds: excluded })
+      onSaved?.(excluded.length > 0)
       toast.success(t.savedToast)
       onClose()
     } catch (e) {
