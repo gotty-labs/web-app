@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { buildGoogleCalendarUrl, downloadIcs, type CalendarEvent } from '../utils/calendar'
+import { isBeforeToday } from '../utils/format'
 
 export type CalendarLabels = {
   addToCalendar: string
@@ -24,6 +25,8 @@ export type CalendarLabels = {
 }
 
 export function CalendarMenu({ event, labels }: { event: CalendarEvent; labels: CalendarLabels }) {
+  if (isBeforeToday(event.date)) return null
+
   const googleUrl = buildGoogleCalendarUrl(event)
   return (
     <DropdownMenu>
