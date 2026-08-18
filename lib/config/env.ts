@@ -20,7 +20,10 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'local']),
   // Google Identity Services OAuth client id. Optional so email auth still works while
   // Google OAuth is not configured in a given environment.
-  NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().trim().min(1).optional(),
+  NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+    z.string().trim().min(1).optional(),
+  ),
 })
 
 const parsed = clientEnvSchema.parse({
