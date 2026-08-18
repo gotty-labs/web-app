@@ -1,16 +1,12 @@
-/**
- * Genres, themes, and age ratings as clearly-differentiated pill groups (the old UI
- * mixed genres and themes into one undistinguished row of outline badges). Genres
- * carry the violet brand accent; themes and age ratings use neutral chips.
- * Presentational + server-safe: labels are resolved from the dictionary by the
- * caller's helpers here (no hooks).
- */
+/** Genres, themes, and age-rating assets grouped for the game detail page. */
 import type { GameGenre, GameTheme } from '@/lib/domain/enums'
 import type { GameDto } from '@/lib/domain/models'
 import type { Dictionary } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-import { gameAgeRatingLabel, gameGenreLabel, gameThemeLabel } from '../utils/labels'
+import { getAgeRatingImage } from '../config/age-rating-images'
+import { gameGenreLabel, gameThemeLabel } from '../utils/labels'
+import { GameAgeRating } from './game-age-rating'
 
 function TagRow({
   label,
@@ -19,7 +15,7 @@ function TagRow({
 }: {
   label: string
   items: string[]
-  tone: 'genre' | 'theme' | 'age-rating'
+  tone: 'genre' | 'theme'
 }) {
   if (items.length === 0) return null
   return (
@@ -57,6 +53,12 @@ export function GameTags({
   themes: GameTheme[]
   ageRatings: GameDto['ageRating']
 }) {
+  const hasVisibleAgeRating = ageRatings.some(
+    (rating) => getAgeRatingImage(rating.organization, rating.rate) !== null,
+  )
+
+  if (genres.length === 0 && themes.length === 0 && !hasVisibleAgeRating) return null
+
   return (
     <div className="flex flex-col gap-5">
       <TagRow
@@ -69,13 +71,7 @@ export function GameTags({
         tone="theme"
         items={themes.map((theme) => gameThemeLabel(dict, theme))}
       />
-      <TagRow
-        label={dict.app.detail.ageRating}
-        tone="age-rating"
-        items={ageRatings.map(
-          (rating) => `${gameAgeRatingLabel(dict, rating.organization)}: ${rating.rate}`,
-        )}
-      />
+      <GameAgeRating dict={dict} ratings={ageRatings} />
     </div>
   )
 }
