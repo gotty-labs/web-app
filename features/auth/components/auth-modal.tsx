@@ -46,30 +46,30 @@ import {
 } from '@/components/ui/input-group'
 import { Spinner } from '@/components/ui/spinner'
 import { useReportError } from '@/hooks/use-report-error'
+import { BffError } from '@/lib/api/bff-client'
+import { InternalCode } from '@/lib/api/error-codes'
+import { env } from '@/lib/config/env'
 import {
   forgotPasswordInputSchema,
   loginEmailInputSchema,
+  oauthRegisterInputSchema,
   registerEmailInputSchema,
 } from '@/lib/domain/inputs'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
-import { forgotPassword, loginEmail, registerEmail } from '../services/auth-client'
+import {
+  forgotPassword,
+  loginEmail,
+  loginOAuth,
+  registerEmail,
+  registerOAuth,
+} from '../services/auth-client'
 
+import { GoogleSignInButton } from './google-sign-in-button'
 import { LottieCheck } from './lottie-check'
 
 type AuthView = 'login' | 'register' | 'forgot' | 'forgotSent'
 type FieldErrors = { email?: string; password?: string; nickname?: string }
-
-function GoogleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4">
-      <path
-        fill="currentColor"
-        d="M21.35 11.1H12v2.92h5.35c-.23 1.5-1.6 4.4-5.35 4.4a6.1 6.1 0 1 1 0-12.2c1.75 0 2.92.74 3.6 1.38l2.45-2.36C16.46 3.5 14.43 2.6 12 2.6a9.4 9.4 0 1 0 0 18.8c5.43 0 9.02-3.82 9.02-9.2 0-.62-.07-1.1-.17-1.6Z"
-      />
-    </svg>
-  )
-}
 
 export function AuthModal() {
   const dict = useDictionary()
@@ -84,9 +84,20 @@ export function AuthModal() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [nickname, setNickname] = useState('')
+  const [oauthToken, setOauthToken] = useState<string | null>(null)
+
+  const isGoogleRegister = view === 'register' && oauthToken !== null
 
   function go(next: AuthView) {
     setView(next)
+    setFieldErrors({})
+    setShowPassword(false)
+    if (next !== 'register') setOauthToken(null)
+  }
+
+  function startGoogleRegistration(token: string) {
+    setOauthToken(token)
+    setView('register')
     setFieldErrors({})
     setShowPassword(false)
   }
@@ -99,7 +110,9 @@ export function AuthModal() {
       view === 'login'
         ? loginEmailInputSchema.safeParse({ email, password })
         : view === 'register'
-          ? registerEmailInputSchema.safeParse({ email, nickname, password })
+          ? oauthToken
+            ? oauthRegisterInputSchema.safeParse({ token: oauthToken, nickname })
+            : registerEmailInputSchema.safeParse({ email, nickname, password })
           : forgotPasswordInputSchema.safeParse({ email })
 
     if (!result.success) {
@@ -125,7 +138,11 @@ export function AuthModal() {
       if (view === 'login') {
         await loginEmail(email, password)
       } else if (view === 'register') {
-        await registerEmail(email, nickname, password)
+        if (oauthToken) {
+          await registerOAuth('google', oauthToken, nickname)
+        } else {
+          await registerEmail(email, nickname, password)
+        }
       } else if (view === 'forgot') {
         await forgotPassword(email)
         setView('forgotSent')
@@ -140,10 +157,38 @@ export function AuthModal() {
     }
   }
 
-  // NOTE (backend/config): wire Google Identity Services here to obtain an id token,
-  // then `loginOAuth('google', token)` / `registerOAuth(...)`. Needs a public client
-  // id (NEXT_PUBLIC_GOOGLE_CLIENT_ID). Until then it explains itself rather than fail.
-  function onGoogle() {
+  async function onGoogleCredential(token: string) {
+    if (pending) return
+
+    setPending(true)
+    try {
+      if (view === 'login') {
+        await loginOAuth('google', token)
+      } else if (view === 'register') {
+        setOauthToken(token)
+        const result = oauthRegisterInputSchema.safeParse({ token, nickname })
+        if (!result.success) {
+          setFieldErrors({ nickname: t.errNickname })
+          return
+        }
+        await registerOAuth('google', token, nickname)
+      }
+    } catch (error) {
+      if (
+        view === 'login' &&
+        error instanceof BffError &&
+        error.internalCode === InternalCode.INVALID_OAUTH_CREDENTIALS
+      ) {
+        startGoogleRegistration(token)
+      } else {
+        report(error)
+      }
+    } finally {
+      setPending(false)
+    }
+  }
+
+  function onGoogleUnavailable() {
     toast.info(t.googleUnavailable)
   }
 
@@ -255,32 +300,35 @@ export function AuthModal() {
                     </Field>
                   )}
 
-                  <Field data-invalid={fieldErrors.email ? true : undefined}>
-                    <FieldLabel htmlFor="auth-email" className="sr-only">
-                      {t.emailLabel}
-                    </FieldLabel>
-                    <InputGroup className="h-11 rounded-xl bg-muted/40">
-                      <InputGroupAddon>
-                        <MailIcon />
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        id="auth-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        placeholder={t.emailPlaceholder}
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value)
-                          if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: undefined }))
-                        }}
-                        aria-invalid={fieldErrors.email ? true : undefined}
-                      />
-                    </InputGroup>
-                    {fieldErrors.email && <FieldError>{fieldErrors.email}</FieldError>}
-                  </Field>
+                  {!isGoogleRegister && (
+                    <Field data-invalid={fieldErrors.email ? true : undefined}>
+                      <FieldLabel htmlFor="auth-email" className="sr-only">
+                        {t.emailLabel}
+                      </FieldLabel>
+                      <InputGroup className="h-11 rounded-xl bg-muted/40">
+                        <InputGroupAddon>
+                          <MailIcon />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          id="auth-email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          placeholder={t.emailPlaceholder}
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value)
+                            if (fieldErrors.email)
+                              setFieldErrors((p) => ({ ...p, email: undefined }))
+                          }}
+                          aria-invalid={fieldErrors.email ? true : undefined}
+                        />
+                      </InputGroup>
+                      {fieldErrors.email && <FieldError>{fieldErrors.email}</FieldError>}
+                    </Field>
+                  )}
 
-                  {view !== 'forgot' && (
+                  {view !== 'forgot' && !isGoogleRegister && (
                     <Field data-invalid={fieldErrors.password ? true : undefined}>
                       <FieldLabel htmlFor="auth-password" className="sr-only">
                         {t.passwordLabel}
@@ -340,22 +388,20 @@ export function AuthModal() {
                     {submitLabel}
                   </Button>
 
-                  {view !== 'forgot' && (
+                  {view !== 'forgot' && !isGoogleRegister && (
                     <>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <Separator className="flex-1" />
                         <span className="shrink-0">{t.socialSeparator}</span>
                         <Separator className="flex-1" />
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-11 w-full rounded-xl"
-                        onClick={onGoogle}
-                      >
-                        <GoogleIcon />
-                        {t.googleContinue}
-                      </Button>
+                      <GoogleSignInButton
+                        clientId={env.googleClientId}
+                        label={t.googleContinue}
+                        pending={pending}
+                        onCredential={onGoogleCredential}
+                        onUnavailable={onGoogleUnavailable}
+                      />
                     </>
                   )}
                 </FieldGroup>
