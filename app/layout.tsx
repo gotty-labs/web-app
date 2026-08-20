@@ -34,7 +34,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.siteUrl),
-  title: { default: 'JustGame', template: '%s · JustGame' },
+  title: { default: 'Gotty', template: '%s · Gotty' },
   description: 'Descubre, guarda y sigue tus videojuegos.',
 }
 

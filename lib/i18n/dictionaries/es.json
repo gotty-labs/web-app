@@ -167,7 +167,7 @@
   },
   "app": {
     "brand": {
-      "name": "JustGame",
+      "name": "Gotty",
       "tagline": "Descubre, guarda y sigue tus videojuegos."
     },
     "actions": {
@@ -198,7 +198,7 @@
       },
       "features": {
         "title": "Todo lo que tu backlog necesita",
-        "subtitle": "Del descubrimiento a los créditos, JustGame mantiene tu vida gamer organizada en un solo lugar.",
+        "subtitle": "Del descubrimiento a los créditos, Gotty mantiene tu vida gamer organizada en un solo lugar.",
         "discover": {
           "title": "Un feed que sabe qué viene",
           "description": "Filas seleccionadas con títulos en tendencia, próximos lanzamientos y juegos aclamados en todas las consolas — siempre al día, siempre a tu gusto."
@@ -236,8 +236,8 @@
       },
       "cta": {
         "title": "¿Listo para pulsar start?",
-        "subtitle": "Convierte tu backlog en un plan. Únete a JustGame hoy: gratis y en cualquier dispositivo.",
-        "button": "Entrar en JustGame"
+        "subtitle": "Convierte tu backlog en un plan. Únete a Gotty hoy: gratis y en cualquier dispositivo.",
+        "button": "Entrar en Gotty"
       },
       "footer": {
         "rights": "Todos los derechos reservados."
@@ -263,7 +263,7 @@
     },
     "feedback": {
       "title": "Enviar feedback",
-      "description": "Tu mensaje llega directamente al equipo que desarrolla JustGame.",
+      "description": "Tu mensaje llega directamente al equipo que desarrolla Gotty.",
       "typeLabel": "Tipo de mensaje",
       "typeIdea": "Idea",
       "typeImprovement": "Mejora",
@@ -493,7 +493,7 @@
       }
     },
     "onboarding": {
-      "title": "Bienvenido a JustGame",
+      "title": "Bienvenido a Gotty",
       "description": "Descubre juegos, construye tu biblioteca y sigue tu progreso en todas las plataformas.",
       "cta": "Empezar"
     },
@@ -513,9 +513,9 @@
     },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
-      "loginDescription": "Inicia sesión para continuar en JustGame.",
+      "loginDescription": "Inicia sesión para continuar en Gotty.",
       "registerTitle": "Crea tu cuenta",
-      "registerDescription": "Únete a JustGame y construye tu biblioteca.",
+      "registerDescription": "Únete a Gotty y construye tu biblioteca.",
       "forgotTitle": "Recupera tu contraseña",
       "forgotDescription": "Introduce tu email y te enviaremos un enlace de recuperación.",
       "emailLabel": "Email",

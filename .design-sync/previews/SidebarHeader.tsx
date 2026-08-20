@@ -29,7 +29,7 @@ export const Default = () => (
       <Sidebar collapsible="none" className="h-[440px] w-64 rounded-lg border">
         <SidebarHeader>
           <div className="flex items-center justify-between px-2 py-1">
-            <span className="font-heading text-base font-semibold">JustGame</span>
+            <span className="font-heading text-base font-semibold">Gotty</span>
             <SidebarTrigger />
           </div>
           <SidebarInput placeholder="Search library…" />

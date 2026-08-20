@@ -1,8 +1,8 @@
 {
   "projectId": "87dff220-9beb-41db-ada1-219ad71bfed9",
   "shape": "package",
-  "pkg": "justgame-web",
-  "globalName": "JustGameDS",
+  "pkg": "gotty-web",
+  "globalName": "GottyDS",
   "tsconfig": "tsconfig.json",
   "cssEntry": ".design-sync/.cache/tailwind.css",
   "srcDir": "components/ui",

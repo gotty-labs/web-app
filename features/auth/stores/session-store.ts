@@ -17,7 +17,7 @@
  */
 import type { UserProfile } from '@/lib/domain/models'
 
-const STORAGE_KEY = 'jg.session'
+const STORAGE_KEY = 'gt.session'
 
 export interface ClientSession {
   id: string

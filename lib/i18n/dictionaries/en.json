@@ -167,7 +167,7 @@
   },
   "app": {
     "brand": {
-      "name": "JustGame",
+      "name": "Gotty",
       "tagline": "Discover, save and track your games."
     },
     "actions": {
@@ -198,7 +198,7 @@
       },
       "features": {
         "title": "Everything your backlog needs",
-        "subtitle": "From discovery to the credits, JustGame keeps your gaming life organized in one place.",
+        "subtitle": "From discovery to the credits, Gotty keeps your gaming life organized in one place.",
         "discover": {
           "title": "A feed that knows what's next",
           "description": "Curated rows of trending, upcoming and acclaimed titles across every console — always fresh, always yours."
@@ -236,8 +236,8 @@
       },
       "cta": {
         "title": "Ready to press start?",
-        "subtitle": "Turn your backlog into a plan. Join JustGame today — free, on any device.",
-        "button": "Enter JustGame"
+        "subtitle": "Turn your backlog into a plan. Join Gotty today — free, on any device.",
+        "button": "Enter Gotty"
       },
       "footer": {
         "rights": "All rights reserved."
@@ -263,7 +263,7 @@
     },
     "feedback": {
       "title": "Send feedback",
-      "description": "Your message goes straight to the team building JustGame.",
+      "description": "Your message goes straight to the team building Gotty.",
       "typeLabel": "Type of message",
       "typeIdea": "Idea",
       "typeImprovement": "Improvement",
@@ -493,7 +493,7 @@
       }
     },
     "onboarding": {
-      "title": "Welcome to JustGame",
+      "title": "Welcome to Gotty",
       "description": "Discover games, build your library, and track your progress across every platform.",
       "cta": "Get started"
     },
@@ -513,9 +513,9 @@
     },
     "auth": {
       "loginTitle": "Welcome back",
-      "loginDescription": "Sign in to continue to JustGame.",
+      "loginDescription": "Sign in to continue to Gotty.",
       "registerTitle": "Create your account",
-      "registerDescription": "Join JustGame to build your library.",
+      "registerDescription": "Join Gotty to build your library.",
       "forgotTitle": "Reset your password",
       "forgotDescription": "Enter your email and we'll send you a reset link.",
       "emailLabel": "Email",

@@ -9,7 +9,7 @@ export const Stacked = () => (
   <div className="dark bg-background text-foreground flex items-center gap-6 p-6">
     <AvatarGroup>
       <Avatar>
-        <AvatarFallback>JG</AvatarFallback>
+        <AvatarFallback>GT</AvatarFallback>
       </Avatar>
       <Avatar>
         <AvatarFallback>AB</AvatarFallback>

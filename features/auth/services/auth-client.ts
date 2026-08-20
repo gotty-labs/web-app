@@ -110,7 +110,7 @@ export async function forgotPassword(email: string): Promise<void> {
 
 /**
  * Reset-password (§4.1). PUBLIC; `resetId` comes from the email link. This is the
- * one endpoint that does NOT require the `jg-*` headers — sending them anyway is
+ * one endpoint that does NOT require the `gt-*` headers — sending them anyway is
  * harmless (extra valid headers are ignored).
  */
 export async function resetPassword(resetId: string, password: string): Promise<void> {

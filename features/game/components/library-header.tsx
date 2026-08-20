@@ -20,7 +20,7 @@ export function LibraryHeader({
   return (
     <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-col gap-1">
-        <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">JustGame</p>
+        <p className="text-primary text-xs font-semibold tracking-[0.18em] uppercase">Gotty</p>
         <h1 className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
           {t.title}
         </h1>

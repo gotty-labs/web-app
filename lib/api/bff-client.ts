@@ -1,10 +1,10 @@
 /**
  * Contract for calling our OWN Next.js BFF route handlers (`/api/*`), as the
- * sibling of `apiRequest` (which is the contract for the JustGame backend).
+ * sibling of `apiRequest` (which is the contract for the Gotty backend).
  *
  * Differences from `apiRequest`, and why this exists instead of reusing it:
  *  - Same-origin, relative paths — NOT under `env.apiBaseUrl` (`/api/v1`).
- *  - No `jg-*` headers / no `Authorization` (the httpOnly cookie travels on its own).
+ *  - No `gt-*` headers / no `Authorization` (the httpOnly cookie travels on its own).
  *  - BFF responses are plain JSON (`{ ... }` on success, `{ error, internalCode }`
  *    on failure) — NOT the backend's `ApiResponse`/`ApiError` envelope.
  *

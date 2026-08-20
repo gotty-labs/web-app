@@ -68,14 +68,14 @@ export function buildIcs(event: CalendarEvent): string | null {
   const start = date.toFormat('yyyyMMdd')
   const end = date.plus({ days: 1 }).toFormat('yyyyMMdd')
   const stamp = DateTime.utc().toFormat("yyyyMMdd'T'HHmmss'Z'")
-  const uid = `${start}-${Math.random().toString(36).slice(2)}@justgame`
+  const uid = `${start}-${Math.random().toString(36).slice(2)}@gotty`
   const esc = (text: string) => text.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n')
   return (
     [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'CALSCALE:GREGORIAN',
-      'PRODID:-//JustGame//Release//EN',
+      'PRODID:-//Gotty//Release//EN',
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${stamp}`,

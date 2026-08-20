@@ -1,8 +1,8 @@
-# JustGame Design System — conventions for building with these components
+# Gotty Design System — conventions for building with these components
 
-JustGame is a **dark-only** product with a **violet/indigo** accent. The components are
-shadcn/ui (radix-nova style), compiled from the JustGame web app and exposed on
-`window.JustGameDS.*`.
+Gotty is a **dark-only** product with a **violet/indigo** accent. The components are
+shadcn/ui (radix-nova style), compiled from the Gotty web app and exposed on
+`window.GottyDS.*`.
 
 ## Wrapping & setup (required)
 

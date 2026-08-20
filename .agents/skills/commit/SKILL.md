@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Commit all pending repository changes in logical groups using Justgame's fixed Conventional Commits policy. Use when the user asks to commit, create commits, group changes into commits, or finish local work without pushing.
+description: Commit all pending repository changes in logical groups using Gotty's fixed Conventional Commits policy. Use when the user asks to commit, create commits, group changes into commits, or finish local work without pushing.
 ---
 
 # Commit Pending Changes
@@ -9,7 +9,7 @@ Commit staged, unstaged, and untracked work in coherent groups without changing 
 
 ## Project convention
 
-Justgame uses Gitflow for branch lifecycle and Conventional Commits for commit subjects. Gitflow branch names do not change the commit message format.
+Gotty uses Gitflow for branch lifecycle and Conventional Commits for commit subjects. Gitflow branch names do not change the commit message format.
 
 Use exactly:
 
@@ -56,7 +56,7 @@ Valid examples:
 
 ```text
 refactor(app): extract iOS application delegate
-chore(skills): add Justgame development guidance
+chore(skills): add Gotty development guidance
 chore(agents): share skills with Claude and Cursor
 fix(localization): load strings from the module bundle
 ```

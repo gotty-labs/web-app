@@ -14,7 +14,7 @@ import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { env } from '@/lib/config/env'
 
-const COOKIE_NAME = 'jg_session'
+const COOKIE_NAME = 'gt_session'
 /** ~6 months, matching the backend refresh-token lifetime (§2.1). */
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 180
 

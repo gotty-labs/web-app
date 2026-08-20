@@ -10,7 +10,7 @@
  * NOTE: this is a CLIENT-side first-run gate. If the backend later exposes a
  * first-login signal (e.g. on `config/startup`), switch the source here.
  */
-const STORAGE_KEY = 'jg:onboarded'
+const STORAGE_KEY = 'gt:onboarded'
 
 type Listener = () => void
 const listeners = new Set<Listener>()
