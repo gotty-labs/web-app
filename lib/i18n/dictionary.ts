@@ -380,9 +380,18 @@ export const dictionarySchema = z.object({
       }),
     }),
     onboarding: z.object({
-      title: z.string(),
-      description: z.string(),
-      cta: z.string(),
+      stepLabel: z.string(),
+      next: z.string(),
+      finish: z.string(),
+      steps: z
+        .array(
+          z.object({
+            eyebrow: z.string(),
+            title: z.string(),
+            description: z.string(),
+          }),
+        )
+        .length(4),
     }),
     errorModal: z.object({
       title: z.string(),

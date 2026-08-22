@@ -1,14 +1,15 @@
 /**
- * Onboarding "seen" flag (Phase 5, Slice G). A tiny observable store backed by
+ * Completed-onboarding flag. A tiny observable store backed by
  * localStorage, consumed via `useSyncExternalStore` (the codebase's pattern for
  * external/browser state — no setState-in-effect).
  *
  * `getServerSnapshot` returns `true` (treated as already onboarded) so the welcome
- * modal never renders during SSR / the first client paint, avoiding a hydration
+ * flow never renders during SSR / the first client paint, avoiding a hydration
  * mismatch; after mount the real localStorage value takes over.
  *
  * NOTE: this is a CLIENT-side first-run gate. If the backend later exposes a
- * first-login signal (e.g. on `config/startup`), switch the source here.
+ * first-login signal (e.g. on `config/startup`), switch the source here. The UI
+ * must only call `markSeen` from the final onboarding step.
  */
 const STORAGE_KEY = 'gt:onboarded'
 

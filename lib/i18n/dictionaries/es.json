@@ -493,9 +493,31 @@
       }
     },
     "onboarding": {
-      "title": "Bienvenido a Gotty",
-      "description": "Descubre juegos, construye tu biblioteca y sigue tu progreso en todas las plataformas.",
-      "cta": "Empezar"
+      "stepLabel": "Paso {current} de {total}",
+      "next": "Continuar",
+      "finish": "Explorar Gotty",
+      "steps": [
+        {
+          "eyebrow": "Un sitio para todos tus juegos",
+          "title": "Juega más. Organiza menos.",
+          "description": "Gotty reúne todo lo que quieres jugar en un espacio personal, para que elegir tu próxima partida vuelva a ser emocionante."
+        },
+        {
+          "eyebrow": "Descubre tu próxima obsesión",
+          "title": "Busca el juego que más te guste.",
+          "description": "Encuentra ese juego que ya tienes en mente o explora todas las plataformas hasta descubrir la opción perfecta para tu próxima partida."
+        },
+        {
+          "eyebrow": "Tu biblioteca, tus reglas",
+          "title": "Cada juego, justo donde debe estar.",
+          "description": "Guarda juegos, crea listas y mantén tu backlog y tus deseados en orden sin saltar entre distintas aplicaciones."
+        },
+        {
+          "eyebrow": "Haz que cada partida cuente",
+          "title": "Cada juego forma parte de tu historia.",
+          "description": "Sigue lo que estás jugando, celebra lo que terminas y contempla cómo tu recorrido gamer crece contigo."
+        }
+      ]
     },
     "errorModal": {
       "title": "Algo ha ido mal",

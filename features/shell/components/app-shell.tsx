@@ -15,7 +15,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { ConsoleVisibilityProvider } from '@/contexts/console-visibility-provider'
 
 import { AppSidebar } from './app-sidebar'
-import { OnboardingModal } from './onboarding-modal'
+import { OnboardingFlow } from './onboarding-flow'
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             container and break sticky headers. The sidebar toggle now lives in each
             page's <AppTopBar/>. */}
         <SidebarInset className="min-w-0">{children}</SidebarInset>
-        <OnboardingModal />
+        <OnboardingFlow />
       </SidebarProvider>
     </ConsoleVisibilityProvider>
   )
