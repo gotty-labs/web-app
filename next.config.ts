@@ -10,12 +10,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'pub-aa3d449236a148859f7499614fb80387.r2.dev',
+        hostname: 'pub-a307d52a91bd4744abc9e09f849ad9f1.r2.dev',
         pathname: '/consoles-assets/**',
       },
       {
         protocol: 'https',
-        hostname: 'pub-aa3d449236a148859f7499614fb80387.r2.dev',
+        hostname: 'pub-a307d52a91bd4744abc9e09f849ad9f1.r2.dev',
         pathname: '/engines-assets/**',
       },
       // YouTube video thumbnails for the media gallery (IGDB videos are YouTube ids).
