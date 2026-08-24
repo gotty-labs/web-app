@@ -3,44 +3,59 @@
  * label underneath, instead of the old save button + three-dots menu. Rendered inside
  * the detail's client island (session + i18n + toaster on the otherwise-static page).
  *
- * The button set depends on `stored`, read WITH the token. It is omitted by the
- * public endpoint for visitors without a session, so the row stays hidden for them.
- *  - saved = false   → Save · Whitelist.
+ * The button set depends on the authenticated library state. It is omitted for
+ * visitors without a session, so the row stays hidden for them.
+ *  - saved = false   → Save · Whitelist · Lists.
  *  - saved = true    → Remove · Lists · Progress.
- * Swapping sets re-keys the row so it animates in; each icon reacts on hover/press so
- * the active↔inactive change is felt, not just shown. Lists/Progress are placeholders
- * (a "coming soon" toast) until their flows land; Save/Whitelist/Remove and custom
- * list membership hit the backend.
+ * The Lists action is always available, reports the user's list count, and opens a
+ * toggleable membership sheet. Swapping sets re-keys the row so it animates in;
+ * Progress remains a placeholder while every other action hits the backend.
  */
 'use client'
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
-import { BookmarkPlusIcon, BookmarkXIcon, EyeIcon, GaugeIcon, ListPlusIcon } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import {
+  BookmarkPlusIcon,
+  BookmarkXIcon,
+  CheckIcon,
+  EyeIcon,
+  GaugeIcon,
+  ListPlusIcon,
+  PlusIcon,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
-import type { GameLibraryList, GameLibraryState } from '@/lib/domain/models'
+import type { GameLibraryState } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 import {
+  createLibraryList,
   getGameLibraryState,
   removeGameFromLibrary,
   storeGameInLibrary,
   updateLibraryList,
 } from '../services/library'
+
+import { CreateLibraryListSheet } from './create-library-list-sheet'
+import { LibraryListIcon } from './library-list-icon'
 
 type Tone = 'primary' | 'default' | 'destructive'
 
@@ -49,6 +64,7 @@ type Action = {
   label: string
   icon: ReactNode
   tone: Tone
+  badge?: number
   onClick: () => void
 }
 
@@ -77,13 +93,16 @@ function ActionItem({
     >
       <span
         className={cn(
-          'flex size-12 items-center justify-center rounded-full ring-1 transition-all duration-200',
+          'relative flex size-12 items-center justify-center rounded-full ring-1 transition-all duration-200',
           'group-hover:-translate-y-0.5 group-active:scale-90 group-focus-visible:ring-2 group-focus-visible:ring-ring',
           '[&_svg]:size-5 [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:scale-110',
           TONE_CLASS[action.tone],
         )}
       >
         {busy ? <Spinner className="size-5" /> : action.icon}
+        {action.badge !== undefined ? (
+          <Badge className="absolute -top-2 -right-2 min-w-5 px-1">{action.badge}</Badge>
+        ) : null}
       </span>
       <span className="text-center text-xs font-medium text-muted-foreground group-hover:text-foreground">
         {action.label}
@@ -95,15 +114,15 @@ function ActionItem({
 export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: string }) {
   const dict = useDictionary()
   const t = dict.app.detail
+  const libraryT = dict.app.library
   const report = useReportError()
   const { status } = useSession()
 
-  const [saved, setSaved] = useState(false)
   const [libraryState, setLibraryState] = useState<GameLibraryState | null>(null)
-  const [lists, setLists] = useState<GameLibraryList[]>([])
   const [ready, setReady] = useState(false)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
   const [listSheetOpen, setListSheetOpen] = useState(false)
+  const [createListOpen, setCreateListOpen] = useState(false)
 
   useEffect(() => {
     if (status !== 'authenticated') return
@@ -112,8 +131,6 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
       .then((state) => {
         if (!active) return
         setLibraryState(state)
-        setSaved(state.saved)
-        setLists(state.lists)
       })
       .catch(() => {
         // A failed library-state read should not show actions with an unknown state.
@@ -147,7 +164,12 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   // The protected endpoint returns a state even when the game is not saved.
   if (!libraryState) return null
 
+  const { saved, lists, gameListId } = libraryState
   const pending = pendingKey !== null
+
+  function patchLibraryState(patch: Partial<GameLibraryState>) {
+    setLibraryState((current) => (current ? { ...current, ...patch } : current))
+  }
 
   async function run(
     key: string,
@@ -171,7 +193,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     run(
       key,
       () => storeGameInLibrary(gameId, input),
-      () => setSaved(true),
+      () => patchLibraryState({ saved: true }),
       msg,
     )
 
@@ -179,18 +201,30 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     setListSheetOpen(true)
   }
 
-  const saveToList = (listId: string) => {
+  const toggleList = (listId: string, save: boolean) => {
     if (pending) return
-    setListSheetOpen(false)
     run(
-      'lists',
-      () => updateLibraryList(listId, { gameIds: [gameId], save: true }),
-      () => undefined,
-      t.listSavedToast,
+      `list:${listId}`,
+      () => updateLibraryList(listId, { gameIds: [gameId], save }),
+      () =>
+        patchLibraryState({
+          saved: save ? true : saved,
+          gameListId: save ? listId : undefined,
+        }),
+      save ? t.listSavedToast : libraryT.removedFromListToast,
     )
   }
 
   const comingSoon = () => toast(t.comingSoon)
+
+  const listAction: Action = {
+    key: 'lists',
+    label: t.lists,
+    tone: 'default',
+    icon: <ListPlusIcon />,
+    badge: lists.length,
+    onClick: openListSheet,
+  }
 
   const actions: Action[] = saved
     ? [
@@ -203,21 +237,11 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
             run(
               'remove',
               () => removeGameFromLibrary(gameId),
-              () => setSaved(false),
+              () => patchLibraryState({ saved: false, gameListId: undefined }),
               t.removedToast,
             ),
         },
-        ...(lists && lists.length > 0
-          ? [
-              {
-                key: 'lists',
-                label: t.lists,
-                tone: 'default' as const,
-                icon: <ListPlusIcon />,
-                onClick: openListSheet,
-              },
-            ]
-          : []),
+        listAction,
         {
           key: 'progress',
           label: t.progressLabel,
@@ -241,6 +265,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
           icon: <EyeIcon />,
           onClick: () => store('whitelist', { status: 'WHITELIST' }, t.whitelistToast),
         },
+        listAction,
       ]
 
   return (
@@ -254,51 +279,109 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
             key={action.key}
             action={action}
             disabled={pending}
-            busy={pendingKey === action.key}
+            busy={
+              pendingKey === action.key ||
+              (action.key === 'lists' && pendingKey?.startsWith('list:') === true)
+            }
           />
         ))}
       </div>
 
-      <Sheet open={listSheetOpen} onOpenChange={setListSheetOpen}>
-        <SheetContent side="bottom">
+      <Sheet open={listSheetOpen && !createListOpen} onOpenChange={setListSheetOpen}>
+        <SheetContent side="bottom" className="max-h-[85svh] rounded-t-2xl">
           <SheetHeader>
             <SheetTitle>{t.listDialogTitle}</SheetTitle>
             <SheetDescription>{t.listLibraryDisclaimer}</SheetDescription>
           </SheetHeader>
 
-          <div className="flex max-h-[60dvh] flex-col gap-3 overflow-y-auto px-4 pb-4">
-            {lists?.map((list) => (
-              <Card
-                key={list.id}
-                size="sm"
-                role="button"
-                tabIndex={pending ? -1 : 0}
-                aria-disabled={pending}
-                className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => saveToList(list.id)}
-                onKeyDown={(event) => {
-                  if (event.key !== 'Enter' && event.key !== ' ') return
-                  event.preventDefault()
-                  saveToList(list.id)
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-1">
+            {lists.length > 0 ? (
+              <ToggleGroup
+                type="single"
+                value={gameListId ?? ''}
+                disabled={pending}
+                orientation="vertical"
+                variant="filter"
+                className="w-full items-stretch pb-1"
+                onValueChange={(value) => {
+                  const listId = value || gameListId
+                  if (listId) toggleList(listId, value !== '')
                 }}
               >
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <span
-                      aria-hidden
-                      className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg break-all text-center text-xs leading-none"
-                      style={{ backgroundColor: list.hexColor } as CSSProperties}
+                {lists.map((list) => {
+                  const selected = gameListId === list.id
+                  const rowPending = pendingKey === `list:${list.id}`
+
+                  return (
+                    <ToggleGroupItem
+                      key={list.id}
+                      value={list.id}
+                      aria-label={`${list.name}: ${selected ? libraryT.removeFromList : libraryT.addToList}`}
+                      className="h-auto min-h-14 w-full min-w-0 justify-start px-3 py-2"
                     >
-                      {list.icon}
-                    </span>
-                    <CardTitle className="truncate">{list.name}</CardTitle>
-                  </div>
-                </CardHeader>
-              </Card>
-            ))}
+                      <span
+                        aria-hidden
+                        className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted"
+                      >
+                        <LibraryListIcon icon={list.icon} style={{ color: list.hexColor }} />
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-left">{list.name}</span>
+                      {rowPending ? (
+                        <Spinner />
+                      ) : selected ? (
+                        <Badge>
+                          <CheckIcon data-icon="inline-start" />
+                          {t.listIncluded}
+                        </Badge>
+                      ) : (
+                        <PlusIcon aria-hidden />
+                      )}
+                    </ToggleGroupItem>
+                  )
+                })}
+              </ToggleGroup>
+            ) : (
+              <Empty className="min-h-40">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <ListPlusIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>{t.listEmptyTitle}</EmptyTitle>
+                  <EmptyDescription>{t.listEmptyDescription}</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            )}
           </div>
+
+          <SheetFooter>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={pending}
+              onClick={() => setCreateListOpen(true)}
+            >
+              <PlusIcon data-icon="inline-start" />
+              {libraryT.newList}
+            </Button>
+          </SheetFooter>
         </SheetContent>
       </Sheet>
+
+      <CreateLibraryListSheet
+        open={createListOpen}
+        existingLists={lists}
+        onOpenChange={setCreateListOpen}
+        onCreate={(input) => createLibraryList({ ...input, gameIds: [gameId] })}
+        onCreated={(list) =>
+          patchLibraryState({
+            saved: true,
+            lists: [...lists, list],
+            gameListId: list.id,
+          })
+        }
+        showGameSearch={false}
+      />
     </>
   )
 }

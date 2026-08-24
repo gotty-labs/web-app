@@ -117,6 +117,7 @@ const gameLanguageSchema = z.object({
 export const gameLibraryStateSchema = z.object({
   saved: z.boolean(),
   lists: z.array(gameLibraryListSchema),
+  gameListId: z.string().optional(),
 })
 export type GameLibraryState = z.infer<typeof gameLibraryStateSchema>
 
