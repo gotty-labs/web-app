@@ -21,12 +21,24 @@ import {
 } from '@/lib/domain/inputs'
 import {
   gameLibraryListSchema,
+  gameLibraryStateSchema,
   gameLibrarySchema,
   paginated,
   type GameLibrary,
   type GameLibraryList,
+  type GameLibraryState,
   type Paginated,
 } from '@/lib/domain/models'
+
+/** Read the current user's save state and available custom lists for a game. */
+export function getGameLibraryState(slug: string): Promise<GameLibraryState> {
+  return authedRequest({
+    method: 'GET',
+    path: `/game/public/${slug}/library`,
+    cache: 'no-store',
+    schema: gameLibraryStateSchema,
+  })
+}
 
 export function getLibraryLists(): Promise<GameLibraryList[]> {
   return authedRequest({

@@ -113,6 +113,13 @@ const gameLanguageSchema = z.object({
   categories: z.array(gameLanguageCategorySchema),
 })
 
+/** Current user's library state for a game (`GET /game/public/:slug/library`). */
+export const gameLibraryStateSchema = z.object({
+  saved: z.boolean(),
+  lists: z.array(gameLibraryListSchema),
+})
+export type GameLibraryState = z.infer<typeof gameLibraryStateSchema>
+
 /** Full game detail — powers both the in-app detail and the public SEO page. */
 export const gameDtoSchema = z.object({
   id: z.string(),
@@ -120,14 +127,6 @@ export const gameDtoSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   storyline: z.string().optional(),
-  // User-specific library data is omitted altogether for a guest request.
-  stored: z
-    .object({
-      saved: z.boolean(),
-      // Optional while the enriched public endpoint is rolled out independently.
-      lists: z.array(gameLibraryListSchema).optional(),
-    })
-    .optional(),
   ageRating: z.array(z.object({ organization: gameAgeRatingSchema, rate: z.string() })),
   rating: ratingSchema.optional(),
   timeToBeat: timeToBeatSchema.optional(),

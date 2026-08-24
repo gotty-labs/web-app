@@ -15,13 +15,7 @@
 'use client'
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
-import {
-  BookmarkPlusIcon,
-  BookmarkXIcon,
-  EyeIcon,
-  GaugeIcon,
-  ListPlusIcon,
-} from 'lucide-react'
+import { BookmarkPlusIcon, BookmarkXIcon, EyeIcon, GaugeIcon, ListPlusIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
@@ -37,12 +31,16 @@ import { Spinner } from '@/components/ui/spinner'
 import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
-import type { GameLibraryList } from '@/lib/domain/models'
+import type { GameLibraryList, GameLibraryState } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
-import { getGameForUser } from '../services/catalog'
-import { removeGameFromLibrary, storeGameInLibrary, updateLibraryList } from '../services/library'
+import {
+  getGameLibraryState,
+  removeGameFromLibrary,
+  storeGameInLibrary,
+  updateLibraryList,
+} from '../services/library'
 
 type Tone = 'primary' | 'default' | 'destructive'
 
@@ -61,7 +59,15 @@ const TONE_CLASS: Record<Tone, string> = {
     'bg-destructive/10 text-destructive ring-destructive/25 group-hover:bg-destructive/20',
 }
 
-function ActionItem({ action, disabled, busy }: { action: Action; disabled: boolean; busy: boolean }) {
+function ActionItem({
+  action,
+  disabled,
+  busy,
+}: {
+  action: Action
+  disabled: boolean
+  busy: boolean
+}) {
   return (
     <button
       type="button"
@@ -93,8 +99,8 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const { status } = useSession()
 
   const [saved, setSaved] = useState(false)
-  const [hasStored, setHasStored] = useState(false)
-  const [lists, setLists] = useState<GameLibraryList[] | undefined>()
+  const [libraryState, setLibraryState] = useState<GameLibraryState | null>(null)
+  const [lists, setLists] = useState<GameLibraryList[]>([])
   const [ready, setReady] = useState(false)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
   const [listSheetOpen, setListSheetOpen] = useState(false)
@@ -102,15 +108,15 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   useEffect(() => {
     if (status !== 'authenticated') return
     let active = true
-    getGameForUser(slug)
-      .then((game) => {
-        if (!active || !game.stored) return
-        setHasStored(true)
-        setSaved(game.stored.saved)
-        setLists(game.stored.lists)
+    getGameLibraryState(slug)
+      .then((state) => {
+        if (!active) return
+        setLibraryState(state)
+        setSaved(state.saved)
+        setLists(state.lists)
       })
       .catch(() => {
-        // The public response can legitimately omit `stored`; do not show actions.
+        // A failed library-state read should not show actions with an unknown state.
       })
       .finally(() => {
         if (active) setReady(true)
@@ -138,12 +144,17 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     )
   }
 
-  // `stored` is deliberately absent from unauthenticated public responses.
-  if (!hasStored) return null
+  // The protected endpoint returns a state even when the game is not saved.
+  if (!libraryState) return null
 
   const pending = pendingKey !== null
 
-  async function run(key: string, task: () => Promise<void>, onDone: () => void, successMsg: string) {
+  async function run(
+    key: string,
+    task: () => Promise<void>,
+    onDone: () => void,
+    successMsg: string,
+  ) {
     setPendingKey(key)
     try {
       await task()
@@ -157,7 +168,12 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   }
 
   const store = (key: string, input: StoreGameLibraryInput, msg: string) =>
-    run(key, () => storeGameInLibrary(gameId, input), () => setSaved(true), msg)
+    run(
+      key,
+      () => storeGameInLibrary(gameId, input),
+      () => setSaved(true),
+      msg,
+    )
 
   const openListSheet = () => {
     setListSheetOpen(true)
@@ -184,7 +200,12 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
           tone: 'destructive',
           icon: <BookmarkXIcon />,
           onClick: () =>
-            run('remove', () => removeGameFromLibrary(gameId), () => setSaved(false), t.removedToast),
+            run(
+              'remove',
+              () => removeGameFromLibrary(gameId),
+              () => setSaved(false),
+              t.removedToast,
+            ),
         },
         ...(lists && lists.length > 0
           ? [
