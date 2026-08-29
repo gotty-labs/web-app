@@ -22,12 +22,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Progress } from '@/components/ui/progress'
+import { Spinner } from '@/components/ui/spinner'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { ONBOARDING_VIDEO_CHECKPOINTS, ONBOARDING_VIDEO_SRC } from '../config/onboarding'
 import { onboardingStore } from '../stores/onboarding-store'
 
 const LAST_STEP_INDEX = ONBOARDING_VIDEO_CHECKPOINTS.length - 1
+type VideoLoadState = 'loading' | 'ready' | 'failed'
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -40,6 +42,7 @@ export function OnboardingFlow() {
   const targetTimeRef = useRef<number>(ONBOARDING_VIDEO_CHECKPOINTS[0])
   const [stepIndex, setStepIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(true)
+  const [videoLoadState, setVideoLoadState] = useState<VideoLoadState>('loading')
   const seen = useSyncExternalStore(
     onboardingStore.subscribe,
     onboardingStore.getSnapshot,
@@ -86,6 +89,11 @@ export function OnboardingFlow() {
     setIsTransitioning(false)
   }
 
+  function handleVideoError() {
+    setVideoLoadState('failed')
+    setIsTransitioning(false)
+  }
+
   function handleContinue() {
     if (isLastStep) {
       onboardingStore.markSeen()
@@ -111,7 +119,7 @@ export function OnboardingFlow() {
         onEscapeKeyDown={(event) => event.preventDefault()}
         onInteractOutside={(event) => event.preventDefault()}
         onPointerDownOutside={(event) => event.preventDefault()}
-        className="inset-0 top-0 left-0 h-svh max-h-none w-screen max-w-none translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-none p-0 sm:top-1/2 sm:left-1/2 sm:h-[min(90svh,48rem)] sm:w-[min(calc(100vw-3rem),70rem)] sm:max-w-6xl sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl"
+        className="bg-onboarding-media-background inset-0 top-0 left-0 h-svh max-h-none w-screen max-w-none translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-none p-0 sm:top-1/2 sm:left-1/2 sm:h-[min(90svh,48rem)] sm:w-[min(calc(100vw-3rem),70rem)] sm:max-w-6xl sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>{step.title}</DialogTitle>
@@ -119,7 +127,7 @@ export function OnboardingFlow() {
         </DialogHeader>
 
         <div className="grid h-full min-h-0 grid-rows-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1.15fr)_minmax(22rem,0.85fr)] md:grid-rows-1">
-          <div className="relative isolate flex min-h-0 items-center justify-center overflow-hidden bg-background">
+          <div className="bg-onboarding-media-background relative isolate flex min-h-0 items-center justify-center overflow-hidden">
             <div className="absolute inset-[15%] rounded-full bg-primary/10 blur-3xl" />
             <video
               ref={videoRef}
@@ -130,15 +138,26 @@ export function OnboardingFlow() {
               preload="auto"
               className="relative h-full w-full object-contain"
               onLoadedMetadata={handleLoadedMetadata}
+              onLoadedData={() => setVideoLoadState('ready')}
               onTimeUpdate={handleTimeUpdate}
               onEnded={() => setIsTransitioning(false)}
-              onError={() => setIsTransitioning(false)}
+              onError={handleVideoError}
             >
               <source src={ONBOARDING_VIDEO_SRC} type="video/mp4" />
             </video>
+
+            {videoLoadState !== 'ready' ? (
+              <div className="bg-onboarding-media-background absolute inset-0 z-10 flex items-center justify-center">
+                {videoLoadState === 'loading' ? (
+                  <Spinner className="text-primary size-7" />
+                ) : (
+                  <BrandMark priority wrapperClassName="size-16" sizes="64px" />
+                )}
+              </div>
+            ) : null}
           </div>
 
-          <section className="flex min-h-0 flex-col gap-6 bg-popover px-6 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-8 sm:py-8 md:justify-between md:px-10 md:py-10">
+          <section className="bg-onboarding-media-background flex min-h-0 flex-col gap-6 px-6 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-8 sm:py-8 md:justify-between md:px-10 md:py-10">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2.5">
                 <BrandMark priority wrapperClassName="size-8" sizes="32px" />
