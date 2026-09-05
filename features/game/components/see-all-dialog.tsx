@@ -12,6 +12,7 @@
 import { useEffect } from 'react'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { AdSlot, adPlacement, useAdvertising, useCardAdViewport } from '@/features/advertising'
 import type { GameSection } from '@/lib/domain/enums'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
@@ -34,7 +35,13 @@ export function SeeAllDialog({
   onClose: () => void
 }) {
   const dict = useDictionary()
-  const { items, loading, error, hasMore, loadMore } = useSectionPager(section, initialCursor)
+  const advertising = useAdvertising()
+  const canRenderCardAds = useCardAdViewport()
+  const { items, pageEnds, loading, error, hasMore, loadMore } = useSectionPager(
+    section,
+    initialCursor,
+  )
+  const pageEndSet = new Set(pageEnds)
 
   useEffect(() => {
     void loadMore()
@@ -61,6 +68,16 @@ export function SeeAllDialog({
             hasMore={hasMore}
             onLoadMore={() => void loadMore()}
             renderItem={(game) => <GameCard game={game} />}
+            renderAfterItem={(_, index) =>
+              advertising.enabled && canRenderCardAds && pageEndSet.has(index + 1) ? (
+                <AdSlot
+                  key={`page-ad-${index + 1}`}
+                  placement={adPlacement.paginatedSection}
+                  label={dict.app.advertising.label}
+                  className="aspect-3/4 rounded-lg border border-border/60 bg-muted/20 p-2"
+                />
+              ) : null
+            }
             emptyLabel={dict.app.feed.empty}
             // Fewer columns than the full-width search page → bigger cards in the modal
             // (mobile stays at 3, which the user confirmed is right).

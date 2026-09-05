@@ -14,6 +14,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ErrorProvider } from '@/contexts/error-provider'
 import { StartupProvider } from '@/features/app-config'
+import { AdvertisingProvider } from '@/features/advertising'
 import { AuthGate, SessionProvider } from '@/features/auth'
 import { VerifyEmailNudge } from '@/features/profile'
 import { AppShell } from '@/features/shell'
@@ -31,10 +32,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <SessionProvider>
           <TooltipProvider>
             <AuthGate>
-              <StartupProvider>
-                <VerifyEmailNudge />
-                <AppShell>{children}</AppShell>
-              </StartupProvider>
+              {/* NOTE: pass the paid entitlement to `disabled` when the backend ships it. */}
+              <AdvertisingProvider disabled={false}>
+                <StartupProvider>
+                  <VerifyEmailNudge />
+                  <AppShell>{children}</AppShell>
+                </StartupProvider>
+              </AdvertisingProvider>
             </AuthGate>
             <Toaster theme="dark" position="top-center" />
           </TooltipProvider>

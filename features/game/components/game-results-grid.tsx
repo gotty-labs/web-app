@@ -12,7 +12,7 @@
  */
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { Fragment, useEffect, useRef, type ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -36,6 +36,7 @@ export function GameResultsGrid<T extends { id: string }>({
   hasMore,
   onLoadMore,
   renderItem,
+  renderAfterItem,
   emptyLabel,
   emptyAction,
   skeletonCount = 10,
@@ -47,6 +48,8 @@ export function GameResultsGrid<T extends { id: string }>({
   hasMore: boolean
   onLoadMore: () => void
   renderItem: (item: T) => ReactNode
+  /** Optional grid sibling inserted after selected items (e.g. one ad per page). */
+  renderAfterItem?: (item: T, index: number) => ReactNode
   emptyLabel: string
   /** Optional call-to-action rendered under the empty state (e.g. "go discover"). */
   emptyAction?: ReactNode
@@ -114,10 +117,11 @@ export function GameResultsGrid<T extends { id: string }>({
   return (
     <div className="flex flex-col gap-4">
       <div className={cn('grid', gridClassName)}>
-        {items.map((item) => (
-          <div key={item.id} className="min-w-0">
-            {renderItem(item)}
-          </div>
+        {items.map((item, index) => (
+          <Fragment key={item.id}>
+            <div className="min-w-0">{renderItem(item)}</div>
+            {renderAfterItem?.(item, index)}
+          </Fragment>
         ))}
         {loading &&
           items.length === 0 &&

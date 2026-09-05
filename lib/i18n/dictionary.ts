@@ -82,6 +82,9 @@ export const dictionarySchema = z.object({
       name: z.string(),
       tagline: z.string(),
     }),
+    advertising: z.object({
+      label: z.string(),
+    }),
     actions: z.object({
       enterApp: z.string(),
       signIn: z.string(),

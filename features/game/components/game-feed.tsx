@@ -137,6 +137,7 @@ export function GameFeed() {
           key={s.section}
           title={s.title}
           games={s.games}
+          adLabel={dict.app.advertising.label}
           // "See all" only when the section has more games beyond the feed (a
           // nextCursor). Otherwise the carousel already shows everything.
           onSeeAll={

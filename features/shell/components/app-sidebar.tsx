@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation'
 import { MessageSquareIcon, MonitorIcon } from 'lucide-react'
 
 import { BrandMark } from '@/components/brand-mark'
+import { AdSlot, adPlacement } from '@/features/advertising'
 import {
   Sidebar,
   SidebarContent,
@@ -38,7 +39,7 @@ import { ProfileMenu } from './profile-menu'
 export function AppSidebar() {
   const dict = useDictionary()
   const pathname = usePathname()
-  const { setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, state } = useSidebar()
   const { openConsoleVisibility } = useConsoleVisibility()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
@@ -122,6 +123,13 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter>
+          {!isMobile && state === 'expanded' ? (
+            <AdSlot
+              placement={adPlacement.sidebar}
+              label={dict.app.advertising.label}
+              className="min-h-72 rounded-lg border border-sidebar-border bg-sidebar-accent/30 p-2"
+            />
+          ) : null}
           <SidebarMenu>
             <SidebarMenuItem>
               <ProfileMenu />

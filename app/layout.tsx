@@ -36,6 +36,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(env.siteUrl),
   title: { default: 'Gotty', template: '%s · Gotty' },
   description: 'Descubre, guarda y sigue tus videojuegos.',
+  ...(env.advertising.adsense.clientId
+    ? {
+        other: {
+          'google-adsense-account': env.advertising.adsense.clientId,
+        },
+      }
+    : {}),
 }
 
 export default function RootLayout({

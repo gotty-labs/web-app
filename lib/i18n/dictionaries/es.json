@@ -170,6 +170,9 @@
       "name": "Gotty",
       "tagline": "Descubre, guarda y sigue tus videojuegos."
     },
+    "advertising": {
+      "label": "Anuncios"
+    },
     "actions": {
       "enterApp": "Entrar a la app",
       "signIn": "Iniciar sesión",

@@ -11,6 +11,7 @@
  */
 import { notFound } from 'next/navigation'
 
+import { AdSlot, adPlacement, AdvertisingProvider } from '@/features/advertising'
 import { getDictionary, type Locale } from '@/lib/i18n'
 
 import type { GameReleaseDate } from '@/lib/domain/models'
@@ -122,137 +123,153 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
   ].filter((fact): fact is { label: string; value: string } => fact !== null)
 
   return (
-    <main>
-      <GameHero game={game} dict={dict} releaseYear={formatYear(releaseIso)} />
+    <AdvertisingProvider>
+      <main>
+        <GameHero game={game} dict={dict} releaseYear={formatYear(releaseIso)} />
 
-      <div className="mx-auto max-w-5xl px-4 pb-20 md:px-8">
-        {/* Library actions (authed only) — hidden entirely for signed-out visitors. */}
-        <div className="mb-8 flex justify-center md:justify-start">
-          <GameDetailIsland gameId={game.id} slug={slug} locale={locale} dictionary={dict} />
-        </div>
+        <div className="mx-auto grid w-full max-w-[96rem] grid-cols-1 gap-6 min-[90rem]:grid-cols-[250px_minmax(0,1fr)_250px]">
+          <AdSlot
+            placement={adPlacement.gameDetail}
+            label={dict.app.advertising.label}
+            className="sticky top-6 hidden min-h-[36rem] min-w-[250px] self-start rounded-lg border border-border/60 bg-muted/20 p-2 min-[90rem]:flex"
+          />
 
-        <div className="flex flex-col gap-10">
-          {(game.description || game.storyline) && (
-            <DetailSection
-              title={t.about}
-              action={
-                game.storyline ? (
-                  <StorylineDialog
-                    storyline={game.storyline}
-                    title={t.storyline}
-                    triggerLabel={t.readStoryline}
-                  />
-                ) : undefined
-              }
-            >
-              {game.description ? (
-                <ExpandableText
-                  text={game.description}
-                  moreLabel={t.showMore}
-                  lessLabel={t.showLess}
+          <div className="w-full px-4 pb-20 md:px-8">
+            {/* Library actions (authed only) — hidden entirely for signed-out visitors. */}
+            <div className="mb-8 flex justify-center md:justify-start">
+              <GameDetailIsland gameId={game.id} slug={slug} locale={locale} dictionary={dict} />
+            </div>
+
+            <div className="flex flex-col gap-10">
+              {(game.description || game.storyline) && (
+                <DetailSection
+                  title={t.about}
+                  action={
+                    game.storyline ? (
+                      <StorylineDialog
+                        storyline={game.storyline}
+                        title={t.storyline}
+                        triggerLabel={t.readStoryline}
+                      />
+                    ) : undefined
+                  }
+                >
+                  {game.description ? (
+                    <ExpandableText
+                      text={game.description}
+                      moreLabel={t.showMore}
+                      lessLabel={t.showLess}
+                    />
+                  ) : null}
+                </DetailSection>
+              )}
+
+              {facts.length > 0 && (
+                <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
+                  {facts.map((fact) => (
+                    <div key={fact.label} className="flex flex-col gap-0.5">
+                      <dt className="text-xs text-muted-foreground">{fact.label}</dt>
+                      <dd className="font-medium">{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+
+              {(game.genres.length > 0 || game.themes.length > 0 || game.ageRating.length > 0) && (
+                <GameTags
+                  dict={dict}
+                  genres={game.genres}
+                  themes={game.themes}
+                  ageRatings={game.ageRating}
                 />
-              ) : null}
-            </DetailSection>
-          )}
+              )}
 
-          {facts.length > 0 && (
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
-              {facts.map((fact) => (
-                <div key={fact.label} className="flex flex-col gap-0.5">
-                  <dt className="text-xs text-muted-foreground">{fact.label}</dt>
-                  <dd className="font-medium">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
+              {game.platforms.length > 0 && (
+                <DetailSection title={t.platforms}>
+                  <GamePlatforms platforms={game.platforms} />
+                </DetailSection>
+              )}
 
-          {(game.genres.length > 0 || game.themes.length > 0 || game.ageRating.length > 0) && (
-            <GameTags
-              dict={dict}
-              genres={game.genres}
-              themes={game.themes}
-              ageRatings={game.ageRating}
-            />
-          )}
+              {releaseRows.length > 0 && (
+                <DetailSection title={t.releases}>
+                  <GameReleaseDates
+                    rows={releaseRows}
+                    labels={{
+                      gameName: game.name,
+                      releasesTitle: t.releases,
+                      seeAll: t.seeAll,
+                      addToCalendar: t.addToCalendar,
+                      appleCalendar: t.appleCalendar,
+                      googleCalendar: t.googleCalendar,
+                    }}
+                  />
+                </DetailSection>
+              )}
 
-          {game.platforms.length > 0 && (
-            <DetailSection title={t.platforms}>
-              <GamePlatforms platforms={game.platforms} />
-            </DetailSection>
-          )}
+              {game.engines.length > 0 && (
+                <DetailSection title={t.engines}>
+                  <GameEngines engines={game.engines} />
+                </DetailSection>
+              )}
 
-          {releaseRows.length > 0 && (
-            <DetailSection title={t.releases}>
-              <GameReleaseDates
-                rows={releaseRows}
-                labels={{
-                  gameName: game.name,
-                  releasesTitle: t.releases,
-                  seeAll: t.seeAll,
-                  addToCalendar: t.addToCalendar,
-                  appleCalendar: t.appleCalendar,
-                  googleCalendar: t.googleCalendar,
-                }}
-              />
-            </DetailSection>
-          )}
+              {timeToBeatEntries.length > 0 && (
+                <DetailSection title={t.timeToBeat}>
+                  <GameTimeToBeat entries={timeToBeatEntries} />
+                </DetailSection>
+              )}
 
-          {game.engines.length > 0 && (
-            <DetailSection title={t.engines}>
-              <GameEngines engines={game.engines} />
-            </DetailSection>
-          )}
+              {hasMedia && (
+                <DetailSection title={t.media}>
+                  <GameMediaGallery
+                    artworks={artworks}
+                    screenshots={screenshots}
+                    videoIds={videoIds}
+                    labels={{
+                      title: t.media,
+                      viewGallery: t.viewGallery,
+                      all: dict.app.search.all,
+                      artworks: t.mediaArtworks,
+                      screenshots: t.mediaScreenshots,
+                      videos: t.mediaVideos,
+                      play: t.playVideo,
+                      fullscreen: t.fullscreen,
+                      previous: t.previous,
+                      next: t.next,
+                    }}
+                  />
+                </DetailSection>
+              )}
 
-          {timeToBeatEntries.length > 0 && (
-            <DetailSection title={t.timeToBeat}>
-              <GameTimeToBeat entries={timeToBeatEntries} />
-            </DetailSection>
-          )}
+              {(expansions.length > 0 || dlcs.length > 0) && (
+                <GameAdditionalContent
+                  expansions={expansions}
+                  dlcs={dlcs}
+                  labels={{
+                    expansions: t.expansions,
+                    dlcs: t.dlcs,
+                    releasesTitle: t.releases,
+                    addToCalendar: t.addToCalendar,
+                    appleCalendar: t.appleCalendar,
+                    googleCalendar: t.googleCalendar,
+                  }}
+                />
+              )}
 
-          {hasMedia && (
-            <DetailSection title={t.media}>
-              <GameMediaGallery
-                artworks={artworks}
-                screenshots={screenshots}
-                videoIds={videoIds}
-                labels={{
-                  title: t.media,
-                  viewGallery: t.viewGallery,
-                  all: dict.app.search.all,
-                  artworks: t.mediaArtworks,
-                  screenshots: t.mediaScreenshots,
-                  videos: t.mediaVideos,
-                  play: t.playVideo,
-                  fullscreen: t.fullscreen,
-                  previous: t.previous,
-                  next: t.next,
-                }}
-              />
-            </DetailSection>
-          )}
+              {game.languages.length > 0 && (
+                <DetailSection title={t.languages}>
+                  <GameLanguages dict={dict} languages={game.languages} />
+                </DetailSection>
+              )}
+            </div>
+          </div>
 
-          {(expansions.length > 0 || dlcs.length > 0) && (
-            <GameAdditionalContent
-              expansions={expansions}
-              dlcs={dlcs}
-              labels={{
-                expansions: t.expansions,
-                dlcs: t.dlcs,
-                releasesTitle: t.releases,
-                addToCalendar: t.addToCalendar,
-                appleCalendar: t.appleCalendar,
-                googleCalendar: t.googleCalendar,
-              }}
-            />
-          )}
-
-          {game.languages.length > 0 && (
-            <DetailSection title={t.languages}>
-              <GameLanguages dict={dict} languages={game.languages} />
-            </DetailSection>
-          )}
+          <AdSlot
+            placement={adPlacement.gameDetail}
+            label={dict.app.advertising.label}
+            className="sticky top-6 hidden min-h-[36rem] min-w-[250px] self-start rounded-lg border border-border/60 bg-muted/20 p-2 min-[90rem]:flex"
+          />
         </div>
-      </div>
-    </main>
+      </main>
+    </AdvertisingProvider>
   )
 }

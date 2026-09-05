@@ -170,6 +170,9 @@
       "name": "Gotty",
       "tagline": "Discover, save and track your games."
     },
+    "advertising": {
+      "label": "Advertisements"
+    },
     "actions": {
       "enterApp": "Enter the app",
       "signIn": "Sign in",

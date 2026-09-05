@@ -22,6 +22,8 @@ import type { CursorPager } from '../cursor-pager'
 
 export interface CursorPagerListState<T> {
   items: T[]
+  /** Accumulated item count at the end of every successfully fetched page. */
+  pageEnds: number[]
   loading: boolean
   error: unknown
   hasMore: boolean
@@ -44,6 +46,7 @@ export function useCursorPagerList<T>(
   }
 
   const [items, setItems] = useState<T[]>([])
+  const [pageEnds, setPageEnds] = useState<number[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<unknown>(null)
   // An initial pager exists iff a factory was provided (can't read the ref in render).
@@ -61,6 +64,7 @@ export function useCursorPagerList<T>(
       const next = await pager.loadMore()
       if (pagerRef.current !== pager) return { ok: false, superseded: true } as const
       setItems([...next])
+      setPageEnds((ends) => [...ends, next.length])
       setHasMore(pager.hasMore)
       return { ok: true } as const
     } catch (e) {
@@ -81,6 +85,7 @@ export function useCursorPagerList<T>(
       pagerRef.current = pager
       loadingRef.current = false
       if (!options?.preserveItems || pager === null) setItems([])
+      setPageEnds([])
       setError(null)
       setHasMore(pager !== null)
       setLoading(false)
@@ -88,5 +93,5 @@ export function useCursorPagerList<T>(
     [],
   )
 
-  return { items, loading, error, hasMore, loadMore, reset }
+  return { items, pageEnds, loading, error, hasMore, loadMore, reset }
 }
