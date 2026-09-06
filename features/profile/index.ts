@@ -1,5 +1,6 @@
 /** Public surface of the profile feature. */
 export {
+  sendFeedback,
   startVerifyEmail,
   verifyEmail,
   changePassword,
