@@ -6,6 +6,7 @@ export {
   createLibraryList,
   getLibrary,
   updateLibraryList,
+  syncGameLibraryLists,
   deleteLibraryList,
   storeGameInLibrary,
   removeGameFromLibrary,

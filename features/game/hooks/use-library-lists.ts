@@ -51,11 +51,21 @@ export function useLibraryLists(): LibraryListsState {
     }
   }, [])
 
-  const create = useCallback(async (input: CreateLibraryListInput) => {
-    const created = await createLibraryList(input)
-    setLists((current) => [...current, created])
-    return created
-  }, [])
+  const create = useCallback(
+    async (input: CreateLibraryListInput) => {
+      try {
+        const created = await createLibraryList(input)
+        setLists((current) => [...current, created])
+        return created
+      } catch (error) {
+        // Creation and membership are separate backend writes; reconcile if only
+        // the list creation succeeded.
+        void refresh()
+        throw error
+      }
+    },
+    [refresh],
+  )
 
   const remove = useCallback(async (listId: string) => {
     await deleteLibraryList(listId)

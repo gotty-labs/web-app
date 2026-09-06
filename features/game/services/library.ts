@@ -48,13 +48,19 @@ export function getLibraryLists(): Promise<GameLibraryList[]> {
   })
 }
 
-export function createLibraryList(input: CreateLibraryListInput): Promise<GameLibraryList> {
-  return authedRequest({
+export async function createLibraryList(input: CreateLibraryListInput): Promise<GameLibraryList> {
+  const { gameIds, ...listInput } = createLibraryListInputSchema.parse(input)
+  const created = await authedRequest({
     method: 'POST',
     path: '/game/user/library/lists',
-    body: createLibraryListInputSchema.parse(input),
+    body: listInput,
     schema: gameLibraryListSchema,
   })
+
+  if (gameIds?.length) {
+    await updateLibraryList(created.id, { gameIds, save: true })
+  }
+  return created
 }
 
 export function getLibrary(input: GetUserLibraryInput = {}): Promise<Paginated<GameLibrary>> {
@@ -76,6 +82,33 @@ export async function updateLibraryList(
     body: updateLibraryListInputSchema.parse(input),
     schema: voidDataSchema,
   })
+}
+
+/**
+ * Apply all membership changes concurrently. The backend exposes membership as one
+ * resource per list, so a multi-list edit fans out to one PATCH for each changed list.
+ */
+export async function syncGameLibraryLists(
+  gameId: string,
+  currentListIds: readonly string[],
+  nextListIds: readonly string[],
+): Promise<void> {
+  const current = new Set(currentListIds)
+  const next = new Set(nextListIds)
+  const requests = [
+    ...[...next].filter((listId) => !current.has(listId)).map((listId) => ({ listId, save: true })),
+    ...[...current]
+      .filter((listId) => !next.has(listId))
+      .map((listId) => ({ listId, save: false })),
+  ]
+
+  const results = await Promise.allSettled(
+    requests.map(({ listId, save }) => updateLibraryList(listId, { gameIds: [gameId], save })),
+  )
+  const failed = results.find(
+    (result): result is PromiseRejectedResult => result.status === 'rejected',
+  )
+  if (failed) throw failed.reason
 }
 
 export async function deleteLibraryList(listId: string): Promise<void> {

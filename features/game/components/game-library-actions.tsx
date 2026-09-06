@@ -7,7 +7,7 @@
  * visitors without a session, so the row stays hidden for them.
  *  - saved = false   → Save · Whitelist · Lists.
  *  - saved = true    → Remove · Lists · Progress.
- * The Lists action is always available, reports the user's list count, and opens a
+ * The Lists action is always available, reports the game's membership count, and opens a
  * toggleable membership sheet. Swapping sets re-keys the row so it animates in;
  * Progress remains a placeholder while every other action hits the backend.
  */
@@ -51,7 +51,7 @@ import {
   getGameLibraryState,
   removeGameFromLibrary,
   storeGameInLibrary,
-  updateLibraryList,
+  syncGameLibraryLists,
 } from '../services/library'
 
 import { CreateLibraryListSheet } from './create-library-list-sheet'
@@ -73,6 +73,12 @@ const TONE_CLASS: Record<Tone, string> = {
   default: 'bg-muted/60 text-foreground ring-border group-hover:bg-muted',
   destructive:
     'bg-destructive/10 text-destructive ring-destructive/25 group-hover:bg-destructive/20',
+}
+
+function haveSameIds(current: readonly string[], next: readonly string[]): boolean {
+  if (current.length !== next.length) return false
+  const currentIds = new Set(current)
+  return next.every((id) => currentIds.has(id))
 }
 
 function ActionItem({
@@ -123,6 +129,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   const [pendingKey, setPendingKey] = useState<string | null>(null)
   const [listSheetOpen, setListSheetOpen] = useState(false)
   const [createListOpen, setCreateListOpen] = useState(false)
+  const [draftGameListIds, setDraftGameListIds] = useState<string[]>([])
 
   useEffect(() => {
     if (status !== 'authenticated') return
@@ -164,8 +171,9 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
   // The protected endpoint returns a state even when the game is not saved.
   if (!libraryState) return null
 
-  const { saved, lists, gameListId } = libraryState
+  const { saved, lists, gameListIds } = libraryState
   const pending = pendingKey !== null
+  const listSelectionChanged = !haveSameIds(gameListIds, draftGameListIds)
 
   function patchLibraryState(patch: Partial<GameLibraryState>) {
     setLibraryState((current) => (current ? { ...current, ...patch } : current))
@@ -198,20 +206,37 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     )
 
   const openListSheet = () => {
+    setDraftGameListIds(gameListIds)
     setListSheetOpen(true)
   }
 
-  const toggleList = (listId: string, save: boolean) => {
-    if (pending) return
+  const saveLists = () => {
+    if (pending || !listSelectionChanged) return
+    const nextListIds = [...draftGameListIds]
     run(
-      `list:${listId}`,
-      () => updateLibraryList(listId, { gameIds: [gameId], save }),
-      () =>
+      'lists',
+      async () => {
+        try {
+          await syncGameLibraryLists(gameId, gameListIds, nextListIds)
+        } catch (error) {
+          try {
+            const refreshed = await getGameLibraryState(slug)
+            setLibraryState(refreshed)
+            setDraftGameListIds(refreshed.gameListIds)
+          } catch {
+            // Preserve the current state if reconciliation also fails.
+          }
+          throw error
+        }
+      },
+      () => {
         patchLibraryState({
-          saved: save ? true : saved,
-          gameListId: save ? listId : undefined,
-        }),
-      save ? t.listSavedToast : libraryT.removedFromListToast,
+          saved: nextListIds.length > 0 ? true : saved,
+          gameListIds: nextListIds,
+        })
+        setListSheetOpen(false)
+      },
+      t.listsUpdatedToast,
     )
   }
 
@@ -222,7 +247,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     label: t.lists,
     tone: 'default',
     icon: <ListPlusIcon />,
-    badge: lists.length,
+    badge: gameListIds.length,
     onClick: openListSheet,
   }
 
@@ -237,7 +262,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
             run(
               'remove',
               () => removeGameFromLibrary(gameId),
-              () => patchLibraryState({ saved: false, gameListId: undefined }),
+              () => patchLibraryState({ saved: false, gameListIds: [] }),
               t.removedToast,
             ),
         },
@@ -279,10 +304,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
             key={action.key}
             action={action}
             disabled={pending}
-            busy={
-              pendingKey === action.key ||
-              (action.key === 'lists' && pendingKey?.startsWith('list:') === true)
-            }
+            busy={pendingKey === action.key || (action.key === 'lists' && pendingKey === 'lists')}
           />
         ))}
       </div>
@@ -297,20 +319,16 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-1">
             {lists.length > 0 ? (
               <ToggleGroup
-                type="single"
-                value={gameListId ?? ''}
+                type="multiple"
+                value={draftGameListIds}
                 disabled={pending}
                 orientation="vertical"
                 variant="filter"
                 className="w-full items-stretch pb-1"
-                onValueChange={(value) => {
-                  const listId = value || gameListId
-                  if (listId) toggleList(listId, value !== '')
-                }}
+                onValueChange={setDraftGameListIds}
               >
                 {lists.map((list) => {
-                  const selected = gameListId === list.id
-                  const rowPending = pendingKey === `list:${list.id}`
+                  const selected = draftGameListIds.includes(list.id)
 
                   return (
                     <ToggleGroupItem
@@ -326,9 +344,7 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
                         <LibraryListIcon icon={list.icon} style={{ color: list.hexColor }} />
                       </span>
                       <span className="min-w-0 flex-1 truncate text-left">{list.name}</span>
-                      {rowPending ? (
-                        <Spinner />
-                      ) : selected ? (
+                      {selected ? (
                         <Badge>
                           <CheckIcon data-icon="inline-start" />
                           {t.listIncluded}
@@ -364,6 +380,15 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
               <PlusIcon data-icon="inline-start" />
               {libraryT.newList}
             </Button>
+            <Button
+              type="button"
+              className="w-full"
+              disabled={pending || !listSelectionChanged}
+              onClick={saveLists}
+            >
+              {pendingKey === 'lists' ? <Spinner data-icon="inline-start" /> : null}
+              {libraryT.saveChanges}
+            </Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>
@@ -372,14 +397,27 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
         open={createListOpen}
         existingLists={lists}
         onOpenChange={setCreateListOpen}
-        onCreate={(input) => createLibraryList({ ...input, gameIds: [gameId] })}
-        onCreated={(list) =>
+        onCreate={async (input) => {
+          try {
+            return await createLibraryList({ ...input, gameIds: [gameId] })
+          } catch (error) {
+            try {
+              setLibraryState(await getGameLibraryState(slug))
+            } catch {
+              // Preserve the current state if reconciliation also fails.
+            }
+            throw error
+          }
+        }}
+        onCreated={(list) => {
+          const nextGameListIds = [...gameListIds, list.id]
+          setDraftGameListIds(nextGameListIds)
           patchLibraryState({
             saved: true,
             lists: [...lists, list],
-            gameListId: list.id,
+            gameListIds: nextGameListIds,
           })
-        }
+        }}
         showGameSearch={false}
       />
     </>

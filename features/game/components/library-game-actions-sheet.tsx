@@ -71,7 +71,7 @@ export function LibraryGameActionsSheet({
   onRemove,
   onAddToLibrary,
   onUpdateProgress,
-  onMoveToList,
+  onUpdateLists,
 }: {
   game: GameLibrary
   mode: 'library' | 'whitelist'
@@ -84,7 +84,7 @@ export function LibraryGameActionsSheet({
   onRemove: (kind: RemoveKind) => Promise<boolean>
   onAddToLibrary: () => Promise<boolean>
   onUpdateProgress: (state: GameLibraryProgressState, durationMinutes: number) => Promise<boolean>
-  onMoveToList: (listId: string) => Promise<boolean>
+  onUpdateLists: (listIds: string[]) => Promise<boolean>
 }) {
   const dict = useDictionary()
   const t = dict.app.library
@@ -95,19 +95,16 @@ export function LibraryGameActionsSheet({
     ? timeToBeatHours(game.timeToBeat.total)
     : DEFAULT_MAX_TIME_TO_BEAT
   const maxHours = Math.max(0.5, Math.ceil(Math.max(suggestedMax, currentHours) * 2) / 2)
-  const matchedListId = lists.find(
-    (list) =>
-      game.list?.icon === list.icon &&
-      game.list.hexColor.toLocaleLowerCase() === list.hexColor.toLocaleLowerCase(),
-  )?.id
-  const currentListId = selectedListId ?? matchedListId
+  const currentListIds = game.lists.map((list) => list.id)
 
   const [panel, setPanel] = useState<Panel>('menu')
   const [state, setState] = useState<GameLibraryProgressState>(game.progress.state)
   const [hours, setHours] = useState(Math.min(currentHours, maxHours))
-  const [listId, setListId] = useState(currentListId ?? '')
-  const [transferListId, setTransferListId] = useState<string | null>(null)
+  const [listIds, setListIds] = useState<string[]>(currentListIds)
   const [removeKind, setRemoveKind] = useState<RemoveKind | null>(null)
+  const listSelectionChanged =
+    listIds.length !== currentListIds.length ||
+    listIds.some((listId) => !currentListIds.includes(listId))
 
   function changeOpen(next: boolean) {
     if (!next) setPanel('menu')
@@ -117,24 +114,6 @@ export function LibraryGameActionsSheet({
   async function run(action: () => Promise<boolean>) {
     if (await action()) changeOpen(false)
   }
-
-  async function selectList(nextListId: string) {
-    const previousListId = listId
-    setListId(nextListId)
-    if (await onMoveToList(nextListId)) changeOpen(false)
-    else setListId(previousListId)
-  }
-
-  function chooseList(nextListId: string) {
-    if (nextListId === currentListId) return
-    if (game.list || currentListId) {
-      setTransferListId(nextListId)
-      return
-    }
-    void selectList(nextListId)
-  }
-
-  const transferList = lists.find((list) => list.id === transferListId)
 
   return (
     <>
@@ -221,6 +200,14 @@ export function LibraryGameActionsSheet({
                 </>
               ) : (
                 <>
+                  <Button
+                    variant="ghost"
+                    className="justify-start"
+                    onClick={() => setPanel('lists')}
+                  >
+                    <FolderPlusIcon data-icon="inline-start" />
+                    {t.addToList}
+                  </Button>
                   <Button
                     variant="ghost"
                     className="justify-start"
@@ -327,18 +314,16 @@ export function LibraryGameActionsSheet({
                   <FieldLabel>{t.listChoiceLabel}</FieldLabel>
                   {lists.length > 0 ? (
                     <ToggleGroup
-                      type="single"
-                      value={listId}
+                      type="multiple"
+                      value={listIds}
                       disabled={pending}
-                      onValueChange={(value) => {
-                        if (value) chooseList(value)
-                      }}
+                      onValueChange={setListIds}
                       variant="outline"
                       orientation="vertical"
                       className="w-full items-stretch"
                     >
                       {lists.map((list) => {
-                        const selected = listId === list.id
+                        const selected = listIds.includes(list.id)
 
                         return (
                           <ToggleGroupItem
@@ -379,6 +364,15 @@ export function LibraryGameActionsSheet({
                   ) : null}
                 </Field>
               </div>
+              <SheetFooter>
+                <Button
+                  disabled={pending || !listSelectionChanged}
+                  onClick={() => void run(() => onUpdateLists(listIds))}
+                >
+                  {pending ? <Spinner data-icon="inline-start" /> : null}
+                  {t.saveChanges}
+                </Button>
+              </SheetFooter>
             </>
           ) : null}
         </SheetContent>
@@ -411,38 +405,6 @@ export function LibraryGameActionsSheet({
             >
               {pending ? <Spinner data-icon="inline-start" /> : null}
               {t.confirmRemove}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog
-        open={transferListId !== null}
-        onOpenChange={(next) => {
-          if (!next && !pending) setTransferListId(null)
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t.transferListTitle}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {interpolate(t.transferListDescription, {
-                game: game.name,
-                list: transferList?.name ?? '',
-              })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending}>{dict.app.actions.cancel}</AlertDialogCancel>
-            <AlertDialogAction
-              disabled={pending || !transferListId}
-              onClick={(event) => {
-                event.preventDefault()
-                if (transferListId) void selectList(transferListId)
-              }}
-            >
-              {pending ? <Spinner data-icon="inline-start" /> : null}
-              {t.confirmTransfer}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

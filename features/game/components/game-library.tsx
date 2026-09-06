@@ -22,7 +22,12 @@ import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { useLibrary } from '../hooks/use-library'
 import { useLibraryLists } from '../hooks/use-library-lists'
-import { removeGameFromLibrary, storeGameInLibrary, updateLibraryList } from '../services/library'
+import {
+  removeGameFromLibrary,
+  storeGameInLibrary,
+  syncGameLibraryLists,
+  updateLibraryList,
+} from '../services/library'
 
 import { CreateLibraryListSheet } from './create-library-list-sheet'
 import { LibraryGameActionsSheet } from './library-game-actions-sheet'
@@ -53,7 +58,7 @@ export function GameLibrary({
   const dict = useDictionary()
   const t = dict.app.library
   const initialStatus = statusForMode(initialMode)
-  const { items, loading, error, hasMore, criteria, apply, loadMore } = useLibrary({
+  const { items, loading, error, hasMore, criteria, apply, loadMore, reload } = useLibrary({
     status: initialStatus,
     listId: initialStatus === 'SAVED' ? initialListId : undefined,
   })
@@ -77,7 +82,7 @@ export function GameLibrary({
   const [progressOverrides, setProgressOverrides] = useState<Map<string, GameLibrary['progress']>>(
     () => new Map(),
   )
-  const [listOverrides, setListOverrides] = useState<Map<string, GameLibrary['list']>>(
+  const [listOverrides, setListOverrides] = useState<Map<string, GameLibrary['lists']>>(
     () => new Map(),
   )
 
@@ -88,9 +93,9 @@ export function GameLibrary({
         .filter((game) => !hiddenIds.has(game.id))
         .map((game) => {
           const progress = progressOverrides.get(game.id)
-          const list = listOverrides.has(game.id) ? listOverrides.get(game.id) : game.list
-          return progress || list !== game.list
-            ? { ...game, progress: progress ?? game.progress, list }
+          const lists = listOverrides.get(game.id) ?? game.lists
+          return progress || lists !== game.lists
+            ? { ...game, progress: progress ?? game.progress, lists }
             : game
         }),
     [items, hiddenIds, progressOverrides, listOverrides],
@@ -242,26 +247,38 @@ export function GameLibrary({
     }
   }
 
-  async function moveToList(game: GameLibrary, listId: string): Promise<boolean> {
+  async function updateLists(game: GameLibrary, nextListIds: string[]): Promise<boolean> {
     if (pendingIdsRef.current.has(game.id)) return false
     setPending(game.id, true)
     try {
-      await updateLibraryList(listId, { gameIds: [game.id], save: true })
-      const destination = lists.find((list) => list.id === listId)
-      if (destination) {
-        setListOverrides((current) => {
-          const next = new Map(current)
-          next.set(game.id, { icon: destination.icon, hexColor: destination.hexColor })
-          return next
-        })
-      }
-      if (criteria.listId && criteria.listId !== listId) {
+      await syncGameLibraryLists(
+        game.id,
+        game.lists.map((list) => list.id),
+        nextListIds,
+      )
+      setListOverrides((current) => {
+        const next = new Map(current)
+        next.set(
+          game.id,
+          lists
+            .filter((list) => nextListIds.includes(list.id))
+            .map(({ id, icon, hexColor }) => ({ id, icon, hexColor })),
+        )
+        return next
+      })
+      if (
+        (criteria.status === 'WHITELIST' && nextListIds.length > 0) ||
+        (criteria.listId && !nextListIds.includes(criteria.listId))
+      ) {
         setRemoving(game.id, true)
         setTimeout(() => setHidden(game.id, true), 180)
       }
       void refreshLists()
+      toast.success(t.listsUpdatedToast)
       return true
     } catch {
+      reload()
+      void refreshLists()
       toast.error(t.actionFailed)
       return false
     } finally {
@@ -280,7 +297,26 @@ export function GameLibrary({
   }
 
   function handleCreatedList(list: GameLibraryList) {
-    if (createListOrigin === 'library') changeList(list.id)
+    if (createListOrigin === 'library') {
+      changeList(list.id)
+      return
+    }
+    if (!activeGame) return
+
+    setListOverrides((current) => {
+      const next = new Map(current)
+      next.set(activeGame.id, [
+        ...activeGame.lists,
+        { id: list.id, icon: list.icon, hexColor: list.hexColor },
+      ])
+      return next
+    })
+    if (criteria.status === 'WHITELIST') {
+      setRemoving(activeGame.id, true)
+      setTimeout(() => setHidden(activeGame.id, true), 180)
+    }
+    void refreshLists()
+    setActiveGame(null)
   }
 
   async function confirmDeleteList() {
@@ -338,16 +374,18 @@ export function GameLibrary({
         open={createOpen}
         existingLists={lists}
         onOpenChange={changeCreateOpen}
-        onCreate={create}
+        onCreate={(input) =>
+          createListOrigin === 'game-actions' && activeGame
+            ? create({ ...input, gameIds: [activeGame.id] })
+            : create(input)
+        }
         onCreated={handleCreatedList}
         showGameSearch={createListOrigin === 'library'}
       />
 
       {activeGame ? (
         <LibraryGameActionsSheet
-          game={
-            games.find((game) => game.id === activeGame.id) ?? activeGame
-          }
+          game={games.find((game) => game.id === activeGame.id) ?? activeGame}
           mode={mode}
           selectedListId={criteria.listId}
           lists={lists}
@@ -360,7 +398,7 @@ export function GameLibrary({
           onRemove={(kind) => remove(activeGame, kind)}
           onAddToLibrary={() => addToLibrary(activeGame)}
           onUpdateProgress={(state, duration) => updateProgress(activeGame, state, duration)}
-          onMoveToList={(listId) => moveToList(activeGame, listId)}
+          onUpdateLists={(listIds) => updateLists(activeGame, listIds)}
         />
       ) : null}
 

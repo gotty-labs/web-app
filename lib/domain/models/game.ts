@@ -89,12 +89,13 @@ export const gameLibrarySchema = gameSummarySchema.extend({
     state: gameLibraryProgressStateSchema,
     duration: z.number().optional(),
   }),
-  list: z
-    .object({
-      icon: z.string(),
-      hexColor: z.string(),
-    })
-    .optional(),
+  lists: z.array(
+    gameLibraryListSchema.pick({
+      id: true,
+      icon: true,
+      hexColor: true,
+    }),
+  ),
   timeToBeat: timeToBeatSchema.optional(),
   engines: z.array(engineSchema),
   companies: companiesSchema,
@@ -117,7 +118,7 @@ const gameLanguageSchema = z.object({
 export const gameLibraryStateSchema = z.object({
   saved: z.boolean(),
   lists: z.array(gameLibraryListSchema),
-  gameListId: z.string().optional(),
+  gameListIds: z.array(z.string()),
 })
 export type GameLibraryState = z.infer<typeof gameLibraryStateSchema>
 

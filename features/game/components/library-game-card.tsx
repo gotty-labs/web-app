@@ -178,19 +178,27 @@ export function LibraryGameCard({
             ) : null}
           </CardDescription>
         ) : null}
-        {game.list && !selectedListId ? (
-          <Badge
-            variant="outline"
-            role="img"
-            aria-label={t.listsLabel}
-            className="mt-1 size-6 p-0"
-            style={{
-              borderColor: game.list.hexColor,
-              backgroundColor: `${game.list.hexColor}1A`,
-            }}
-          >
-            <LibraryListIcon icon={game.list.icon} style={{ color: game.list.hexColor }} />
-          </Badge>
+        {game.lists.length > 0 && !selectedListId ? (
+          <div className="mt-1 flex flex-wrap gap-1" role="group" aria-label={t.listsLabel}>
+            {game.lists.slice(0, 3).map((list) => (
+              <Badge
+                key={list.id}
+                variant="outline"
+                className="size-6 p-0"
+                style={{
+                  borderColor: list.hexColor,
+                  backgroundColor: `${list.hexColor}1A`,
+                }}
+              >
+                <LibraryListIcon icon={list.icon} style={{ color: list.hexColor }} />
+              </Badge>
+            ))}
+            {game.lists.length > 3 ? (
+              <Badge variant="secondary" className="size-6 p-0">
+                +{game.lists.length - 3}
+              </Badge>
+            ) : null}
+          </div>
         ) : null}
       </CardHeader>
 
