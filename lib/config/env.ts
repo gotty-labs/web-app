@@ -24,6 +24,12 @@ const clientEnvSchema = z.object({
     (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
     z.string().trim().min(1).optional(),
   ),
+  // Analytics is opt-in and its provider key is public by design in the browser bundle.
+  NEXT_PUBLIC_ANALYTICS_ENABLED: z.enum(['true', 'false']).optional().default('false'),
+  NEXT_PUBLIC_AMPLITUDE_API_KEY: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+    z.string().trim().min(1).optional(),
+  ),
   // Advertising is opt-in: an unconfigured build must never request an ad provider.
   NEXT_PUBLIC_ADS_ENABLED: z.enum(['true', 'false']).optional().default('false'),
   NEXT_PUBLIC_ADS_PROVIDER: z.enum(['adsense']).optional().default('adsense'),
@@ -60,7 +66,15 @@ const clientEnvSchema = z.object({
   ),
 })
 
-const requiredWhenAdsEnabled = clientEnvSchema.superRefine((value, context) => {
+const validatedClientEnvSchema = clientEnvSchema.superRefine((value, context) => {
+  if (value.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true' && !value.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
+    context.addIssue({
+      code: 'custom',
+      path: ['NEXT_PUBLIC_AMPLITUDE_API_KEY'],
+      message: 'NEXT_PUBLIC_AMPLITUDE_API_KEY is required when NEXT_PUBLIC_ANALYTICS_ENABLED=true',
+    })
+  }
+
   if (value.NEXT_PUBLIC_ADS_ENABLED !== 'true') return
 
   const required = [
@@ -82,11 +96,13 @@ const requiredWhenAdsEnabled = clientEnvSchema.superRefine((value, context) => {
   }
 })
 
-const parsed = requiredWhenAdsEnabled.parse({
+const parsed = validatedClientEnvSchema.parse({
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  NEXT_PUBLIC_ANALYTICS_ENABLED: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED,
+  NEXT_PUBLIC_AMPLITUDE_API_KEY: process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY,
   NEXT_PUBLIC_ADS_ENABLED: process.env.NEXT_PUBLIC_ADS_ENABLED,
   NEXT_PUBLIC_ADS_PROVIDER: process.env.NEXT_PUBLIC_ADS_PROVIDER,
   NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
@@ -104,6 +120,12 @@ export const env = {
   siteUrl: parsed.NEXT_PUBLIC_SITE_URL,
   nodeEnv: parsed.NEXT_PUBLIC_NODE_ENV,
   googleClientId: parsed.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  analytics: {
+    enabled: parsed.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true',
+    amplitude: {
+      apiKey: parsed.NEXT_PUBLIC_AMPLITUDE_API_KEY,
+    },
+  },
   advertising: {
     enabled: parsed.NEXT_PUBLIC_ADS_ENABLED === 'true',
     provider: parsed.NEXT_PUBLIC_ADS_PROVIDER,

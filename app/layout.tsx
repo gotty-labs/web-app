@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Agentation } from 'agentation'
 
+import { AnalyticsProvider } from '@/contexts/analytics-provider'
 import { env } from '@/lib/config/env'
 
 import './globals.css'
@@ -56,7 +57,7 @@ export default function RootLayout({
       className={`dark ${sourceSans.variable} ${montserrat.variable} ${pixelifySans.variable} ${geistMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <AnalyticsProvider>{children}</AnalyticsProvider>
         <Analytics />
         <SpeedInsights />
         {/* Dev-only visual feedback tool — tree-shaken out of production builds. */}
