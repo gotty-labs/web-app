@@ -173,6 +173,18 @@
     "advertising": {
       "label": "Advertisements"
     },
+    "appDownloadPrompt": {
+      "title": "Gotty feels better in the app",
+      "description": "Take your library everywhere and discover your next games through a smoother, more immersive experience made for your phone.",
+      "appStoreLabel": "Download on the App Store",
+      "googlePlayLabel": "Get it on Google Play"
+    },
+    "adBlockPrompt": {
+      "title": "Help us keep Gotty going",
+      "description": "Gotty is a small, free project built for the community. Ads are our only way to cover its costs and keep making it better for everyone.",
+      "reload": "I've disabled it, reload",
+      "continue": "Continue"
+    },
     "actions": {
       "enterApp": "Enter the app",
       "signIn": "Sign in",

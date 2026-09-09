@@ -5,6 +5,8 @@ import { createContext, useMemo, type ReactNode } from 'react'
 
 import { env } from '@/lib/config/env'
 
+import { adBlockDetectionStore } from '../stores/adblock-store'
+
 export interface AdSenseConfiguration {
   clientId: string
   inFeedSlotId?: string
@@ -72,6 +74,8 @@ export function AdvertisingProvider({
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${state.configuration.clientId}`}
           strategy="afterInteractive"
           crossOrigin="anonymous"
+          onReady={adBlockDetectionStore.reportScriptLoaded}
+          onError={adBlockDetectionStore.reportScriptBlocked}
         />
       ) : null}
       {children}

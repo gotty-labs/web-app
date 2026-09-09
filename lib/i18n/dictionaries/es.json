@@ -173,6 +173,18 @@
     "advertising": {
       "label": "Anuncios"
     },
+    "appDownloadPrompt": {
+      "title": "Gotty se disfruta más en la app",
+      "description": "Lleva tu biblioteca siempre contigo y descubre tus próximos juegos con una experiencia más fluida, inmersiva y diseñada para tu móvil.",
+      "appStoreLabel": "Descargar en el App Store",
+      "googlePlayLabel": "Disponible en Google Play"
+    },
+    "adBlockPrompt": {
+      "title": "Ayúdanos a mantener Gotty vivo",
+      "description": "Gotty es un proyecto pequeño, gratuito y hecho para la comunidad. Los anuncios son nuestra única vía para cubrir sus costes y seguir mejorándolo para todos.",
+      "reload": "Los he desactivado, recargar",
+      "continue": "Continuar"
+    },
     "actions": {
       "enterApp": "Entrar a la app",
       "signIn": "Iniciar sesión",

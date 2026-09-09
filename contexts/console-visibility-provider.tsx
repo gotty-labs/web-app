@@ -3,6 +3,7 @@
 
 import { createContext, useState, type ReactNode } from 'react'
 
+import { appPromotionStore } from '@/features/app-promotion'
 import { ConsoleVisibilityModal } from '@/features/profile/components/console-visibility-modal'
 
 export interface ConsoleVisibilityContextValue {
@@ -23,10 +24,14 @@ export function ConsoleVisibilityProvider({ children }: { children: ReactNode })
     setVisibilityRevision((revision) => revision + 1)
   }
 
+  function openConsoleVisibility() {
+    if (!appPromotionStore.request(() => setOpen(true))) setOpen(true)
+  }
+
   return (
     <ConsoleVisibilityContext
       value={{
-        openConsoleVisibility: () => setOpen(true),
+        openConsoleVisibility,
         visibilityOverride,
         visibilityRevision,
       }}

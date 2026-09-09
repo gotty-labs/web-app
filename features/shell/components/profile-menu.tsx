@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import { useSession } from '@/features/auth'
+import { appPromotionStore } from '@/features/app-promotion'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { APP_VERSION } from '../config/shell'
@@ -55,7 +56,11 @@ export function ProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton size="lg" aria-label={t.account}>
+        <SidebarMenuButton
+          size="lg"
+          aria-label={t.account}
+          onClick={() => appPromotionStore.request()}
+        >
           {avatar}
           <div className="flex min-w-0 flex-col text-left leading-tight">
             <span className="truncate text-sm font-medium">{user.nickname}</span>
@@ -69,9 +74,7 @@ export function ProfileMenu() {
           {avatar}
           <div className="flex min-w-0 flex-col leading-tight">
             <span className="truncate text-sm font-medium">{user.nickname}</span>
-            <span className="truncate text-xs font-normal text-muted-foreground">
-              {user.email}
-            </span>
+            <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

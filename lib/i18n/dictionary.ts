@@ -85,6 +85,18 @@ export const dictionarySchema = z.object({
     advertising: z.object({
       label: z.string(),
     }),
+    appDownloadPrompt: z.object({
+      title: z.string(),
+      description: z.string(),
+      appStoreLabel: z.string(),
+      googlePlayLabel: z.string(),
+    }),
+    adBlockPrompt: z.object({
+      title: z.string(),
+      description: z.string(),
+      reload: z.string(),
+      continue: z.string(),
+    }),
     actions: z.object({
       enterApp: z.string(),
       signIn: z.string(),

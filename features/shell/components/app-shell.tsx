@@ -13,6 +13,8 @@ import type { ReactNode } from 'react'
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { ConsoleVisibilityProvider } from '@/contexts/console-visibility-provider'
+import { AppDownloadPrompt } from '@/features/app-promotion'
+import { AdBlockPrompt } from '@/features/advertising'
 
 import { AppSidebar } from './app-sidebar'
 import { OnboardingFlow } from './onboarding-flow'
@@ -29,6 +31,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             page's <AppTopBar/>. */}
         <SidebarInset className="min-w-0">{children}</SidebarInset>
         <OnboardingFlow />
+        <AppDownloadPrompt />
+        <AdBlockPrompt />
       </SidebarProvider>
     </ConsoleVisibilityProvider>
   )

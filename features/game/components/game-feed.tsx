@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useConsoleVisibility } from '@/hooks/use-console-visibility'
+import { appPromotionStore } from '@/features/app-promotion'
 import type { GameSection } from '@/lib/domain/enums'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
@@ -142,7 +143,10 @@ export function GameFeed() {
           // nextCursor). Otherwise the carousel already shows everything.
           onSeeAll={
             s.nextCursor
-              ? () => setSeeAll({ section: s.section, title: s.title, cursor: s.nextCursor })
+              ? () => {
+                  setSeeAll({ section: s.section, title: s.title, cursor: s.nextCursor })
+                  appPromotionStore.request()
+                }
               : undefined
           }
         />

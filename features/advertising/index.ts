@@ -1,4 +1,5 @@
 export { AdSlot } from './components/ad-slot'
+export { AdBlockPrompt } from './components/adblock-prompt'
 export { AdvertisingProvider } from './contexts/advertising-provider'
 export { useAdvertising } from './hooks/use-advertising'
 export { useCardAdViewport } from './hooks/use-card-ad-viewport'

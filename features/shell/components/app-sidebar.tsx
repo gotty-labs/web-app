@@ -14,6 +14,7 @@ import { MessageSquareIcon, MonitorIcon } from 'lucide-react'
 
 import { BrandMark } from '@/components/brand-mark'
 import { AdSlot, adPlacement } from '@/features/advertising'
+import { appPromotionStore } from '@/features/app-promotion'
 import {
   Sidebar,
   SidebarContent,
@@ -47,6 +48,7 @@ export function AppSidebar() {
   // it (navigation or opening a modal). Dismissing an overlay does NOT (handled by the
   // Sheet's onInteractOutside guard).
   const closeMobile = () => setOpenMobile(false)
+  const requestAppPromotion = () => appPromotionStore.request()
   const openFeedback = () => {
     setFeedbackOpen(true)
     closeMobile()
@@ -83,7 +85,13 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton asChild isActive={active} tooltip={label}>
-                        <Link href={item.href} onClick={closeMobile}>
+                        <Link
+                          href={item.href}
+                          onClick={() => {
+                            closeMobile()
+                            if (item.href === '/library') requestAppPromotion()
+                          }}
+                        >
                           <Icon />
                           <span>{label}</span>
                         </Link>
