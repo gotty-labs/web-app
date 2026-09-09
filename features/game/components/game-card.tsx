@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 
 import { gameGenreLabel, gameStatusLabel } from '../utils/labels'
 import { formatReleaseChip, isFutureDate } from '../utils/format'
+import { gamePath } from '../utils/paths'
 import { RatingBadge } from './rating-badge'
 import { StatusBadge } from './status-badge'
 
@@ -32,7 +33,8 @@ const INFORMATIVE_STATUSES: GameStatus[] = ['ALPHA', 'BETA', 'EARLY_ACCESS', 'RU
  *   3. ALPHA/BETA/EARLY_ACCESS/RUMORED → informative status,
  *   4. RELEASED/UNKNOWN → nothing (both are noise on a card).
  * Used in the authed app (feed/search/library) → client component, reads labels
- * from the dictionary. Links to `href` (defaults to `/games/<slug>` when present).
+ * from the dictionary. Links to `href` (defaults to the locale-specific public
+ * game URL when a slug is present).
  */
 export function GameCard({
   game,
@@ -45,7 +47,7 @@ export function GameCard({
 }) {
   const dict = useDictionary()
   const locale = useLocale()
-  const target = href ?? (game.slug ? `/games/${game.slug}` : undefined)
+  const target = href ?? (game.slug ? gamePath(game.slug, locale) : undefined)
 
   const showWarning = WARNING_STATUSES.includes(game.status)
   const dateChip =

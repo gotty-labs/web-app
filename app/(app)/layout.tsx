@@ -22,28 +22,40 @@ import { getDictionary } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
 import { getServerLocale } from '@/lib/i18n/server'
 
+import { rootHtmlClassName, rootMetadata, RootContent } from '../_shared'
+
+import '../globals.css'
+
+export const metadata = rootMetadata
+
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const locale = await getServerLocale()
   const dictionary = await getDictionary(locale)
 
   return (
-    <I18nProvider locale={locale} dictionary={dictionary}>
-      <ErrorProvider>
-        <SessionProvider>
-          <TooltipProvider>
-            <AuthGate>
-              {/* NOTE: pass the paid entitlement to `disabled` when the backend ships it. */}
-              <AdvertisingProvider disabled={false}>
-                <StartupProvider>
-                  <VerifyEmailNudge />
-                  <AppShell>{children}</AppShell>
-                </StartupProvider>
-              </AdvertisingProvider>
-            </AuthGate>
-            <Toaster theme="dark" position="top-center" />
-          </TooltipProvider>
-        </SessionProvider>
-      </ErrorProvider>
-    </I18nProvider>
+    <html lang={locale} className={rootHtmlClassName}>
+      <body className="flex min-h-full flex-col">
+        <RootContent>
+          <I18nProvider locale={locale} dictionary={dictionary}>
+            <ErrorProvider>
+              <SessionProvider>
+                <TooltipProvider>
+                  <AuthGate>
+                    {/* NOTE: pass the paid entitlement to `disabled` when the backend ships it. */}
+                    <AdvertisingProvider disabled={false}>
+                      <StartupProvider>
+                        <VerifyEmailNudge />
+                        <AppShell>{children}</AppShell>
+                      </StartupProvider>
+                    </AdvertisingProvider>
+                  </AuthGate>
+                  <Toaster theme="dark" position="top-center" />
+                </TooltipProvider>
+              </SessionProvider>
+            </ErrorProvider>
+          </I18nProvider>
+        </RootContent>
+      </body>
+    </html>
   )
 }

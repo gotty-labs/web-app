@@ -45,6 +45,7 @@ import { progressStateToggleClass } from '../config/progress-state-styles'
 import { useIsCompact } from '../hooks/use-is-compact'
 import { timeToBeatHours } from '../utils/format'
 import { gameProgressStateLabel } from '../utils/labels'
+import { gamePath } from '../utils/paths'
 
 import { LibraryListIcon } from './library-list-icon'
 import { DEFAULT_MAX_TIME_TO_BEAT } from '../constants/default-max-time-to-beast.const'
@@ -152,7 +153,11 @@ export function LibraryGameActionsSheet({
             <div className="flex flex-col gap-1 px-4 pb-4">
               {game.slug ? (
                 <Button asChild variant="ghost" className="justify-start">
-                  <Link href={`/games/${game.slug}`} target="_blank" rel="noopener noreferrer">
+                  <Link
+                    href={gamePath(game.slug, locale)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <BookOpenIcon data-icon="inline-start" />
                     {t.moreInfo}
                   </Link>

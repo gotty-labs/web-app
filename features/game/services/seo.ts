@@ -22,6 +22,8 @@ import {
   type GameSitemapEntry,
 } from '@/lib/domain/models'
 
+import { gamePath } from '../utils/paths'
+
 /** Shared SEO revalidation window (1h); on-demand revalidation handles freshness. */
 export const SEO_REVALIDATE_SECONDS = 3600
 
@@ -72,11 +74,6 @@ export async function findPublicGame(slug: string, locale?: Locale): Promise<Gam
 }
 
 // --- per-locale URLs for the SEO zone (default unprefixed, others under /<locale>) ---
-
-/** SEO path for a game in a given locale, e.g. `/games/x` (en) or `/es/games/x`. */
-export function gamePath(slug: string, locale: Locale): string {
-  return locale === defaultLocale ? `/games/${slug}` : `/${locale}/games/${slug}`
-}
 
 /** Absolute hreflang map (every locale + `x-default`) for a game — used by the
  *  sitemap (`alternates.languages`) and each page's `<head>` (canonical alternates). */
