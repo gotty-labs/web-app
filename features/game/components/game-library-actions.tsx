@@ -46,6 +46,8 @@ import type { GameLibraryState } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
+import { trackGameAdded, type GameAddedMetadata } from '../utils/analytics'
+
 import {
   createLibraryList,
   getGameLibraryState,
@@ -117,7 +119,8 @@ function ActionItem({
   )
 }
 
-export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: string }) {
+export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; slug: string }) {
+  const gameId = game.id
   const dict = useDictionary()
   const t = dict.app.detail
   const libraryT = dict.app.library
@@ -201,7 +204,10 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
     run(
       key,
       () => storeGameInLibrary(gameId, input),
-      () => patchLibraryState({ saved: true }),
+      () => {
+        patchLibraryState({ saved: true })
+        trackGameAdded(game, key === 'whitelist' ? 'wishlist' : 'library', 'game_detail')
+      },
       msg,
     )
 
@@ -230,11 +236,15 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
         }
       },
       () => {
+        const addedListIds = nextListIds.filter((id) => !gameListIds.includes(id))
         patchLibraryState({
           saved: nextListIds.length > 0 ? true : saved,
           gameListIds: nextListIds,
         })
         setListSheetOpen(false)
+        for (const listId of addedListIds) {
+          trackGameAdded(game, 'list', 'game_detail', listId)
+        }
       },
       t.listsUpdatedToast,
     )
@@ -417,8 +427,10 @@ export function GameLibraryActions({ gameId, slug }: { gameId: string; slug: str
             lists: [...lists, list],
             gameListIds: nextGameListIds,
           })
+          trackGameAdded(game, 'list', 'game_detail', list.id)
         }}
         showGameSearch={false}
+        sourceScreen="game_detail"
       />
     </>
   )

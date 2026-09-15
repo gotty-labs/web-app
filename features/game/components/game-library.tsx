@@ -20,6 +20,7 @@ import type { GameLibraryProgressState, UserGameLibraryStatus } from '@/lib/doma
 import type { GameLibrary, GameLibraryList } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
+import { trackGameAdded } from '../utils/analytics'
 import { useLibrary } from '../hooks/use-library'
 import { useLibraryLists } from '../hooks/use-library-lists'
 import {
@@ -209,11 +210,13 @@ export function GameLibrary({
   }
 
   async function addToLibrary(game: GameLibrary): Promise<boolean> {
-    return optimisticRemove(
+    const added = await optimisticRemove(
       game,
       () => storeGameInLibrary(game.id, { status: 'SAVED' }),
       t.addedToast,
     )
+    if (added) trackGameAdded(game, 'library', 'library')
+    return added
   }
 
   async function updateProgress(
@@ -251,11 +254,15 @@ export function GameLibrary({
     if (pendingIdsRef.current.has(game.id)) return false
     setPending(game.id, true)
     try {
+      const currentListIds = game.lists.map((list) => list.id)
       await syncGameLibraryLists(
         game.id,
-        game.lists.map((list) => list.id),
+        currentListIds,
         nextListIds,
       )
+      for (const listId of nextListIds.filter((id) => !currentListIds.includes(id))) {
+        trackGameAdded(game, 'list', 'library', listId)
+      }
       setListOverrides((current) => {
         const next = new Map(current)
         next.set(
@@ -302,6 +309,8 @@ export function GameLibrary({
       return
     }
     if (!activeGame) return
+
+    trackGameAdded(activeGame, 'list', 'library', list.id)
 
     setListOverrides((current) => {
       const next = new Map(current)
@@ -381,6 +390,7 @@ export function GameLibrary({
         }
         onCreated={handleCreatedList}
         showGameSearch={createListOrigin === 'library'}
+        sourceScreen="library"
       />
 
       {activeGame ? (

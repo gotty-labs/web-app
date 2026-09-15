@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { track } from '@/lib/analytics'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
@@ -48,6 +49,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
           submittedQueryRef.current = null
           return
         }
+        track({ name: 'search_performed', properties: { query: trimmedQuery } })
         setAppliedFilters((current) =>
           current.consoleIds.length > 0 || current.content ? { consoleIds: [] } : current,
         )
@@ -71,6 +73,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
     if (!queryReady) return
     submittedQueryRef.current = trimmedQuery
     searchedTextRef.current = true
+    track({ name: 'search_performed', properties: { query: trimmedQuery } })
     setAppliedFilters((current) =>
       current.consoleIds.length > 0 || current.content ? { consoleIds: [] } : current,
     )

@@ -17,12 +17,14 @@ import {
 import { Spinner } from '@/components/ui/spinner'
 import { InternalCode } from '@/lib/api/error-codes'
 import { ApiException } from '@/lib/api/envelope'
+import { track } from '@/lib/analytics'
 import { createLibraryListInputSchema, type CreateLibraryListInput } from '@/lib/domain/inputs'
 import type { GameLibraryList, GameSummary } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { DEFAULT_LIBRARY_LIST_ICON, type LibraryListIcon } from '../config/library-icons'
 import { useIsCompact } from '../hooks/use-is-compact'
+import { trackGameAdded, type GameAddedSourceScreen } from '../utils/analytics'
 
 import { LibraryColorPicker } from './library-color-picker'
 import { LibraryGameSearchInput } from './library-game-search-input'
@@ -42,6 +44,7 @@ export function CreateLibraryListSheet({
   onCreate,
   onCreated,
   showGameSearch = true,
+  sourceScreen = 'library',
 }: {
   open: boolean
   existingLists: GameLibraryList[]
@@ -49,6 +52,7 @@ export function CreateLibraryListSheet({
   onCreate: (input: CreateLibraryListInput) => Promise<GameLibraryList>
   onCreated: (list: GameLibraryList) => void
   showGameSearch?: boolean
+  sourceScreen?: GameAddedSourceScreen
 }) {
   const t = useDictionary().app.library
   const compact = useIsCompact()
@@ -108,6 +112,8 @@ export function CreateLibraryListSheet({
     setPending(true)
     try {
       const created = await onCreate(input)
+      track({ name: 'list_created' })
+      for (const game of games) trackGameAdded(game, 'list', sourceScreen, created.id)
       toast.success(t.listCreatedToast)
       reset()
       onCreated(created)

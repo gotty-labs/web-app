@@ -131,7 +131,17 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
         <GameDetailAdLayout label={dict.app.advertising.label}>
           {/* Library actions (authed only) — hidden entirely for signed-out visitors. */}
           <div className="mb-8 flex justify-center md:justify-start">
-            <GameDetailIsland gameId={game.id} slug={slug} locale={locale} dictionary={dict} />
+            <GameDetailIsland
+              game={{
+                id: game.id,
+                name: game.name,
+                genres: game.genres,
+                platforms: game.platforms.map(({ id }) => ({ id })),
+              }}
+              slug={slug}
+              locale={locale}
+              dictionary={dict}
+            />
           </div>
 
           <div className="flex flex-col gap-10">

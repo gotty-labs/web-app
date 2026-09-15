@@ -12,6 +12,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { track } from '@/lib/analytics'
 import type { GameFilterOptions } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
@@ -123,13 +124,28 @@ export function FilterHeader({
   }
 
   async function applyDraft() {
+    const filterType = activePanel
+    const values =
+      filterType === 'consoles'
+        ? [...draftConsoleIds].sort()
+        : filterType === 'content' && draftContent
+          ? [draftContent]
+          : []
     setApplying(true)
     const succeeded = await onApplyFilters({
       consoleIds: draftConsoleIds,
       content: draftContent,
     })
     setApplying(false)
-    if (succeeded) setActivePanel(null)
+    if (succeeded) {
+      if (filterType && values.length > 0) {
+        track({
+          name: 'filtered_search_performed',
+          properties: { filter_type: filterType, values },
+        })
+      }
+      setActivePanel(null)
+    }
   }
 
   async function clearFilter(panel: FilterPanel) {
