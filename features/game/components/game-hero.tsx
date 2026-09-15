@@ -1,7 +1,7 @@
 /**
  * Detail header: a full-bleed hero using the first artwork as a blurred, dimmed
  * background (falling back to a violet gradient when none exists), with the cover
- * framed in a violet gradient border on top. Meta (category / status / rating / year)
+ * framed in a violet gradient border on top. Meta (category / rating / year)
  * sits beside the cover — bottom-aligned on desktop, stacked and centered on mobile.
  * Presentational + server-safe (AppImage is a client child, which is fine).
  */
@@ -9,10 +9,9 @@ import { AppImage } from '@/components/app-image'
 import type { Dictionary } from '@/lib/i18n'
 import type { GameDto } from '@/lib/domain/models'
 
-import { gameCategoryLabel, gameStatusLabel } from '../utils/labels'
+import { gameCategoryLabel } from '../utils/labels'
 
 import { RatingBadge } from './rating-badge'
-import { StatusBadge } from './status-badge'
 
 export function GameHero({
   game,
@@ -76,9 +75,6 @@ export function GameHero({
                 <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">
                   {gameCategoryLabel(dict, game.category)}
                 </span>
-              ) : null}
-              {game.status !== 'UNKNOWN' ? (
-                <StatusBadge status={game.status} label={gameStatusLabel(dict, game.status)} />
               ) : null}
               <RatingBadge value={game.rating?.value} quantity={game.rating?.quantity} />
             </div>

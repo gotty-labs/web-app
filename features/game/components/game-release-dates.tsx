@@ -37,13 +37,13 @@ function ReleaseRowItem({ row, labels }: { row: ReleaseRow; labels: Labels }) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-card px-3.5 py-2.5 ring-1 ring-border">
       {row.consoleImage ? (
-        <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-transparent">
+        <span className="relative size-8 shrink-0 overflow-hidden rounded-md bg-transparent">
           <Image
             src={row.consoleImage}
             alt=""
-            width={36}
-            height={36}
-            className="size-9 object-contain"
+            fill
+            sizes="2rem"
+            className="object-contain"
           />
         </span>
       ) : null}

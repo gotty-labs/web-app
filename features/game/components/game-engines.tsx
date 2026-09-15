@@ -17,10 +17,10 @@ export function GameEngines({ engines }: { engines: Engine[] }) {
             <AppImage
               src={engine.logo}
               alt=""
-              width={36}
-              height={36}
-              wrapperClassName="flex size-10 shrink-0 items-center justify-center rounded-md bg-transparent"
-              className="size-9 object-contain"
+              fill
+              sizes="2rem"
+              wrapperClassName="size-8 shrink-0 rounded-md bg-transparent"
+              className="object-contain"
             />
           ) : null}
           <span className="text-sm font-medium">{engine.name}</span>

@@ -6,8 +6,6 @@ import type { Dictionary } from '@/lib/i18n'
 import { getAgeRatingImage } from '../config/age-rating-images'
 import { gameAgeRatingLabel } from '../utils/labels'
 
-const AGE_RATING_IMAGE_HEIGHT = 96
-
 export function GameAgeRating({
   dict,
   ratings,
@@ -29,20 +27,15 @@ export function GameAgeRating({
       </span>
       <div className="flex w-full flex-wrap items-center justify-start gap-4">
         {ratingsWithImage.map((rating) => {
-          const width = Math.round(
-            (rating.image.width / rating.image.height) * AGE_RATING_IMAGE_HEIGHT,
-          )
-
           return (
             <AppImage
               key={`${rating.organization}-${rating.rate}`}
               src={rating.image.src}
               alt={`${gameAgeRatingLabel(dict, rating.organization)} ${rating.rate}`}
-              width={width}
-              height={AGE_RATING_IMAGE_HEIGHT}
-              wrapperClassName="shrink-0 rounded-md bg-transparent"
-              wrapperStyle={{ width, height: AGE_RATING_IMAGE_HEIGHT }}
-              className="h-full w-full object-contain"
+              fill
+              sizes="2rem"
+              wrapperClassName="size-8 shrink-0 rounded-md bg-transparent"
+              className="object-contain"
             />
           )
         })}

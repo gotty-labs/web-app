@@ -188,6 +188,28 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
               />
             )}
 
+            {hasMedia && (
+              <DetailSection title={t.media}>
+                <GameMediaGallery
+                  artworks={artworks}
+                  screenshots={screenshots}
+                  videoIds={videoIds}
+                  labels={{
+                    title: t.media,
+                    viewGallery: t.viewGallery,
+                    all: dict.app.search.all,
+                    artworks: t.mediaArtworks,
+                    screenshots: t.mediaScreenshots,
+                    videos: t.mediaVideos,
+                    play: t.playVideo,
+                    fullscreen: t.fullscreen,
+                    previous: t.previous,
+                    next: t.next,
+                  }}
+                />
+              </DetailSection>
+            )}
+
             {game.platforms.length > 0 && (
               <DetailSection title={t.platforms}>
                 <GamePlatforms platforms={game.platforms} />
@@ -219,28 +241,6 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
             {timeToBeatEntries.length > 0 && (
               <DetailSection title={t.timeToBeat}>
                 <GameTimeToBeat entries={timeToBeatEntries} />
-              </DetailSection>
-            )}
-
-            {hasMedia && (
-              <DetailSection title={t.media}>
-                <GameMediaGallery
-                  artworks={artworks}
-                  screenshots={screenshots}
-                  videoIds={videoIds}
-                  labels={{
-                    title: t.media,
-                    viewGallery: t.viewGallery,
-                    all: dict.app.search.all,
-                    artworks: t.mediaArtworks,
-                    screenshots: t.mediaScreenshots,
-                    videos: t.mediaVideos,
-                    play: t.playVideo,
-                    fullscreen: t.fullscreen,
-                    previous: t.previous,
-                    next: t.next,
-                  }}
-                />
               </DetailSection>
             )}
 
