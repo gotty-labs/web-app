@@ -71,7 +71,7 @@ export function AppSidebar() {
         </SidebarHeader>
 
         <SidebarContent>
-          <SidebarGroup>
+          <SidebarGroup className="shrink-0">
             <SidebarGroupLabel>{dict.app.nav.games}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -103,7 +103,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarGroup>
+          <SidebarGroup className="shrink-0">
             <SidebarGroupLabel>{dict.app.nav.options}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -128,16 +128,17 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-        </SidebarContent>
 
-        <SidebarFooter>
           {!isMobile && state === 'expanded' ? (
             <AdSlot
               placement={adPlacement.sidebar}
               label={dict.app.advertising.label}
-              className="min-h-72 rounded-lg border border-sidebar-border bg-sidebar-accent/30 p-2"
+              className="min-h-max flex-1 rounded-lg border border-sidebar-border bg-sidebar-accent/30 p-2"
             />
           ) : null}
+        </SidebarContent>
+
+        <SidebarFooter className="shrink-0">
           <SidebarMenu>
             <SidebarMenuItem>
               <ProfileMenu />
