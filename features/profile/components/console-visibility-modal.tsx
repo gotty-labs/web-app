@@ -72,16 +72,15 @@ export function ConsoleVisibilityModal({
   const allVisible = consoles.length > 0 && visible.size === consoles.length
 
   function toggle(id: string) {
-    setVisible((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+    const next = new Set(visible)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setVisible(next)
   }
 
   function toggleAll() {
-    setVisible(allVisible ? new Set() : new Set(consoles.map((c) => c.id)))
+    const next = allVisible ? new Set<string>() : new Set(consoles.map((c) => c.id))
+    setVisible(next)
   }
 
   async function save() {
