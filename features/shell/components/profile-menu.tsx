@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { ChevronUpIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +28,7 @@ import {
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import { useSession } from '@/features/auth'
 import { appPromotionStore } from '@/features/app-promotion'
+import { useNeedsEmailVerification } from '@/features/profile'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { APP_VERSION } from '../config/shell'
@@ -39,6 +41,7 @@ export function ProfileMenu() {
   const { user, signOut } = useSession()
   const dict = useDictionary()
   const { setOpenMobile } = useSidebar()
+  const needsEmailVerification = useNeedsEmailVerification()
   const t = dict.app.profile
 
   if (!user) return null
@@ -47,10 +50,15 @@ export function ProfileMenu() {
   const closeMobile = () => setOpenMobile(false)
 
   const avatar = (
-    <Avatar className="size-8 rounded-md">
-      {user.avatar && <AvatarImage src={user.avatar} alt={user.nickname} />}
-      <AvatarFallback className="rounded-md">{initials(user.nickname)}</AvatarFallback>
-    </Avatar>
+    <span className="relative shrink-0">
+      <Avatar className="size-8 rounded-md">
+        {user.avatar && <AvatarImage src={user.avatar} alt={user.nickname} />}
+        <AvatarFallback className="rounded-md">{initials(user.nickname)}</AvatarFallback>
+      </Avatar>
+      {needsEmailVerification && (
+        <Badge aria-hidden className="absolute -right-0.5 -top-0.5 size-2.5 p-0" />
+      )}
+    </span>
   )
 
   return (

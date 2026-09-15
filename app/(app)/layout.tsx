@@ -16,7 +16,6 @@ import { ErrorProvider } from '@/contexts/error-provider'
 import { StartupProvider } from '@/features/app-config'
 import { AdvertisingProvider } from '@/features/advertising'
 import { AuthGate, SessionProvider } from '@/features/auth'
-import { VerifyEmailNudge } from '@/features/profile'
 import { AppShell } from '@/features/shell'
 import { getDictionary } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
@@ -44,7 +43,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                     {/* NOTE: pass the paid entitlement to `disabled` when the backend ships it. */}
                     <AdvertisingProvider disabled={false}>
                       <StartupProvider>
-                        <VerifyEmailNudge />
                         <AppShell>{children}</AppShell>
                       </StartupProvider>
                     </AdvertisingProvider>
