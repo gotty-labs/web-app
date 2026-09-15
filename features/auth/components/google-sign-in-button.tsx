@@ -5,6 +5,9 @@ import Script from 'next/script'
 
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { cn } from '@/lib/utils'
+
+const GOOGLE_BUTTON_MAX_WIDTH = 400
 
 type GoogleCredentialResponse = {
   credential: string
@@ -57,6 +60,7 @@ export function GoogleSignInButton({
   onUnavailable,
 }: GoogleSignInButtonProps) {
   const [scriptStatus, setScriptStatus] = useState<ScriptStatus>('loading')
+  const containerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
   const credentialHandlerRef = useRef(onCredential)
 
@@ -68,8 +72,9 @@ export function GoogleSignInButton({
     if (!clientId || scriptStatus !== 'ready') return
 
     const google = (window as GoogleWindow).google
+    const container = containerRef.current
     const button = buttonRef.current
-    if (!google || !button) return
+    if (!google || !container || !button) return
 
     google.accounts.id.initialize({
       client_id: clientId,
@@ -78,16 +83,30 @@ export function GoogleSignInButton({
       },
     })
 
-    button.replaceChildren()
-    google.accounts.id.renderButton(button, {
-      theme: 'outline',
-      size: 'large',
-      text: 'continue_with',
-      shape: 'rectangular',
-      width: 400,
-    })
+    let renderedWidth = 0
+    const renderButton = () => {
+      const width = Math.min(container.clientWidth, GOOGLE_BUTTON_MAX_WIDTH)
+      if (width === 0 || width === renderedWidth) return
 
-    return () => button.replaceChildren()
+      renderedWidth = width
+      button.replaceChildren()
+      google.accounts.id.renderButton(button, {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'rectangular',
+        width,
+      })
+    }
+
+    const resizeObserver = new ResizeObserver(renderButton)
+    resizeObserver.observe(container)
+    renderButton()
+
+    return () => {
+      resizeObserver.disconnect()
+      button.replaceChildren()
+    }
   }, [clientId, scriptStatus])
 
   if (!clientId || scriptStatus === 'failed') {
@@ -116,10 +135,14 @@ export function GoogleSignInButton({
       />
       {scriptStatus === 'ready' ? (
         <div
+          ref={containerRef}
           aria-busy={pending}
-          className={`flex min-h-11 w-full justify-center${pending ? ' pointer-events-none opacity-60' : ''}`}
+          className={cn(
+            'flex min-h-11 w-full min-w-0 justify-center',
+            pending && 'pointer-events-none opacity-60',
+          )}
         >
-          <div ref={buttonRef} />
+          <div ref={buttonRef} className="min-w-0 max-w-full" />
         </div>
       ) : (
         <Button type="button" variant="outline" className="h-11 w-full rounded-xl" disabled>
