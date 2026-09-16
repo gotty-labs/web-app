@@ -19,6 +19,7 @@ import type { GameLibrary } from '@/lib/domain/models'
 import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
+import { getGameCover } from '../config/images'
 import { progressStateBadgeClass } from '../config/progress-state-styles'
 import { DEFAULT_MAX_TIME_TO_BEAT } from '../constants/default-max-time-to-beast.const'
 import { formatReleaseChip, isBeforeToday, timeToBeatHours } from '../utils/format'
@@ -82,16 +83,14 @@ export function LibraryGameCard({
       )}
     >
       <div className="bg-muted relative aspect-3/4 overflow-hidden">
-        {game.cover ? (
-          <AppImage
-            src={game.cover}
-            alt={game.name}
-            fill
-            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 280px"
-            wrapperClassName="absolute inset-0"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : null}
+        <AppImage
+          src={getGameCover(game.cover)}
+          alt={game.name}
+          fill
+          sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 280px"
+          wrapperClassName="absolute inset-0"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
 
         <div className="pointer-events-none absolute inset-0 hidden bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 lg:block">
           <div className="absolute inset-x-3 bottom-3 flex flex-wrap gap-1">

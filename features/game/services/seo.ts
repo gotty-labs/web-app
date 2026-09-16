@@ -22,6 +22,7 @@ import {
   type GameSitemapEntry,
 } from '@/lib/domain/models'
 
+import { getGameCover } from '../config/images'
 import { gamePath } from '../utils/paths'
 
 /** Shared SEO revalidation window (1h); on-demand revalidation handles freshness. */
@@ -100,7 +101,7 @@ export async function buildGameMetadata(slug: string, locale: Locale): Promise<M
       title: game.name,
       description: game.description,
       url: canonical,
-      images: game.media?.cover ? [game.media.cover] : undefined,
+      images: [getGameCover(game.media?.cover)],
     },
   }
 }

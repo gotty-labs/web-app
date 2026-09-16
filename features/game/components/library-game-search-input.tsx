@@ -13,6 +13,7 @@ import { Spinner } from '@/components/ui/spinner'
 import type { GameSummary } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
+import { getGameCover } from '../config/images'
 import { searchGames } from '../services/catalog'
 
 export function LibraryGameSearchInput({
@@ -139,18 +140,14 @@ export function LibraryGameSearchInput({
                       onClick={() => selectGame(game)}
                       className="h-auto w-full justify-start gap-3 px-2 py-2"
                     >
-                      {game.cover ? (
-                        <AppImage
-                          src={game.cover}
-                          alt=""
-                          width={40}
-                          height={56}
-                          wrapperClassName="h-14 w-10 shrink-0 rounded-md"
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <span aria-hidden className="bg-muted h-14 w-10 shrink-0 rounded-md" />
-                      )}
+                      <AppImage
+                        src={getGameCover(game.cover)}
+                        alt=""
+                        width={40}
+                        height={56}
+                        wrapperClassName="h-14 w-10 shrink-0 rounded-md"
+                        className="h-full w-full object-cover"
+                      />
                       <span className="line-clamp-2 text-left whitespace-normal">{game.name}</span>
                     </Button>
                   )
@@ -171,18 +168,14 @@ export function LibraryGameSearchInput({
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {selected.map((game) => (
               <Card key={game.id} size="sm" className="relative flex-row gap-0 py-0">
-                {game.cover ? (
-                  <AppImage
-                    src={game.cover}
-                    alt=""
-                    width={48}
-                    height={64}
-                    wrapperClassName="h-16 w-12 shrink-0 rounded-l-xl"
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <span aria-hidden className="bg-muted h-16 w-12 shrink-0 rounded-l-xl" />
-                )}
+                <AppImage
+                  src={getGameCover(game.cover)}
+                  alt=""
+                  width={48}
+                  height={64}
+                  wrapperClassName="h-16 w-12 shrink-0 rounded-l-xl"
+                  className="size-full object-cover"
+                />
                 <CardHeader className="min-w-0 flex-1 justify-center py-2 pr-8 pl-3">
                   <CardTitle className="line-clamp-2 text-xs leading-tight">{game.name}</CardTitle>
                 </CardHeader>

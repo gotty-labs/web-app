@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { AppImage } from '@/components/app-image'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 
+import { getGameCover } from '../config/images'
 import { CalendarMenu, type CalendarLabels } from './calendar-menu'
 
 export type DlcRelease = {
@@ -27,7 +28,7 @@ export type DlcRelease = {
 export type DlcItem = {
   id: string
   name: string
-  cover: string
+  cover?: string
   releases: DlcRelease[]
 }
 
@@ -59,7 +60,7 @@ function ItemGroup({
           >
             <span className="relative aspect-3/4 overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-all group-hover:ring-primary/50">
               <AppImage
-                src={item.cover}
+                src={getGameCover(item.cover)}
                 alt={item.name}
                 fill
                 sizes="(max-width: 640px) 33vw, 160px"
@@ -103,7 +104,7 @@ export function GameAdditionalContent({
               <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 overflow-y-auto overscroll-contain px-4 pb-6 sm:flex-row [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <span className="relative aspect-3/4 w-40 shrink-0 self-center overflow-hidden rounded-xl bg-muted ring-1 ring-border sm:w-48 sm:self-start">
                   <AppImage
-                    src={active.cover}
+                    src={getGameCover(active.cover)}
                     alt={active.name}
                     fill
                     sizes="192px"

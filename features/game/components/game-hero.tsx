@@ -9,6 +9,7 @@ import { AppImage } from '@/components/app-image'
 import type { Dictionary } from '@/lib/i18n'
 import type { GameDto } from '@/lib/domain/models'
 
+import { getGameCover } from '../config/images'
 import { gameCategoryLabel } from '../utils/labels'
 
 import { RatingBadge } from './rating-badge'
@@ -23,7 +24,7 @@ export function GameHero({
   releaseYear: string
 }) {
   const artwork = game.media?.artworks?.[0]
-  const cover = game.media?.cover
+  const cover = getGameCover(game.media?.cover)
   const developer = game.companies.develop[0]
 
   return (
@@ -53,21 +54,19 @@ export function GameHero({
 
       <div className="mx-auto max-w-5xl px-4 md:px-8">
         <div className="flex flex-col items-center gap-5 pt-24 pb-8 text-center md:flex-row md:items-end md:gap-7 md:pt-36 md:text-left">
-          {cover ? (
-            <div className="shrink-0 rounded-2xl bg-linear-to-br from-primary/60 via-primary/20 to-primary/5 p-1 shadow-2xl shadow-black/50">
-              <div className="relative aspect-3/4 w-36 overflow-hidden rounded-xl ring-1 ring-black/20 sm:w-40 md:w-52">
-                <AppImage
-                  src={cover}
-                  alt={game.name}
-                  fill
-                  priority
-                  sizes="208px"
-                  wrapperClassName="absolute inset-0"
-                  className="object-cover"
-                />
-              </div>
+          <div className="shrink-0 rounded-2xl bg-linear-to-br from-primary/60 via-primary/20 to-primary/5 p-1 shadow-2xl shadow-black/50">
+            <div className="relative aspect-3/4 w-36 overflow-hidden rounded-xl ring-1 ring-black/20 sm:w-40 md:w-52">
+              <AppImage
+                src={cover}
+                alt={game.name}
+                fill
+                priority
+                sizes="208px"
+                wrapperClassName="absolute inset-0"
+                className="object-cover"
+              />
             </div>
-          ) : null}
+          </div>
 
           <div className="flex flex-col items-center gap-3 md:items-start md:pb-2">
             <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">

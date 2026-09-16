@@ -10,6 +10,7 @@ import type { GameSummary } from '@/lib/domain/models'
 import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
+import { getGameCover } from '../config/images'
 import { gameGenreLabel, gameStatusLabel } from '../utils/labels'
 import { formatReleaseChip, isFutureDate } from '../utils/format'
 import { gamePath } from '../utils/paths'
@@ -67,16 +68,14 @@ export function GameCard({
   const card = (
     <div className={cn('group flex w-full flex-col gap-2', className)}>
       <div className="bg-muted relative aspect-3/4 overflow-hidden rounded-lg">
-        {game.cover ? (
-          <AppImage
-            src={game.cover}
-            alt={game.name}
-            fill
-            sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
-            wrapperClassName="absolute inset-0"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : null}
+        <AppImage
+          src={getGameCover(game.cover)}
+          alt={game.name}
+          fill
+          sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+          wrapperClassName="absolute inset-0"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
         {hasOverlay && (
           <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent" />
         )}

@@ -70,7 +70,7 @@ export type GameReleaseDate = z.infer<typeof gameReleaseDateSchema>
 
 export const gameDlcSchema = z.object({
   name: z.string(),
-  cover: z.string(),
+  cover: z.string().optional(),
   releases: z.array(gameReleaseDateSchema),
 })
 export type GameDlc = z.infer<typeof gameDlcSchema>
