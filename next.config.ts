@@ -18,6 +18,16 @@ const nextConfig: NextConfig = {
         hostname: 'pub-a307d52a91bd4744abc9e09f849ad9f1.r2.dev',
         pathname: '/engines-assets/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.gottygames.com',
+        pathname: '/consoles-assets/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.gottygames.com',
+        pathname: '/engines-assets/**',
+      },
       // YouTube video thumbnails for the media gallery (IGDB videos are YouTube ids).
       {
         protocol: 'https',
