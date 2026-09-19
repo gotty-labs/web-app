@@ -6,6 +6,17 @@
  */
 import { z } from 'zod'
 
+import { feedbackTypeSchema } from '../enums'
+
+/** `POST /profile/feedback` — optional reply email must never be an empty string. */
+export const feedbackInputSchema = z.object({
+  type: feedbackTypeSchema,
+  message: z.string().trim().min(1).max(1000),
+  wantsReply: z.boolean(),
+  email: z.email().optional(),
+})
+export type FeedbackInput = z.infer<typeof feedbackInputSchema>
+
 /** `PATCH /profile/verify-email` — 6-digit OTP (100000–999999). */
 export const verifyEmailInputSchema = z.object({
   otp: z.number().int().min(100000).max(999999),

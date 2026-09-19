@@ -1,19 +1,11 @@
-/**
- * Feedback (QA Chunk 1) — a Sheet opened from the sidebar "Options" group: bottom on
- * mobile, right on desktop. Type + free text with the app/system/locale auto-attached,
- * plus an optional reply email.
- *
- * NOTE (backend): there is NO feedback endpoint yet. `submit` is stubbed — it shows the
- * success toast and closes, but nothing is sent. Wire it to the real endpoint (e.g.
- * `POST /feedback` via `authedRequest`) once the contract exists.
- */
+/** Feedback Sheet: bottom on mobile, right on desktop. */
 'use client'
 
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -28,31 +20,31 @@ import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { useIsMobile } from '@/hooks/use-mobile'
 import { useSession } from '@/features/auth'
-import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
+import { sendFeedback } from '@/features/profile'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { useReportError } from '@/hooks/use-report-error'
+import { feedbackInputSchema } from '@/lib/domain/inputs'
+import { feedbackTypeSchema, type FeedbackType } from '@/lib/domain/enums'
+import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
-import { APP_VERSION } from '../config/shell'
-
 const MAX_LENGTH = 1000
-const TYPES = ['idea', 'improvement', 'problem', 'other'] as const
-type FeedbackType = (typeof TYPES)[number]
+const TYPES = feedbackTypeSchema.options
 
 export function FeedbackModal({ onClose }: { onClose: () => void }) {
   const dict = useDictionary()
   const t = dict.app.feedback
-  const locale = useLocale()
   const isMobile = useIsMobile()
+  const report = useReportError()
   const { user } = useSession()
 
-  const [type, setType] = useState<FeedbackType>('improvement')
+  const [type, setType] = useState<FeedbackType>(feedbackTypeSchema.enum.improvement)
   const [message, setMessage] = useState('')
   const [wantsReply, setWantsReply] = useState(true)
   const [email, setEmail] = useState(user?.email ?? '')
+  const [emailInvalid, setEmailInvalid] = useState(false)
   const [pending, setPending] = useState(false)
-
-  const system = typeof navigator !== 'undefined' ? navigator.userAgent : '—'
 
   const typeLabels: Record<FeedbackType, string> = {
     idea: t.typeIdea,
@@ -62,13 +54,28 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
   }
 
   async function submit() {
+    if (pending) return
+
+    const normalizedEmail = email.trim()
+    const input = feedbackInputSchema.safeParse({
+      type,
+      message,
+      wantsReply,
+      ...(wantsReply && normalizedEmail ? { email: normalizedEmail } : {}),
+    })
+    if (!input.success) {
+      setEmailInvalid(input.error.issues.some((issue) => issue.path[0] === 'email'))
+      return
+    }
+    setEmailInvalid(false)
+
     setPending(true)
     try {
-      // TODO(backend): send { type, message, wantsReply, email, meta:{app,system,locale} }
-      // to the feedback endpoint. Stubbed until the contract exists.
-      await Promise.resolve()
+      await sendFeedback(input.data)
       toast.success(t.sentToast)
       onClose()
+    } catch (error) {
+      report(error)
     } finally {
       setPending(false)
     }
@@ -127,43 +134,36 @@ export function FeedbackModal({ onClose }: { onClose: () => void }) {
               </p>
             </Field>
 
-            <div className="rounded-lg border p-3">
-              <p className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
-                {t.metadataLabel}
-              </p>
-              <dl className="flex flex-col gap-1.5 text-sm">
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground shrink-0">{t.appField}</dt>
-                  <dd className="truncate">{APP_VERSION}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground shrink-0">{t.systemField}</dt>
-                  <dd className="truncate">{system}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground shrink-0">{t.localeField}</dt>
-                  <dd className="truncate">{locale}</dd>
-                </div>
-              </dl>
-              <p className="text-muted-foreground mt-2 text-xs">{t.privacyNote}</p>
-            </div>
-
-            <Field>
+            <Field data-invalid={emailInvalid || undefined}>
               <div className="flex items-center justify-between gap-4">
                 <Label htmlFor="feedback-reply" className="font-normal">
                   {t.replyLabel}
                 </Label>
-                <Switch id="feedback-reply" checked={wantsReply} onCheckedChange={setWantsReply} />
+                <Switch
+                  id="feedback-reply"
+                  checked={wantsReply}
+                  onCheckedChange={(checked) => {
+                    setWantsReply(checked)
+                    if (!checked) setEmailInvalid(false)
+                  }}
+                />
               </div>
               {wantsReply && (
-                <Input
-                  type="email"
-                  autoComplete="email"
-                  placeholder={t.emailPlaceholder}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  aria-label={t.emailPlaceholder}
-                />
+                <>
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    placeholder={t.emailPlaceholder}
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value)
+                      setEmailInvalid(false)
+                    }}
+                    aria-label={t.emailPlaceholder}
+                    aria-invalid={emailInvalid || undefined}
+                  />
+                  {emailInvalid && <FieldError>{t.emailInvalid}</FieldError>}
+                </>
               )}
             </Field>
           </FieldGroup>

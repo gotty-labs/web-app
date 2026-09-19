@@ -6,9 +6,14 @@
  * (`await getDictionary(locale)`) and client-side (`useDictionary()`).
  */
 import type {
+  GameAgeRating,
   GameCategory,
   GameGenre,
+  GameLanguageCategory,
+  GameLanguageType,
   GameLibraryProgressState,
+  GameReleaseRegion,
+  GameReleaseStatus,
   GameStatus,
   GameTheme,
   UserGameLibraryStatus,
@@ -36,3 +41,21 @@ export const gameLibraryStatusLabel = (
   dict: Dictionary,
   value: UserGameLibraryStatus,
 ): string => dict.games.libraryStatus[value]
+
+export const gameRegionLabel = (dict: Dictionary, value: GameReleaseRegion): string =>
+  dict.games.region[value]
+
+export const gameReleaseStatusLabel = (dict: Dictionary, value: GameReleaseStatus): string =>
+  dict.games.releaseStatus[value]
+
+/** The rating BOARD's name (ESRB, PEGI, …) — the `rate` value itself is free text. */
+export const gameAgeRatingLabel = (dict: Dictionary, value: GameAgeRating): string =>
+  dict.games.ageRating[value]
+
+export const gameLanguageLabel = (dict: Dictionary, value: GameLanguageType): string =>
+  dict.games.language[value]
+
+export const gameLanguageCategoryLabel = (
+  dict: Dictionary,
+  value: GameLanguageCategory,
+): string => dict.games.languageCategory[value]

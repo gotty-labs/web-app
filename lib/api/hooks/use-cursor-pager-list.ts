@@ -22,14 +22,19 @@ import type { CursorPager } from '../cursor-pager'
 
 export interface CursorPagerListState<T> {
   items: T[]
+  /** Accumulated item count at the end of every successfully fetched page. */
+  pageEnds: number[]
   loading: boolean
   error: unknown
   hasMore: boolean
   /** Fetch the next page of the active pager (no-op while one is in flight). */
-  loadMore: () => Promise<void>
+  loadMore: () => Promise<CursorPagerLoadResult>
   /** Swap the active pager (null = none) and clear items/error/loading. */
-  reset: (pager: CursorPager<T> | null) => void
+  reset: (pager: CursorPager<T> | null, options?: { preserveItems?: boolean }) => void
 }
+
+export type CursorPagerLoadResult =
+  { ok: true } | { ok: false; error?: unknown; superseded?: boolean }
 
 export function useCursorPagerList<T>(
   /** Lazily builds the initial pager (first render only). Omit to start empty. */
@@ -41,6 +46,7 @@ export function useCursorPagerList<T>(
   }
 
   const [items, setItems] = useState<T[]>([])
+  const [pageEnds, setPageEnds] = useState<number[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<unknown>(null)
   // An initial pager exists iff a factory was provided (can't read the ref in render).
@@ -50,17 +56,20 @@ export function useCursorPagerList<T>(
 
   const loadMore = useCallback(async () => {
     const pager = pagerRef.current
-    if (!pager || loadingRef.current) return
+    if (!pager || loadingRef.current) return { ok: false } as const
     loadingRef.current = true
     setLoading(true)
     setError(null)
     try {
       const next = await pager.loadMore()
-      if (pagerRef.current !== pager) return // superseded by reset() — drop
+      if (pagerRef.current !== pager) return { ok: false, superseded: true } as const
       setItems([...next])
+      setPageEnds((ends) => [...ends, next.length])
       setHasMore(pager.hasMore)
+      return { ok: true } as const
     } catch (e) {
       if (pagerRef.current === pager) setError(e)
+      return { ok: false, error: e } as const
     } finally {
       // Only release/clear if still current: a reset() already released the guard
       // (and a load for the NEW pager may be running — don't clobber its state).
@@ -71,14 +80,18 @@ export function useCursorPagerList<T>(
     }
   }, [])
 
-  const reset = useCallback((pager: CursorPager<T> | null) => {
-    pagerRef.current = pager
-    loadingRef.current = false
-    setItems([])
-    setError(null)
-    setHasMore(pager !== null)
-    setLoading(false)
-  }, [])
+  const reset = useCallback(
+    (pager: CursorPager<T> | null, options?: { preserveItems?: boolean }) => {
+      pagerRef.current = pager
+      loadingRef.current = false
+      if (!options?.preserveItems || pager === null) setItems([])
+      setPageEnds([])
+      setError(null)
+      setHasMore(pager !== null)
+      setLoading(false)
+    },
+    [],
+  )
 
-  return { items, loading, error, hasMore, loadMore, reset }
+  return { items, pageEnds, loading, error, hasMore, loadMore, reset }
 }

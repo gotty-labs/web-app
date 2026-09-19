@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 export const Default = () => (
   <div className="dark bg-background text-foreground flex items-center gap-4 p-6">
     <Avatar size="lg">
-      <AvatarFallback>JG</AvatarFallback>
+      <AvatarFallback>GT</AvatarFallback>
     </Avatar>
     <Avatar>
       <AvatarFallback>AB</AvatarFallback>

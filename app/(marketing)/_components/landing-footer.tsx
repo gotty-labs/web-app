@@ -3,10 +3,10 @@
  * copyright line. The year is baked at build time — fine for a static page
  * that redeploys regularly.
  */
-import { Gamepad2Icon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import Link from 'next/link'
 
+import { BrandMark } from '@/components/brand-mark'
 import { Separator } from '@/components/ui/separator'
 import type { Dictionary } from '@/lib/i18n'
 
@@ -20,9 +20,7 @@ export function LandingFooter({ dict }: { dict: Dictionary }) {
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2.5">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <Gamepad2Icon className="size-4.5" />
-              </span>
+              <BrandMark wrapperClassName="h-10 w-14" sizes="56px" />
               <span className="font-heading text-lg font-bold tracking-tight">{brand.name}</span>
             </div>
             <p className="text-sm text-muted-foreground">{brand.tagline}</p>

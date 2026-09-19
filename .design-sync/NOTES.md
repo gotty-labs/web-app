@@ -1,6 +1,6 @@
-# design-sync notes — JustGame Design System
+# design-sync notes — Gotty Design System
 
-Project: **JustGame Design System** (`87dff220-9beb-41db-ada1-219ad71bfed9`) ·
+Project: **Gotty Design System** (`87dff220-9beb-41db-ada1-219ad71bfed9`) ·
 https://claude.ai/design/p/87dff220-9beb-41db-ada1-219ad71bfed9
 
 ## Repo shape gotchas (this is a Next.js APP, not a published component library)
@@ -8,7 +8,7 @@ https://claude.ai/design/p/87dff220-9beb-41db-ada1-219ad71bfed9
 - **No `dist`/exports → synth-entry mode.** The converter discovers from source (`srcDir: components/ui`).
 - **Self-package symlink required.** The converter reads `node_modules/<pkg>/package.json`; this app isn't
   installed in its own `node_modules`, so before building create:
-  `ln -sfn "$(pwd)" node_modules/justgame-web` (gitignored; **recreate on every clone / re-sync**).
+  `ln -sfn "$(pwd)" node_modules/gotty-web` (gitignored; **recreate on every clone / re-sync**).
   Remove it after the sync — left in place it can confuse the app's own tsc/Next (a self-referential package).
 - **Scope = shadcn primitives only** (`components/ui/**` → 145 exports, since each shadcn file fans out into
   sub-components: Card→CardHeader/Title/…). The domain components (`features/game/**`) are intentionally
@@ -84,7 +84,7 @@ past ~75 previews, so the scoped-batch path stayed the workhorse this run.
 
 ## Re-sync risks (what can silently go stale)
 
-- The compiled `.cache/tailwind.css` and the `node_modules/justgame-web` symlink are both gitignored → must be
+- The compiled `.cache/tailwind.css` and the `node_modules/gotty-web` symlink are both gitignored → must be
   regenerated/recreated each time (steps above) or the build fails / ships unstyled.
 - If new shadcn primitives are added to `components/ui/`, they're picked up automatically (synth scan).
 - Node 22 / npm used. Converter deps staged in `.ds-sync/` (gitignored) — re-copy from the skill base dir.

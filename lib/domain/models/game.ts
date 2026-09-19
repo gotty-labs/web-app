@@ -24,8 +24,10 @@ import {
 import {
   companiesSchema,
   engineSchema,
+  gameConsoleMediaSchema,
   gameConsoleSchema,
   gameDlcSchema,
+  gameLibraryListSchema,
   gameReleaseDateSchema,
   ratingSchema,
   timeToBeatSchema,
@@ -72,7 +74,7 @@ export const gameFilterOptionsSchema = z.object({
   consoles: z.array(
     z.object({
       id: z.string(),
-      cover: z.string(),
+      media: gameConsoleMediaSchema,
       name: z.string(),
       excluded: z.boolean(),
     }),
@@ -87,6 +89,13 @@ export const gameLibrarySchema = gameSummarySchema.extend({
     state: gameLibraryProgressStateSchema,
     duration: z.number().optional(),
   }),
+  lists: z.array(
+    gameLibraryListSchema.pick({
+      id: true,
+      icon: true,
+      hexColor: true,
+    }),
+  ),
   timeToBeat: timeToBeatSchema.optional(),
   engines: z.array(engineSchema),
   companies: companiesSchema,
@@ -105,6 +114,14 @@ const gameLanguageSchema = z.object({
   categories: z.array(gameLanguageCategorySchema),
 })
 
+/** Current user's library state for a game (`GET /game/public/:slug/library`). */
+export const gameLibraryStateSchema = z.object({
+  saved: z.boolean(),
+  lists: z.array(gameLibraryListSchema),
+  gameListIds: z.array(z.string()),
+})
+export type GameLibraryState = z.infer<typeof gameLibraryStateSchema>
+
 /** Full game detail — powers both the in-app detail and the public SEO page. */
 export const gameDtoSchema = z.object({
   id: z.string(),
@@ -112,7 +129,6 @@ export const gameDtoSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   storyline: z.string().optional(),
-  savedInLibrary: z.boolean(),
   ageRating: z.array(z.object({ organization: gameAgeRatingSchema, rate: z.string() })),
   rating: ratingSchema.optional(),
   timeToBeat: timeToBeatSchema.optional(),

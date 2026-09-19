@@ -13,8 +13,12 @@ import { z } from 'zod'
 export const platformSchema = z.enum(['IOS', 'ANDROID', 'WEB'])
 export type Platform = z.infer<typeof platformSchema>
 
-export const jgLanguageSchema = z.enum(['en', 'es'])
-export type JgLanguage = z.infer<typeof jgLanguageSchema>
+export const gtLanguageSchema = z.enum(['en', 'es'])
+export type GtLanguage = z.infer<typeof gtLanguageSchema>
+
+/** Raw values accepted by `POST /profile/feedback`. */
+export const feedbackTypeSchema = z.enum(['idea', 'improvement', 'problem', 'other'])
+export type FeedbackType = z.infer<typeof feedbackTypeSchema>
 
 export const appVersionStatusSchema = z.enum([
   'UP_TO_DATE',

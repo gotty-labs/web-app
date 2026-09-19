@@ -5,7 +5,7 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# JustGame web — project conventions
+# Gotty web — project conventions
 
 Follow Conventions so every
 feature looks the same. When in doubt, read the official Next.js (`node_modules/next/dist/docs/`)
@@ -66,7 +66,7 @@ or shadcn docs first — this stack is ahead of training data.
 ## HTTP & errors
 
 - Two contracts, never mix them:
-  - **`apiRequest`** (`lib/api/client.ts`) → JustGame backend (`/api/v1`): injects `jg-*`
+  - **`apiRequest`** (`lib/api/client.ts`) → Gotty backend (`/api/v1`): injects `gt-*`
     headers + `Authorization`, unwraps the `ApiResponse`/`ApiError` envelope, throws `ApiException`.
   - **`bffRequest`** (`lib/api/bff-client.ts`) → our own `/api/*` route handlers: plain JSON,
     throws `BffError`.
@@ -94,7 +94,7 @@ or shadcn docs first — this stack is ahead of training data.
 - Map any thrown error to copy via `getErrorMessage(error, dict)` (takes the dictionary, NOT a
   locale) — the single place errors become UI text. Client UI uses `useErrorMessage()` /
   `useDictionary()` from `<I18nProvider>` (`lib/i18n/contexts/`, hooks in `lib/i18n/hooks/`).
-- `jg-language` is sourced from the detected locale (`authedRequest` sends the client locale;
+- `gt-language` is sourced from the detected locale (`authedRequest` sends the client locale;
   `DEFAULT_LANGUAGE` is `en`).
 - **SSR/SEO caveat:** never call `getServerLocale()` (reads `headers()`) in the ROOT layout — it
   forces dynamic rendering and breaks SSG of the SEO zone. Mount `I18nProvider` (dict passed as a

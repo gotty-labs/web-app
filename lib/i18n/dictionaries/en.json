@@ -95,13 +95,95 @@
     },
     "libraryStatus": {
       "SAVED": "Saved",
-      "WHITELIST": "Whitelist"
+      "WHITELIST": "Wishlist"
+    },
+    "region": {
+      "EUROPE": "Europe",
+      "NORTH_AMERICA": "North America",
+      "AUSTRALIA": "Australia",
+      "NEW_ZEALAND": "New Zealand",
+      "JAPAN": "Japan",
+      "CHINA": "China",
+      "ASIA": "Asia",
+      "WORLDWIDE": "Worldwide",
+      "KOREA": "Korea",
+      "BRAZIL": "Brazil"
+    },
+    "releaseStatus": {
+      "ALPHA": "Alpha",
+      "BETA": "Beta",
+      "EARLY_ACCESS": "Early access",
+      "OFFLINE": "Offline",
+      "CANCELLED": "Cancelled",
+      "FULL_RELEASE": "Full release",
+      "ADVANCED_ACCESS": "Advanced access",
+      "DIGITAL_COMPATIBILITY_RELEASE": "Digital compatibility",
+      "NEXT_GEN_OPTIMIZATION_PATCH_RELEASE": "Next-gen patch"
+    },
+    "ageRating": {
+      "ESRB": "ESRB",
+      "PEGI": "PEGI",
+      "CERO": "CERO",
+      "USK": "USK",
+      "GRAC": "GRAC",
+      "CLASS_IND": "ClassInd",
+      "ACB": "ACB"
+    },
+    "language": {
+      "ARABIC": "Arabic",
+      "CHINESE_SIMPLIFIED": "Chinese (Simplified)",
+      "CHINESE_TRADITIONAL": "Chinese (Traditional)",
+      "CZECH": "Czech",
+      "DANISH": "Danish",
+      "DUTCH": "Dutch",
+      "ENGLISH_US": "English (US)",
+      "ENGLISH_UK": "English (UK)",
+      "SPANISH_SPAIN": "Spanish (Spain)",
+      "SPANISH_MEXICO": "Spanish (Mexico)",
+      "FRENCH": "French",
+      "GERMAN": "German",
+      "HUNGARIAN": "Hungarian",
+      "ITALIAN": "Italian",
+      "JAPANESE": "Japanese",
+      "KOREAN": "Korean",
+      "NORWEGIAN": "Norwegian",
+      "POLISH": "Polish",
+      "PORTUGUESE_BRAZIL": "Portuguese (Brazil)",
+      "PORTUGUESE_PORTUGAL": "Portuguese (Portugal)",
+      "RUSSIAN": "Russian",
+      "SWEDISH": "Swedish",
+      "TURKISH": "Turkish",
+      "THAI": "Thai",
+      "FINNISH": "Finnish",
+      "UKRAINIAN": "Ukrainian",
+      "VIETNAMESE": "Vietnamese",
+      "HEBREW": "Hebrew"
+    },
+    "languageCategory": {
+      "AUDIO": "Audio",
+      "SUBTITLES": "Subtitles",
+      "INTERFACE": "Interface"
     }
   },
   "app": {
     "brand": {
-      "name": "JustGame",
+      "name": "Gotty",
       "tagline": "Discover, save and track your games."
+    },
+    "advertising": {
+      "label": "Advertisements"
+    },
+    "appDownloadPrompt": {
+      "title": "Gotty feels better in the app",
+      "description": "Take your library everywhere and discover your next games through a smoother, more immersive experience made for your phone.",
+      "appStoreLabel": "Download on the App Store",
+      "googlePlayLabel": "Get it on Google Play"
+    },
+    "adBlockPrompt": {
+      "title": "Help us keep Gotty going",
+      "description": "Gotty is a small, free project built for the community. Ads are our only way to cover its costs and keep making it better for everyone.",
+      "reload": "I've disabled it, reload",
+      "continue": "Continue"
     },
     "actions": {
       "enterApp": "Enter the app",
@@ -131,7 +213,7 @@
       },
       "features": {
         "title": "Everything your backlog needs",
-        "subtitle": "From discovery to the credits, JustGame keeps your gaming life organized in one place.",
+        "subtitle": "From discovery to the credits, Gotty keeps your gaming life organized in one place.",
         "discover": {
           "title": "A feed that knows what's next",
           "description": "Curated rows of trending, upcoming and acclaimed titles across every console — always fresh, always yours."
@@ -142,7 +224,7 @@
         },
         "library": {
           "title": "Your library, your rules",
-          "description": "Save the games you own, whitelist the ones you're watching, and keep everything in one tidy place."
+          "description": "Save the games you own, add the ones you're watching to your wishlist, and keep everything in one tidy place."
         },
         "progress": {
           "title": "Track every playthrough",
@@ -159,7 +241,7 @@
           },
           {
             "title": "Save what you want to play",
-            "description": "Browse the feed or search anything, then add it to your library or whitelist in one tap."
+            "description": "Browse the feed or search anything, then add it to your library or wishlist in one tap."
           },
           {
             "title": "Track until the credits roll",
@@ -169,8 +251,8 @@
       },
       "cta": {
         "title": "Ready to press start?",
-        "subtitle": "Turn your backlog into a plan. Join JustGame today — free, on any device.",
-        "button": "Enter JustGame"
+        "subtitle": "Turn your backlog into a plan. Join Gotty today — free, on any device.",
+        "button": "Enter Gotty"
       },
       "footer": {
         "rights": "All rights reserved."
@@ -196,7 +278,7 @@
     },
     "feedback": {
       "title": "Send feedback",
-      "description": "Your message goes straight to the team building JustGame.",
+      "description": "Your message goes straight to the team building Gotty.",
       "typeLabel": "Type of message",
       "typeIdea": "Idea",
       "typeImprovement": "Improvement",
@@ -204,13 +286,9 @@
       "typeOther": "Other",
       "messageLabel": "Your message",
       "messagePlaceholder": "Tell us what's missing, what you'd improve, or what doesn't work as expected. The more specific, the better.",
-      "metadataLabel": "Sent with your message",
-      "appField": "App",
-      "systemField": "System",
-      "localeField": "Language",
-      "privacyNote": "This helps us reproduce what you describe. Nothing else is sent.",
       "replyLabel": "I'd like a reply by email",
       "emailPlaceholder": "you@example.com",
+      "emailInvalid": "Enter a valid email address or leave the field empty.",
       "submit": "Send",
       "sentToast": "Thanks! Your feedback was sent."
     },
@@ -225,12 +303,18 @@
     "feed": {
       "loadMore": "Load more",
       "empty": "Nothing here yet.",
-      "error": "We couldn't load this. Please try again."
+      "error": "We couldn't load this. Please try again.",
+      "consoleVisibilityNotice": {
+        "title": "Your feed has console visibility preferences applied",
+        "description": "Some consoles are hidden. You can review or change this setting at any time.",
+        "action": "Change visibility"
+      }
     },
     "search": {
       "placeholder": "Search games…",
       "submit": "Search",
       "consoles": "Consoles",
+      "content": "Content",
       "genreTheme": "Genre / Theme",
       "all": "All",
       "genres": "Genres",
@@ -238,17 +322,75 @@
       "prompt": "Search for a game or pick a filter to start.",
       "noResults": "No games match your filters.",
       "reset": "Clear all",
-      "clear": "Clear search"
+      "clear": "Clear search",
+      "closePanel": "Close filters",
+      "apply": "Apply",
+      "applyError": "The filters could not be applied. Please try again.",
+      "consolesPanelTitle": "Filter by console",
+      "consolesPanelDescription": "Choose one or more consoles. Games can belong to any of them.",
+      "contentPanelTitle": "Filter by content",
+      "contentPanelDescription": "Choose one genre or theme. The latest choice replaces the previous one.",
+      "noConsolesSelected": "No consoles selected",
+      "consoleSelected": "{count} console selected",
+      "consolesSelected": "{count} consoles selected",
+      "noContentSelected": "No content selected",
+      "contentSelected": "Content selected",
+      "clearConsoles": "Remove console filter",
+      "clearContent": "Remove content filter",
+      "noQueryResults": "We couldn't find games matching “{query}”.",
+      "noFilterResults": "No games match these filters."
     },
     "detail": {
       "save": "Save",
       "saved": "Saved",
-      "whitelist": "Add to whitelist",
+      "whitelist": "Add to wishlist",
+      "whitelistShort": "Wishlist",
+      "remove": "Remove",
+      "lists": "Lists",
+      "progressLabel": "Progress",
+      "comingSoon": "Coming soon",
       "updateProgress": "Update progress",
       "signInToSave": "Sign in to save",
       "moreActions": "More actions",
       "savedToast": "Saved to your library",
-      "whitelistToast": "Added to your whitelist",
+      "whitelistToast": "Added to your wishlist",
+      "removedToast": "Removed from your library",
+      "listDialogTitle": "Manage lists",
+      "listLibraryDisclaimer": "Saving this game to any personal list will add it to your library, even if it is currently in your wishlist.",
+      "listsUpdatedToast": "Lists updated",
+      "listEmptyTitle": "No lists yet",
+      "listEmptyDescription": "Create your first list to organize this game.",
+      "listIncluded": "Included",
+      "about": "About",
+      "storyline": "Storyline",
+      "readStoryline": "Read the storyline",
+      "genres": "Genres",
+      "themes": "Themes",
+      "platforms": "Platforms",
+      "languages": "Languages",
+      "engines": "Engines",
+      "ageRating": "Age rating",
+      "releases": "Release dates",
+      "media": "Media",
+      "viewGallery": "View gallery",
+      "mediaArtworks": "Artworks",
+      "mediaScreenshots": "Screenshots",
+      "mediaVideos": "Videos",
+      "playVideo": "Play video",
+      "fullscreen": "Fullscreen",
+      "previous": "Previous",
+      "next": "Next",
+      "seeAll": "See all",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "addToCalendar": "Add to calendar",
+      "appleCalendar": "Apple Calendar",
+      "googleCalendar": "Google Calendar",
+      "dlcs": "DLC",
+      "expansions": "Expansions",
+      "timeToBeatQuick": "Rushed",
+      "timeToBeatAverage": "Average",
+      "timeToBeatTotal": "Completionist",
       "progress": {
         "title": "Update progress",
         "description": "Track where you are with this game.",
@@ -263,13 +405,71 @@
       "timeToBeat": "Time to beat"
     },
     "library": {
+      "title": "My Library",
       "savedTab": "Library",
-      "whitelistTab": "Whitelist",
-      "listsLabel": "List",
+      "whitelistTab": "Wishlist",
+      "listsLabel": "Lists",
       "allLists": "All lists",
-      "savedEmpty": "Your library is empty. Save a game to see it here.",
-      "whitelistEmpty": "Your whitelist is empty.",
-      "emptyCta": "Discover games"
+      "newList": "New list",
+      "newListDescription": "Create a curated shelf and add games now or later.",
+      "nameLabel": "Name",
+      "namePlaceholder": "List name",
+      "nameRequired": "Enter a name for your list.",
+      "nameTooLong": "The name can contain up to 60 characters.",
+      "nameExists": "You already have a list with that name.",
+      "colorLabel": "Color",
+      "customColorLabel": "Choose any color",
+      "colorHexLabel": "Hex color",
+      "colorInvalid": "Use a valid #RGB or #RRGGBB color.",
+      "iconLabel": "Icon",
+      "gameSearchLabel": "Add games",
+      "gameSearchPlaceholder": "Search games to add…",
+      "gameSearchNoResults": "No games found.",
+      "gameSearchHint": "Type at least 3 characters.",
+      "selectedGames": "Selected games",
+      "createList": "Create list",
+      "listCreatedToast": "List created",
+      "deleteList": "Delete list",
+      "deleteListTitle": "Delete this list?",
+      "deleteListDescription": "Do you want to delete {list}? Its games will stay in your library.",
+      "listDeletedToast": "List deleted",
+      "savedEmpty": "Your library is empty",
+      "savedEmptyDescription": "Explore and save games to start your personal collection.",
+      "whitelistEmpty": "Your wishlist is empty",
+      "whitelistEmptyDescription": "Save games you are interested in so you do not lose track of them.",
+      "listEmpty": "This list does not have any games yet.",
+      "emptyCta": "Explore games",
+      "loadError": "We could not load your library.",
+      "actionsTitle": "Game actions",
+      "moreInfo": "More info",
+      "viewProgress": "View progress",
+      "updateProgress": "Update status and progress",
+      "addToList": "Manage lists",
+      "removeFromLibrary": "Remove from library",
+      "removeFromWhitelist": "Remove from wishlist",
+      "addToLibrary": "Add to library",
+      "removeFromList": "Remove from this list",
+      "noProgress": "No progress recorded.",
+      "progressSummary": "Status: {state} · {hours} h of {total} h",
+      "progressStateLabel": "Status",
+      "progressDurationLabel": "Hours played",
+      "progressDurationHint": "Maximum: {hours} h",
+      "progressCardLabel": "{current} h played out of {total} h",
+      "saveChanges": "Save changes",
+      "listChoiceLabel": "Choose one or more lists",
+      "openGame": "Open game details",
+      "listsUpdatedToast": "Lists updated",
+      "confirmRemoveTitle": "Remove game?",
+      "confirmRemoveDescription": "Do you want to remove {game} from your library?",
+      "confirmRemoveListDescription": "Do you want to remove {game} from this list? It will stay in your library.",
+      "confirmRemove": "Remove",
+      "removedToast": "Removed from your library",
+      "removedWhitelistToast": "Removed from your wishlist",
+      "addedToast": "Added to your library",
+      "removedFromListToast": "Removed from the list",
+      "actionFailed": "The action could not be completed. Try again.",
+      "releaseLabel": "Release",
+      "released": "Available now"
     },
     "settings": {
       "title": "Settings",
@@ -305,9 +505,31 @@
       }
     },
     "onboarding": {
-      "title": "Welcome to JustGame",
-      "description": "Discover games, build your library, and track your progress across every platform.",
-      "cta": "Get started"
+      "stepLabel": "Step {current} of {total}",
+      "next": "Continue",
+      "finish": "Explore Gotty",
+      "steps": [
+        {
+          "eyebrow": "One place for every game",
+          "title": "Play more. Organize less.",
+          "description": "Gotty brings everything you want to play into one personal space, so choosing your next game feels exciting again."
+        },
+        {
+          "eyebrow": "Find your next obsession",
+          "title": "Search for the game you really want.",
+          "description": "Find the game already on your mind or explore every platform until you discover the perfect choice for your next session."
+        },
+        {
+          "eyebrow": "Your library, your rules",
+          "title": "Keep every game exactly where it belongs.",
+          "description": "Save games, build custom lists, and keep your backlog and wishlist clear without juggling different apps."
+        },
+        {
+          "eyebrow": "Make every session count",
+          "title": "Every game tells part of your story.",
+          "description": "Track what you are playing, celebrate what you finish, and see your gaming journey grow with you."
+        }
+      ]
     },
     "errorModal": {
       "title": "Something went wrong",
@@ -325,9 +547,9 @@
     },
     "auth": {
       "loginTitle": "Welcome back",
-      "loginDescription": "Sign in to continue to JustGame.",
+      "loginDescription": "Sign in to continue to Gotty.",
       "registerTitle": "Create your account",
-      "registerDescription": "Join JustGame to build your library.",
+      "registerDescription": "Join Gotty to build your library.",
       "forgotTitle": "Reset your password",
       "forgotDescription": "Enter your email and we'll send you a reset link.",
       "emailLabel": "Email",

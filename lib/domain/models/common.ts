@@ -38,11 +38,17 @@ export const engineSchema = z.object({
 })
 export type Engine = z.infer<typeof engineSchema>
 
+export const gameConsoleMediaSchema = z.object({
+  image: z.string(),
+  color: z.string(),
+})
+export type GameConsoleMedia = z.infer<typeof gameConsoleMediaSchema>
+
 export const gameConsoleSchema = z.object({
   id: z.string(),
   name: z.string(),
   family: consoleFamilySchema.nullish(),
-  image: z.string().nullish(),
+  media: gameConsoleMediaSchema,
 })
 export type GameConsole = z.infer<typeof gameConsoleSchema>
 
@@ -64,7 +70,7 @@ export type GameReleaseDate = z.infer<typeof gameReleaseDateSchema>
 
 export const gameDlcSchema = z.object({
   name: z.string(),
-  cover: z.string(),
+  cover: z.string().optional(),
   releases: z.array(gameReleaseDateSchema),
 })
 export type GameDlc = z.infer<typeof gameDlcSchema>

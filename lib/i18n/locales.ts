@@ -4,12 +4,12 @@
  * This uses the Next docs' "Localization" (dictionaries) approach decoupled from
  * its `[lang]` routing approach.
  *
- * `Locale` is the same union as the backend's `jg-language` header, so one source
+ * `Locale` is the same union as the backend's `gt-language` header, so one source
  * of truth drives both UI copy and the language we ask the backend for.
  */
-import type { JgLanguage } from '@/lib/domain/enums'
+import type { GtLanguage } from '@/lib/domain/enums'
 
-export type Locale = JgLanguage // "en" | "es"
+export type Locale = GtLanguage // "en" | "es"
 
 export const locales = ['en', 'es'] as const satisfies readonly Locale[]
 export const defaultLocale: Locale = 'en'

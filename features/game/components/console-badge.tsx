@@ -7,14 +7,8 @@ import type { GameConsole } from '@/lib/domain/models'
 export function ConsoleBadge({ console: gameConsole }: { console: GameConsole }) {
   return (
     <Badge variant="outline">
-      {gameConsole.image ? (
-        <Image
-          src={gameConsole.image}
-          alt=""
-          width={14}
-          height={14}
-          className="size-3.5"
-        />
+      {gameConsole.media.image ? (
+        <Image src={gameConsole.media.image} alt="" width={14} height={14} className="size-3.5" />
       ) : null}
       {gameConsole.name}
     </Badge>

@@ -1,18 +1,15 @@
 /** Public surface of the game feature (catalog + user library clients). */
+export { getFeed, getFilterOptions, searchGames, getGamesBySection } from './services/catalog'
 export {
-  getFeed,
-  getFilterOptions,
-  searchGames,
-  getGamesBySection,
-  getGame,
-} from './services/catalog'
-export {
+  getGameLibraryState,
   getLibraryLists,
   createLibraryList,
   getLibrary,
   updateLibraryList,
+  syncGameLibraryLists,
   deleteLibraryList,
   storeGameInLibrary,
+  removeGameFromLibrary,
 } from './services/library'
 export { getSitemapEntries, getPublicGame, SEO_REVALIDATE_SECONDS } from './services/seo'
 

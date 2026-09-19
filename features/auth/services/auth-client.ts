@@ -10,9 +10,11 @@
  * Still TODO (next slice): forgot-password, reset-password, delete-account, and a
  * React session context that wires `setOnSessionExpired` to the router.
  */
+import { DateTime } from 'luxon'
 import { z } from 'zod'
 
-import { bffRequest } from '@/lib/api/bff-client'
+import { track, tracking } from '@/lib/analytics'
+import { BffError, bffRequest } from '@/lib/api/bff-client'
 import { apiRequest } from '@/lib/api/client'
 import { voidDataSchema } from '@/lib/api/envelope'
 import { userProfileSchema, type UserProfile } from '@/lib/domain/models'
@@ -27,7 +29,7 @@ const sessionPayloadSchema = z.object({
 })
 type SessionPayload = z.infer<typeof sessionPayloadSchema>
 
-function persist(payload: SessionPayload): UserProfile {
+function storeSession(payload: SessionPayload): UserProfile {
   sessionStore.setSession({
     id: payload.id,
     accessToken: payload.accessToken,
@@ -36,27 +38,53 @@ function persist(payload: SessionPayload): UserProfile {
   return payload.user
 }
 
-export async function loginEmail(email: string, password: string): Promise<UserProfile> {
-  return persist(
-    await bffRequest({
+function persist(payload: SessionPayload): UserProfile {
+  tracking.setUserId(payload.id)
+  return storeSession(payload)
+}
+
+function loginFailureReason(error: unknown): string {
+  if (!(error instanceof BffError)) return 'unknown'
+  return error.internalCode === undefined ? `http_${error.status}` : String(error.internalCode)
+}
+
+function completeSignup(payload: SessionPayload): UserProfile {
+  tracking.setUserId(payload.id)
+  track({
+    name: 'sign_up_completed',
+    properties: {
+      signup_method: 'email',
+      signup_date: DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+    },
+  })
+  return storeSession(payload)
+}
+
+async function loginWith(body: Record<string, string>): Promise<UserProfile> {
+  try {
+    const payload = await bffRequest({
       path: '/api/auth/login',
-      body: { provider: 'email', email, password },
+      body,
       schema: sessionPayloadSchema,
-    }),
-  )
+    })
+    const user = persist(payload)
+    track({ name: 'login_completed' })
+    return user
+  } catch (error) {
+    track({ name: 'login_failed', properties: { reason: loginFailureReason(error) } })
+    throw error
+  }
+}
+
+export async function loginEmail(email: string, password: string): Promise<UserProfile> {
+  return loginWith({ provider: 'email', email, password })
 }
 
 export async function loginOAuth(
   provider: 'google' | 'apple',
   token: string,
 ): Promise<UserProfile> {
-  return persist(
-    await bffRequest({
-      path: '/api/auth/login',
-      body: { provider, token },
-      schema: sessionPayloadSchema,
-    }),
-  )
+  return loginWith({ provider, token })
 }
 
 export async function registerEmail(
@@ -64,7 +92,7 @@ export async function registerEmail(
   nickname: string,
   password: string,
 ): Promise<UserProfile> {
-  return persist(
+  return completeSignup(
     await bffRequest({
       path: '/api/auth/register',
       body: { provider: 'email', email, nickname, password },
@@ -78,7 +106,7 @@ export async function registerOAuth(
   token: string,
   nickname: string,
 ): Promise<UserProfile> {
-  return persist(
+  return completeSignup(
     await bffRequest({
       path: '/api/auth/register',
       body: { provider, token, nickname },
@@ -110,7 +138,7 @@ export async function forgotPassword(email: string): Promise<void> {
 
 /**
  * Reset-password (§4.1). PUBLIC; `resetId` comes from the email link. This is the
- * one endpoint that does NOT require the `jg-*` headers — sending them anyway is
+ * one endpoint that does NOT require the `gt-*` headers — sending them anyway is
  * harmless (extra valid headers are ignored).
  */
 export async function resetPassword(resetId: string, password: string): Promise<void> {

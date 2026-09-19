@@ -95,13 +95,95 @@
     },
     "libraryStatus": {
       "SAVED": "Guardado",
-      "WHITELIST": "Whitelist"
+      "WHITELIST": "Deseados"
+    },
+    "region": {
+      "EUROPE": "Europa",
+      "NORTH_AMERICA": "Norteamérica",
+      "AUSTRALIA": "Australia",
+      "NEW_ZEALAND": "Nueva Zelanda",
+      "JAPAN": "Japón",
+      "CHINA": "China",
+      "ASIA": "Asia",
+      "WORLDWIDE": "Mundial",
+      "KOREA": "Corea",
+      "BRAZIL": "Brasil"
+    },
+    "releaseStatus": {
+      "ALPHA": "Alpha",
+      "BETA": "Beta",
+      "EARLY_ACCESS": "Acceso anticipado",
+      "OFFLINE": "Sin conexión",
+      "CANCELLED": "Cancelado",
+      "FULL_RELEASE": "Lanzamiento completo",
+      "ADVANCED_ACCESS": "Acceso avanzado",
+      "DIGITAL_COMPATIBILITY_RELEASE": "Compatibilidad digital",
+      "NEXT_GEN_OPTIMIZATION_PATCH_RELEASE": "Parche next-gen"
+    },
+    "ageRating": {
+      "ESRB": "ESRB",
+      "PEGI": "PEGI",
+      "CERO": "CERO",
+      "USK": "USK",
+      "GRAC": "GRAC",
+      "CLASS_IND": "ClassInd",
+      "ACB": "ACB"
+    },
+    "language": {
+      "ARABIC": "Árabe",
+      "CHINESE_SIMPLIFIED": "Chino (simplificado)",
+      "CHINESE_TRADITIONAL": "Chino (tradicional)",
+      "CZECH": "Checo",
+      "DANISH": "Danés",
+      "DUTCH": "Neerlandés",
+      "ENGLISH_US": "Inglés (EE. UU.)",
+      "ENGLISH_UK": "Inglés (RU)",
+      "SPANISH_SPAIN": "Español (España)",
+      "SPANISH_MEXICO": "Español (México)",
+      "FRENCH": "Francés",
+      "GERMAN": "Alemán",
+      "HUNGARIAN": "Húngaro",
+      "ITALIAN": "Italiano",
+      "JAPANESE": "Japonés",
+      "KOREAN": "Coreano",
+      "NORWEGIAN": "Noruego",
+      "POLISH": "Polaco",
+      "PORTUGUESE_BRAZIL": "Portugués (Brasil)",
+      "PORTUGUESE_PORTUGAL": "Portugués (Portugal)",
+      "RUSSIAN": "Ruso",
+      "SWEDISH": "Sueco",
+      "TURKISH": "Turco",
+      "THAI": "Tailandés",
+      "FINNISH": "Finés",
+      "UKRAINIAN": "Ucraniano",
+      "VIETNAMESE": "Vietnamita",
+      "HEBREW": "Hebreo"
+    },
+    "languageCategory": {
+      "AUDIO": "Audio",
+      "SUBTITLES": "Subtítulos",
+      "INTERFACE": "Interfaz"
     }
   },
   "app": {
     "brand": {
-      "name": "JustGame",
+      "name": "Gotty",
       "tagline": "Descubre, guarda y sigue tus videojuegos."
+    },
+    "advertising": {
+      "label": "Anuncios"
+    },
+    "appDownloadPrompt": {
+      "title": "Gotty se disfruta más en la app",
+      "description": "Lleva tu biblioteca siempre contigo y descubre tus próximos juegos con una experiencia más fluida, inmersiva y diseñada para tu móvil.",
+      "appStoreLabel": "Descargar en el App Store",
+      "googlePlayLabel": "Disponible en Google Play"
+    },
+    "adBlockPrompt": {
+      "title": "Ayúdanos a mantener Gotty vivo",
+      "description": "Gotty es un proyecto pequeño, gratuito y hecho para la comunidad. Los anuncios son nuestra única vía para cubrir sus costes y seguir mejorándolo para todos.",
+      "reload": "Los he desactivado, recargar",
+      "continue": "Continuar"
     },
     "actions": {
       "enterApp": "Entrar a la app",
@@ -131,7 +213,7 @@
       },
       "features": {
         "title": "Todo lo que tu backlog necesita",
-        "subtitle": "Del descubrimiento a los créditos, JustGame mantiene tu vida gamer organizada en un solo lugar.",
+        "subtitle": "Del descubrimiento a los créditos, Gotty mantiene tu vida gamer organizada en un solo lugar.",
         "discover": {
           "title": "Un feed que sabe qué viene",
           "description": "Filas seleccionadas con títulos en tendencia, próximos lanzamientos y juegos aclamados en todas las consolas — siempre al día, siempre a tu gusto."
@@ -142,7 +224,7 @@
         },
         "library": {
           "title": "Tu biblioteca, tus reglas",
-          "description": "Guarda los juegos que tienes, añade a tu whitelist los que sigues y tenlo todo ordenado en un solo sitio."
+          "description": "Guarda los juegos que tienes, añade a deseados los que sigues y tenlo todo ordenado en un solo sitio."
         },
         "progress": {
           "title": "Sigue cada partida",
@@ -159,7 +241,7 @@
           },
           {
             "title": "Guarda lo que quieres jugar",
-            "description": "Explora el feed o busca cualquier título y añádelo a tu biblioteca o whitelist con un toque."
+            "description": "Explora el feed o busca cualquier título y añádelo a tu biblioteca o a deseados con un toque."
           },
           {
             "title": "Sigue tu progreso hasta los créditos",
@@ -169,8 +251,8 @@
       },
       "cta": {
         "title": "¿Listo para pulsar start?",
-        "subtitle": "Convierte tu backlog en un plan. Únete a JustGame hoy: gratis y en cualquier dispositivo.",
-        "button": "Entrar en JustGame"
+        "subtitle": "Convierte tu backlog en un plan. Únete a Gotty hoy: gratis y en cualquier dispositivo.",
+        "button": "Entrar en Gotty"
       },
       "footer": {
         "rights": "Todos los derechos reservados."
@@ -196,7 +278,7 @@
     },
     "feedback": {
       "title": "Enviar feedback",
-      "description": "Tu mensaje llega directamente al equipo que desarrolla JustGame.",
+      "description": "Tu mensaje llega directamente al equipo que desarrolla Gotty.",
       "typeLabel": "Tipo de mensaje",
       "typeIdea": "Idea",
       "typeImprovement": "Mejora",
@@ -204,13 +286,9 @@
       "typeOther": "Otro",
       "messageLabel": "Tu mensaje",
       "messagePlaceholder": "Cuéntanos qué echas en falta, qué mejorarías o qué no funciona como esperas. Cuanto más concreto, mejor.",
-      "metadataLabel": "Se enviará con tu mensaje",
-      "appField": "App",
-      "systemField": "Sistema",
-      "localeField": "Idioma",
-      "privacyNote": "Esto nos ayuda a reproducir lo que cuentas. No se envía nada más.",
       "replyLabel": "Quiero que me respondáis por correo",
       "emailPlaceholder": "tu@ejemplo.com",
+      "emailInvalid": "Introduce un correo válido o deja el campo vacío.",
       "submit": "Enviar",
       "sentToast": "¡Gracias! Tu feedback se ha enviado."
     },
@@ -225,12 +303,18 @@
     "feed": {
       "loadMore": "Cargar más",
       "empty": "Aquí no hay nada todavía.",
-      "error": "No pudimos cargar esto. Inténtalo de nuevo."
+      "error": "No pudimos cargar esto. Inténtalo de nuevo.",
+      "consoleVisibilityNotice": {
+        "title": "Tu feed tiene una visibilidad de consolas aplicada",
+        "description": "Algunas consolas están ocultas. Puedes revisar o cambiar esta configuración cuando quieras.",
+        "action": "Cambiar visibilidad"
+      }
     },
     "search": {
       "placeholder": "Buscar juegos…",
       "submit": "Buscar",
       "consoles": "Consolas",
+      "content": "Contenido",
       "genreTheme": "Género / Tema",
       "all": "Todos",
       "genres": "Géneros",
@@ -238,17 +322,75 @@
       "prompt": "Busca un juego o elige un filtro para empezar.",
       "noResults": "Ningún juego coincide con tus filtros.",
       "reset": "Limpiar todo",
-      "clear": "Limpiar búsqueda"
+      "clear": "Limpiar búsqueda",
+      "closePanel": "Cerrar filtros",
+      "apply": "Aplicar",
+      "applyError": "No se pudieron aplicar los filtros. Inténtalo de nuevo.",
+      "consolesPanelTitle": "Filtrar por consolas",
+      "consolesPanelDescription": "Elige una o varias consolas. Los juegos podrán pertenecer a cualquiera de ellas.",
+      "contentPanelTitle": "Filtrar por contenido",
+      "contentPanelDescription": "Elige un género o una temática. La última opción sustituye a la anterior.",
+      "noConsolesSelected": "Ninguna consola seleccionada",
+      "consoleSelected": "{count} consola seleccionada",
+      "consolesSelected": "{count} consolas seleccionadas",
+      "noContentSelected": "Ningún contenido seleccionado",
+      "contentSelected": "Contenido seleccionado",
+      "clearConsoles": "Quitar filtro de consolas",
+      "clearContent": "Quitar filtro de contenido",
+      "noQueryResults": "No encontramos juegos que coincidan con «{query}».",
+      "noFilterResults": "No hay juegos que coincidan con estos filtros."
     },
     "detail": {
       "save": "Guardar",
       "saved": "Guardado",
-      "whitelist": "Añadir a whitelist",
+      "whitelist": "Añadir a deseados",
+      "whitelistShort": "Deseados",
+      "remove": "Eliminar",
+      "lists": "Listas",
+      "progressLabel": "Progreso",
+      "comingSoon": "Próximamente",
       "updateProgress": "Actualizar progreso",
       "signInToSave": "Inicia sesión para guardar",
       "moreActions": "Más acciones",
       "savedToast": "Guardado en tu biblioteca",
-      "whitelistToast": "Añadido a tu whitelist",
+      "whitelistToast": "Añadido a tus deseados",
+      "removedToast": "Eliminado de tu biblioteca",
+      "listDialogTitle": "Gestionar listas",
+      "listLibraryDisclaimer": "Al guardar este juego en cualquier lista personal, pasará a tu biblioteca aunque esté en tu lista de deseados.",
+      "listsUpdatedToast": "Listas actualizadas",
+      "listEmptyTitle": "Todavía no tienes listas",
+      "listEmptyDescription": "Crea tu primera lista para organizar este juego.",
+      "listIncluded": "Incluido",
+      "about": "Acerca de",
+      "storyline": "Argumento",
+      "readStoryline": "Leer el argumento",
+      "genres": "Géneros",
+      "themes": "Temáticas",
+      "platforms": "Plataformas",
+      "languages": "Idiomas",
+      "engines": "Motores",
+      "ageRating": "Clasificación por edad",
+      "releases": "Fechas de lanzamiento",
+      "media": "Multimedia",
+      "viewGallery": "Ver galería",
+      "mediaArtworks": "Ilustraciones",
+      "mediaScreenshots": "Capturas",
+      "mediaVideos": "Vídeos",
+      "playVideo": "Reproducir vídeo",
+      "fullscreen": "Pantalla completa",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "seeAll": "Ver todo",
+      "showMore": "Ver más",
+      "showLess": "Ver menos",
+      "addToCalendar": "Añadir al calendario",
+      "appleCalendar": "Calendario de Apple",
+      "googleCalendar": "Google Calendar",
+      "dlcs": "DLC",
+      "expansions": "Expansiones",
+      "timeToBeatQuick": "A la carrera",
+      "timeToBeatAverage": "Media",
+      "timeToBeatTotal": "Al 100 %",
       "progress": {
         "title": "Actualizar progreso",
         "description": "Lleva el control de por dónde vas en este juego.",
@@ -263,13 +405,71 @@
       "timeToBeat": "Duración estimada"
     },
     "library": {
+      "title": "Mi Biblioteca",
       "savedTab": "Biblioteca",
-      "whitelistTab": "Whitelist",
-      "listsLabel": "Lista",
+      "whitelistTab": "Deseados",
+      "listsLabel": "Listas",
       "allLists": "Todas las listas",
-      "savedEmpty": "Tu biblioteca está vacía. Guarda un juego para verlo aquí.",
-      "whitelistEmpty": "Tu whitelist está vacía.",
-      "emptyCta": "Descubrir juegos"
+      "newList": "Nueva lista",
+      "newListDescription": "Crea una estantería a tu gusto y añade juegos ahora o más adelante.",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Nombre de la lista",
+      "nameRequired": "Escribe un nombre para la lista.",
+      "nameTooLong": "El nombre puede tener hasta 60 caracteres.",
+      "nameExists": "Ya tienes una lista con ese nombre.",
+      "colorLabel": "Color",
+      "customColorLabel": "Elegir cualquier color",
+      "colorHexLabel": "Color hexadecimal",
+      "colorInvalid": "Usa un color #RGB o #RRGGBB válido.",
+      "iconLabel": "Icono",
+      "gameSearchLabel": "Añadir juegos",
+      "gameSearchPlaceholder": "Buscar juegos para añadir…",
+      "gameSearchNoResults": "No se encontraron juegos.",
+      "gameSearchHint": "Escribe al menos 3 caracteres.",
+      "selectedGames": "Juegos seleccionados",
+      "createList": "Crear lista",
+      "listCreatedToast": "Lista creada",
+      "deleteList": "Eliminar lista",
+      "deleteListTitle": "¿Eliminar esta lista?",
+      "deleteListDescription": "¿Quieres eliminar la lista {list}? Los juegos seguirán en tu biblioteca.",
+      "listDeletedToast": "Lista eliminada",
+      "savedEmpty": "Tu biblioteca está vacía",
+      "savedEmptyDescription": "Explora y guarda juegos para empezar tu colección personal.",
+      "whitelistEmpty": "Tu lista de deseos está vacía",
+      "whitelistEmptyDescription": "Guarda juegos que te interesen para no perderles la pista.",
+      "listEmpty": "Esta lista no tiene juegos todavía.",
+      "emptyCta": "Explorar juegos",
+      "loadError": "No pudimos cargar tu biblioteca.",
+      "actionsTitle": "Acciones del juego",
+      "moreInfo": "Más información",
+      "viewProgress": "Ver progreso",
+      "updateProgress": "Actualizar estado y progreso",
+      "addToList": "Gestionar listas",
+      "removeFromLibrary": "Eliminar de la biblioteca",
+      "removeFromWhitelist": "Eliminar de deseados",
+      "addToLibrary": "Añadir a la biblioteca",
+      "removeFromList": "Eliminar de esta lista",
+      "noProgress": "Sin progreso registrado.",
+      "progressSummary": "Estado: {state} · {hours} h de {total} h",
+      "progressStateLabel": "Estado",
+      "progressDurationLabel": "Horas jugadas",
+      "progressDurationHint": "Máximo: {hours} h",
+      "progressCardLabel": "{current} h jugadas de {total} h",
+      "saveChanges": "Guardar cambios",
+      "listChoiceLabel": "Elige una o varias listas",
+      "openGame": "Abrir detalles del juego",
+      "listsUpdatedToast": "Listas actualizadas",
+      "confirmRemoveTitle": "¿Eliminar juego?",
+      "confirmRemoveDescription": "¿Quieres eliminar {game} de tu biblioteca?",
+      "confirmRemoveListDescription": "¿Quieres eliminar {game} de esta lista? Seguirá en tu biblioteca.",
+      "confirmRemove": "Eliminar",
+      "removedToast": "Eliminado de tu biblioteca",
+      "removedWhitelistToast": "Eliminado de deseados",
+      "addedToast": "Añadido a tu biblioteca",
+      "removedFromListToast": "Eliminado de la lista",
+      "actionFailed": "No se pudo completar la acción. Reintenta.",
+      "releaseLabel": "Lanzamiento",
+      "released": "Ya disponible"
     },
     "settings": {
       "title": "Ajustes",
@@ -305,9 +505,31 @@
       }
     },
     "onboarding": {
-      "title": "Bienvenido a JustGame",
-      "description": "Descubre juegos, construye tu biblioteca y sigue tu progreso en todas las plataformas.",
-      "cta": "Empezar"
+      "stepLabel": "Paso {current} de {total}",
+      "next": "Continuar",
+      "finish": "Explorar Gotty",
+      "steps": [
+        {
+          "eyebrow": "Un sitio para todos tus juegos",
+          "title": "Juega más. Organiza menos.",
+          "description": "Gotty reúne todo lo que quieres jugar en un espacio personal, para que elegir tu próxima partida vuelva a ser emocionante."
+        },
+        {
+          "eyebrow": "Descubre tu próxima obsesión",
+          "title": "Busca el juego que más te guste.",
+          "description": "Encuentra ese juego que ya tienes en mente o explora todas las plataformas hasta descubrir la opción perfecta para tu próxima partida."
+        },
+        {
+          "eyebrow": "Tu biblioteca, tus reglas",
+          "title": "Cada juego, justo donde debe estar.",
+          "description": "Guarda juegos, crea listas y mantén tu backlog y tus deseados en orden sin saltar entre distintas aplicaciones."
+        },
+        {
+          "eyebrow": "Haz que cada partida cuente",
+          "title": "Cada juego forma parte de tu historia.",
+          "description": "Sigue lo que estás jugando, celebra lo que terminas y contempla cómo tu recorrido gamer crece contigo."
+        }
+      ]
     },
     "errorModal": {
       "title": "Algo ha ido mal",
@@ -325,9 +547,9 @@
     },
     "auth": {
       "loginTitle": "Bienvenido de nuevo",
-      "loginDescription": "Inicia sesión para continuar en JustGame.",
+      "loginDescription": "Inicia sesión para continuar en Gotty.",
       "registerTitle": "Crea tu cuenta",
-      "registerDescription": "Únete a JustGame y construye tu biblioteca.",
+      "registerDescription": "Únete a Gotty y construye tu biblioteca.",
       "forgotTitle": "Recupera tu contraseña",
       "forgotDescription": "Introduce tu email y te enviaremos un enlace de recuperación.",
       "emailLabel": "Email",

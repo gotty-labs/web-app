@@ -3,7 +3,7 @@
  * game is created/updated/removed so the affected static page (and the sitemap)
  * refresh immediately instead of waiting for the time-based revalidate.
  *
- * Auth: a shared secret in the `jg-revalidate-secret` header (set `REVALIDATE_SECRET`
+ * Auth: a shared secret in the `gt-revalidate-secret` header (set `REVALIDATE_SECRET`
  * in the server env — NOT `NEXT_PUBLIC_`). If unset, every call is rejected.
  *
  * Body: `{ type: "UPSERT" | "DELETE", slug, id }`. Both types revalidate the
@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   // client, where a non-public secret is always `undefined`). This route handler only
   // ever runs on the server, so `process.env` is the correct, leak-free source.
   const secret = process.env.REVALIDATE_SECRET
-  if (!secret || request.headers.get('jg-revalidate-secret') !== secret) {
+  if (!secret || request.headers.get('gt-revalidate-secret') !== secret) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 })
   }
 

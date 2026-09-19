@@ -32,15 +32,13 @@ export const getUserLibraryInputSchema = cursorPaginationSchema.extend({
 })
 export type GetUserLibraryInput = z.infer<typeof getUserLibraryInputSchema>
 
-/** Accepts `#rgb`, `#rrggbb` (with or without the leading `#`). */
-const hexColorSchema = z
-  .string()
-  .regex(/^#?(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'Invalid hex color')
+/** Backend `HexColorValidator`: accepts `#RGB` or `#RRGGBB`. */
+const hexColorSchema = z.string().regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'Invalid hex color')
 
 export const createLibraryListInputSchema = z.object({
-  name: z.string().trim().max(60),
+  name: z.string().trim().min(1).max(60),
   hexColor: hexColorSchema,
-  icon: z.string(),
+  icon: z.string().min(1),
   gameIds: z.array(z.string()).optional(),
 })
 export type CreateLibraryListInput = z.infer<typeof createLibraryListInputSchema>

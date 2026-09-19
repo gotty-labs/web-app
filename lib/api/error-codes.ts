@@ -2,14 +2,14 @@
  * Error model (§1.5, §3). The golden rule for the frontend: branch on the stable
  * numeric `internalCode`, NEVER on the free-text `reason`.
  *
- * `JgErrorType` is the coarse category (telemetry / grouping). `InternalCode` is
+ * `GtErrorType` is the coarse category (telemetry / grouping). `InternalCode` is
  * the precise, stable signal each screen reacts to. The localized UI copy lives
  * in a single dictionary (built in a later phase) keyed by `InternalCode`.
  */
 import { z } from 'zod'
 
 /** High-level error category (§1.5). */
-export const jgErrorTypeSchema = z.enum([
+export const gtErrorTypeSchema = z.enum([
   'INTERNAL_ERROR',
   'BAD_REQUEST',
   'AUTH_ERROR',
@@ -19,7 +19,7 @@ export const jgErrorTypeSchema = z.enum([
   'GAME_ERROR',
   'PLATFORM_ERROR',
 ])
-export type JgErrorType = z.infer<typeof jgErrorTypeSchema>
+export type GtErrorType = z.infer<typeof gtErrorTypeSchema>
 
 /**
  * Stable numeric error codes (§3). Named constants so call-sites read as intent

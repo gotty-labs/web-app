@@ -9,11 +9,31 @@ import { authedRequest } from '@/features/auth'
 import { voidDataSchema } from '@/lib/api/envelope'
 import {
   consoleExclusionsInputSchema,
+  feedbackInputSchema,
   verifyEmailInputSchema,
   type ConsoleExclusionsInput,
+  type FeedbackInput,
   type VerifyEmailInput,
 } from '@/lib/domain/inputs'
 import { startVerifyEmailSchema, type StartVerifyEmail } from '@/lib/domain/models'
+
+/** Send product feedback, omitting the optional email unless a reply is requested. */
+export async function sendFeedback(input: FeedbackInput): Promise<void> {
+  const email = input.email?.trim()
+  const body = feedbackInputSchema.parse({
+    type: input.type,
+    message: input.message,
+    wantsReply: input.wantsReply,
+    ...(input.wantsReply && email ? { email } : {}),
+  })
+
+  await authedRequest({
+    method: 'POST',
+    path: '/profile/feedback',
+    body,
+    schema: voidDataSchema,
+  })
+}
 
 /** Begin email verification; backend sends an OTP and returns the recipient. */
 export function startVerifyEmail(): Promise<StartVerifyEmail> {

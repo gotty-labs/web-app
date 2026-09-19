@@ -15,14 +15,14 @@
  */
 import { z } from 'zod'
 
-import { jgErrorTypeSchema, type InternalCode, type JgErrorType } from './error-codes'
+import { gtErrorTypeSchema, type InternalCode, type GtErrorType } from './error-codes'
 
 /** Error envelope shape (§1.4). `stack` is only present off-production. */
 export const apiErrorSchema = z.object({
   responseId: z.string().optional(),
   success: z.literal(false),
   status: z.number(),
-  error: jgErrorTypeSchema,
+  error: gtErrorTypeSchema,
   errorInfo: z.object({
     reason: z.string(),
     additionalInfo: z.string().optional(),
@@ -47,7 +47,7 @@ export const apiResponseSchema = <T extends z.ZodTypeAny>(data: T) =>
  */
 export class ApiException extends Error {
   readonly status: number
-  readonly error: JgErrorType
+  readonly error: GtErrorType
   readonly internalCode?: InternalCode | number
   readonly reason: string
   readonly responseId?: string

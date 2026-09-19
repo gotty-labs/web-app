@@ -1,10 +1,10 @@
 /**
- * Base HTTP client for the JustGame backend.
+ * Base HTTP client for the Gotty backend.
  *
  * Responsibilities (Phase 1):
  *  - Build the absolute URL from `env.apiBaseUrl` (which already includes /api/v1).
  *  - Serialize query params (cursor pagination, array repeats like `consoleIds`).
- *  - Inject the mandatory `jg-*` headers (and optional Bearer token).
+ *  - Inject the mandatory `gt-*` headers (and optional Bearer token).
  *  - Expose Next 16's per-request cache controls (`cache`, `next: { revalidate, tags }`).
  *    Next 16 does NOT cache `fetch` by default, so the SEO render passes
  *    `next: { revalidate, tags }` while authenticated app calls leave them unset.
@@ -12,7 +12,7 @@
  */
 import { z } from 'zod'
 
-import { type JgLanguage } from '@/lib/domain/enums'
+import { type GtLanguage } from '@/lib/domain/enums'
 
 import { env } from '../config/env'
 import { ApiException, unwrap } from './envelope'
@@ -35,7 +35,7 @@ export interface ApiRequestOptions<T> {
   body?: unknown
   /** Session JWT for protected routes. */
   token?: string
-  language?: JgLanguage
+  language?: GtLanguage
   /** Next.js fetch cache mode (e.g. `force-cache`, `no-store`). */
   cache?: RequestCache
   /** Next.js ISR controls for cacheable (SEO) reads. */
@@ -117,7 +117,7 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
 
   if (jsonParseFailed) {
     throw new Error(
-      `JG API: expected a JSON envelope but got a non-JSON body (HTTP ${response.status}) from ${method} ${path}`,
+      `GT API: expected a JSON envelope but got a non-JSON body (HTTP ${response.status}) from ${method} ${path}`,
     )
   }
 

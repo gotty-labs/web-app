@@ -37,7 +37,7 @@ export const WithText = () => (
       </InputGroupAddon>
       <InputGroupInput placeholder="your-profile" defaultValue="shadowplayer" />
       <InputGroupAddon align="inline-end">
-        <InputGroupText>.justgame.gg</InputGroupText>
+        <InputGroupText>.gotty.gg</InputGroupText>
       </InputGroupAddon>
     </InputGroup>
   </Frame>

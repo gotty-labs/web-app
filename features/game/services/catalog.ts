@@ -1,14 +1,9 @@
 /**
- * Game catalog clients (§4.3, Guest-access endpoints). In the authenticated web
- * app these go through `authedRequest` — a token is sent (the backend allows it on
- * Guest routes) and, importantly, `GET /game/:gameId` needs it to return the
- * user-specific `savedInLibrary`.
+ * Game catalog clients (§4.3). These reads use `authedRequest` in the web app so
+ * the backend can enforce the authenticated web session where required.
  *
  * Query inputs are Zod-parsed before sending (client-side UX validation, e.g.
  * search needs ≥3 chars, limit 1..20).
- *
- * The PUBLIC SEO variants (server-side, no token) are a separate Phase-4 slice,
- * blocked on the backend's public endpoints + slug.
  */
 import { z } from 'zod'
 
@@ -20,12 +15,10 @@ import {
   type GameSearchInput,
 } from '@/lib/domain/inputs'
 import {
-  gameDtoSchema,
   gameFeedSectionSchema,
   gameFilterOptionsSchema,
   gameSummarySchema,
   paginated,
-  type GameDto,
   type GameFeedSection,
   type GameFilterOptions,
   type GameSummary,
@@ -67,14 +60,5 @@ export function getGamesBySection(input: GameFilterSectionInput): Promise<Pagina
     path: '/game/filter/all',
     query: gameFilterSectionInputSchema.parse(input),
     schema: paginated(gameSummarySchema),
-  })
-}
-
-/** Full game detail (includes user-specific `savedInLibrary`). */
-export function getGame(gameId: string): Promise<GameDto> {
-  return authedRequest({
-    method: 'GET',
-    path: `/game/${gameId}`,
-    schema: gameDtoSchema,
   })
 }

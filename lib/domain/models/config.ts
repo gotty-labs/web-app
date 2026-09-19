@@ -3,7 +3,7 @@
  * business call after obtaining a session: it drives the force-update gate and
  * the verify-email nudge.
  *
- * On WEB (`jg-origin: WEB`) `version` is omitted (no store / force-update
+ * On WEB (`gt-origin: WEB`) `version` is omitted (no store / force-update
  * concept) — only `needVerifiedEmail` applies. Modeled as optional accordingly.
  */
 import { z } from 'zod'

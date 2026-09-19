@@ -16,14 +16,18 @@ import { SessionProvider } from '@/features/auth'
 import type { Dictionary, Locale } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
 
+import type { GameAddedMetadata } from '../utils/analytics'
+
 import { GameLibraryActions } from './game-library-actions'
 
 export function GameDetailIsland({
-  gameId,
+  game,
+  slug,
   locale,
   dictionary,
 }: {
-  gameId: string
+  game: GameAddedMetadata
+  slug: string
   locale: Locale
   dictionary: Dictionary
 }) {
@@ -31,7 +35,7 @@ export function GameDetailIsland({
     <I18nProvider locale={locale} dictionary={dictionary}>
       <ErrorProvider>
         <SessionProvider>
-          <GameLibraryActions gameId={gameId} />
+          <GameLibraryActions game={game} slug={slug} />
           <Toaster theme="dark" position="top-center" />
         </SessionProvider>
       </ErrorProvider>

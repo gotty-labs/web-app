@@ -1,5 +1,5 @@
 /**
- * Decorative, CSS-only mock of the JustGame app (no screenshots, no remote
+ * Decorative, CSS-only mock of the Gotty app (no screenshots, no remote
  * images — keeps `/` fully static with zero image dependencies). Everything is
  * `aria-hidden` except nothing: the block is presentational, so the whole mock
  * is hidden from assistive tech. Fake "cover art" is derived from the `primary`
