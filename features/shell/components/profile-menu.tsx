@@ -50,15 +50,10 @@ export function ProfileMenu() {
   const closeMobile = () => setOpenMobile(false)
 
   const avatar = (
-    <span className="relative shrink-0">
-      <Avatar className="size-8 rounded-md">
-        {user.avatar && <AvatarImage src={user.avatar} alt={user.nickname} />}
-        <AvatarFallback className="rounded-md">{initials(user.nickname)}</AvatarFallback>
-      </Avatar>
-      {needsEmailVerification && (
-        <Badge aria-hidden className="absolute -right-0.5 -top-0.5 size-2.5 p-0" />
-      )}
-    </span>
+    <Avatar className="size-8 rounded-md">
+      {user.avatar && <AvatarImage src={user.avatar} alt={user.nickname} />}
+      <AvatarFallback className="rounded-md">{initials(user.nickname)}</AvatarFallback>
+    </Avatar>
   )
 
   return (
@@ -91,6 +86,9 @@ export function ProfileMenu() {
             <Link href="/settings" onClick={closeMobile}>
               <SettingsIcon />
               {t.settings}
+              {needsEmailVerification && (
+                <Badge variant="notification" aria-hidden className="ml-auto size-2 p-0" />
+              )}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>

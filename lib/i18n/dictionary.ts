@@ -111,6 +111,12 @@ export const dictionarySchema = z.object({
       reload: z.string(),
       continue: z.string(),
     }),
+    maintenance: z.object({
+      title: z.string(),
+      description: z.string(),
+      availability: z.string(),
+      retry: z.string(),
+    }),
     actions: z.object({
       enterApp: z.string(),
       signIn: z.string(),

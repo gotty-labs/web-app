@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 import { apiRequest } from '@/lib/api/client'
+import { retryOnConnectionFailure } from '@/lib/api/retry'
 import { userSchema } from '@/lib/domain/models'
 
 import { errorResponse, sessionResponse } from '../_shared'
@@ -42,12 +43,14 @@ export async function POST(request: Request): Promise<NextResponse> {
       : { token: input.token, nickname: input.nickname }
 
   try {
-    const user = await apiRequest({
-      method: 'POST',
-      path: PATH[input.provider],
-      body: backendBody,
-      schema: userSchema,
-    })
+    const user = await retryOnConnectionFailure(() =>
+      apiRequest({
+        method: 'POST',
+        path: PATH[input.provider],
+        body: backendBody,
+        schema: userSchema,
+      }),
+    )
     return await sessionResponse(user)
   } catch (error) {
     return errorResponse(error)

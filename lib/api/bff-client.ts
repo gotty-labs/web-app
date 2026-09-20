@@ -14,6 +14,8 @@
  */
 import { z } from 'zod'
 
+import { reportMaintenanceError } from './maintenance'
+
 export class BffError extends Error {
   constructor(
     readonly status: number,
@@ -51,7 +53,9 @@ export async function bffRequest<T>(options: BffRequestOptions<T>): Promise<T> {
     (Record<string, unknown> & { error?: string; internalCode?: number; reason?: string }) | null
 
   if (!response.ok || data === null) {
-    throw new BffError(response.status, data?.internalCode, data?.error, data?.reason)
+    const error = new BffError(response.status, data?.internalCode, data?.error, data?.reason)
+    reportMaintenanceError(error)
+    throw error
   }
 
   return schema ? schema.parse(data) : (data as T)

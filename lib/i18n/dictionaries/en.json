@@ -185,6 +185,12 @@
       "reload": "I've disabled it, reload",
       "continue": "Continue"
     },
+    "maintenance": {
+      "title": "Gotty is taking a short break",
+      "description": "We’re carrying out scheduled maintenance. Your games and lists are safe.",
+      "availability": "We expect to be back around {time}.",
+      "retry": "Check again"
+    },
     "actions": {
       "enterApp": "Enter the app",
       "signIn": "Sign in",

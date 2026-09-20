@@ -14,6 +14,7 @@ export const gtErrorTypeSchema = z.enum([
   'BAD_REQUEST',
   'AUTH_ERROR',
   'DB_ERROR',
+  'MAINTENANCE',
   'MAIL_PROVIDER_ERROR',
   'RESTFUL_EXTERNAL_PROVIDER_ERROR',
   'GAME_ERROR',
@@ -51,6 +52,7 @@ export const InternalCode = {
   // Persistence
   MONGO_WRITE_VALIDATION_ERROR: 50030,
   MONGO_WRITE_DUPLICATE_FIELD: 50031,
+  MONGO_UNAVAILABLE: 50032,
 } as const
 
 export type InternalCode = (typeof InternalCode)[keyof typeof InternalCode]
