@@ -96,7 +96,7 @@
   --progress-not-started-foreground: oklch(0.985 0 0);
   --progress-in-progress: oklch(0.56 0.19 255);
   --progress-in-progress-foreground: oklch(0.985 0 0);
-  --progress-blocked: oklch(0.58 0.22 25);
+  --progress-blocked: #e94646;
   --progress-blocked-foreground: oklch(0.985 0 0);
   --progress-completed: oklch(0.6 0.16 150);
   --progress-completed-foreground: oklch(0.985 0 0);
@@ -145,7 +145,7 @@
   --progress-not-started-foreground: oklch(0.985 0 0);
   --progress-in-progress: oklch(0.62 0.18 255);
   --progress-in-progress-foreground: oklch(0.985 0 0);
-  --progress-blocked: oklch(0.63 0.2 25);
+  --progress-blocked: #e94646;
   --progress-blocked-foreground: oklch(0.985 0 0);
   --progress-completed: oklch(0.65 0.16 150);
   --progress-completed-foreground: oklch(0.985 0 0);

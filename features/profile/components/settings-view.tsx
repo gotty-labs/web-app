@@ -70,7 +70,7 @@ export function SettingsView() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {s.email.title}
-                <Badge aria-hidden className="size-2 p-0" />
+                <Badge variant="notification" aria-hidden className="size-2 p-0" />
               </CardTitle>
               <CardDescription>{s.email.unverified}</CardDescription>
             </CardHeader>
