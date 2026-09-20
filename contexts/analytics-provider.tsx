@@ -8,7 +8,8 @@ import { useEffect, useRef, useSyncExternalStore, type ReactNode } from 'react'
 
 import { sessionStore } from '@/features/auth'
 import { tracking } from '@/lib/analytics'
-import { configureTracking } from '@/lib/analytics/configure-tracking'
+import { configureTracking, setAnalyticsConsent } from '@/lib/analytics/configure-tracking'
+import { subscribeToAnalyticsConsent } from '@/lib/analytics/consent'
 
 export function AnalyticsProvider({ children }: { children: ReactNode }) {
   const snapshot = useSyncExternalStore(
@@ -21,6 +22,14 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     configureTracking()
+
+    return subscribeToAnalyticsConsent((consent) => {
+      setAnalyticsConsent(consent)
+      const currentSnapshot = sessionStore.getSnapshot()
+      if (currentSnapshot.hydrated && currentSnapshot.session?.id) {
+        tracking.setUserId(currentSnapshot.session.id)
+      }
+    })
   }, [])
 
   useEffect(() => {

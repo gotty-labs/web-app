@@ -258,6 +258,257 @@
         "rights": "Todos los derechos reservados."
       }
     },
+    "legal": {
+      "links": {
+        "privacy": "Política de privacidad",
+        "terms": "Términos del servicio",
+        "cookies": "Cookies y privacidad",
+        "accountDeletion": "Eliminar cuenta",
+        "privacySettings": "Configuración de privacidad",
+        "support": "Soporte"
+      },
+      "privacy": {
+        "label": "Legal",
+        "title": "Política de privacidad",
+        "description": "Cómo Gotty recopila, utiliza, comparte y protege la información cuando usas nuestra web y nuestras aplicaciones.",
+        "lastUpdated": "Última actualización: 20 de septiembre de 2026",
+        "sections": [
+          {
+            "heading": "Quiénes somos",
+            "paragraphs": [
+              "Gotty es un servicio para descubrir, guardar y seguir videojuegos en distintas plataformas. Para cualquier consulta o solicitud sobre privacidad, puedes escribirnos a join@info.gottygames.com."
+            ]
+          },
+          {
+            "heading": "Información que recopilamos",
+            "paragraphs": [
+              "Recopilamos la información necesaria para prestar, proteger y mejorar el servicio."
+            ],
+            "bullets": [
+              "Información de la cuenta: dirección de email, nombre de usuario, foto de perfil, identificadores del proveedor de autenticación y estado de verificación del email.",
+              "Biblioteca y preferencias: juegos guardados, listas personalizadas, progreso, tiempo de juego, visibilidad de consolas y preferencias de notificaciones.",
+              "Feedback y soporte: los mensajes que nos envías y una dirección de email si nos pides que respondamos.",
+              "Información técnica y de seguridad: dirección IP, navegador o dispositivo, versión de la aplicación, información de diagnóstico y registros de seguridad o del servidor cuando corresponda.",
+              "Información de analítica y publicidad: eventos, identificadores del dispositivo o navegador y señales publicitarias procesadas por los servicios descritos más abajo cuando están habilitados y permitidos."
+            ]
+          },
+          {
+            "heading": "Cómo usamos la información",
+            "paragraphs": [
+              "Usamos la información para crear y mantener tu cuenta, gestionar tu biblioteca, autenticar solicitudes, enviar comunicaciones de servicio, responder al feedback, prevenir abusos, investigar errores, medir el uso del producto y mostrar o medir publicidad."
+            ]
+          },
+          {
+            "heading": "Bases jurídicas",
+            "paragraphs": [
+              "Según el contexto, tratamos la información porque es necesaria para prestar el servicio que has solicitado, porque has dado tu consentimiento, porque tenemos un interés legítimo en proteger y mejorar Gotty o porque existe una obligación legal. Puedes retirar tu consentimiento en cualquier momento cuando el tratamiento se base en él."
+            ]
+          },
+          {
+            "heading": "Analítica y publicidad",
+            "paragraphs": [
+              "En la web, la analítica de producto mediante Amplitude solo se activa después de recibir la señal de consentimiento aplicable de la plataforma certificada de gestión del consentimiento de Google. Si no das tu consentimiento, la analítica de producto web no se activa.",
+              "La web puede mostrar anuncios de Google AdSense y las aplicaciones móviles pueden mostrar anuncios de Google AdMob. En el Espacio Económico Europeo, el Reino Unido y Suiza, el mensaje de consentimiento de Google solicita las opciones necesarias para publicidad y medición relacionada. Puedes cambiar esas opciones desde la Configuración de privacidad.",
+              "También utilizamos Vercel Analytics y Speed Insights para supervisar el uso agregado y el rendimiento de la web."
+            ]
+          },
+          {
+            "heading": "Proveedores y comunicaciones",
+            "paragraphs": [
+              "Compartimos información con proveedores que alojan la API, la base de datos, el envío de emails, la autenticación, la analítica, la publicidad, la monitorización de errores y la infraestructura web. La tratan siguiendo nuestras instrucciones o conforme a sus propias políticas de privacidad aplicables. También podemos comunicar información cuando lo exija la ley, para proteger a los usuarios y el servicio o como parte de una operación empresarial."
+            ]
+          },
+          {
+            "heading": "Almacenamiento y conservación",
+            "paragraphs": [
+              "Conservamos la información de la cuenta y la biblioteca mientras la cuenta esté activa o durante el tiempo necesario para prestar el servicio. Cuando eliminas tu cuenta, eliminamos o anonimizamos los datos activos asociados, salvo la información que debamos conservar por seguridad, prevención del fraude, obligaciones legales o contables o resolución de conflictos. Las copias de seguridad y los registros técnicos pueden tardar algo más en expirar."
+            ]
+          },
+          {
+            "heading": "Tus derechos",
+            "paragraphs": [
+              "Según la legislación aplicable, puedes solicitar acceso, rectificación, eliminación, limitación, portabilidad u oposición al tratamiento de tu información. También puedes retirar el consentimiento para la analítica o la publicidad opcionales desde la Configuración de privacidad. Escribe a join@info.gottygames.com para ejercer un derecho o plantear una duda; también puedes reclamar ante tu autoridad local de protección de datos."
+            ]
+          },
+          {
+            "heading": "Menores",
+            "paragraphs": [
+              "Gotty no está dirigido a menores de la edad mínima permitida para utilizar servicios online en su país. No recopilamos conscientemente información personal de menores incumpliendo la legislación aplicable."
+            ]
+          },
+          {
+            "heading": "Cambios y contacto",
+            "paragraphs": [
+              "Podemos actualizar esta política cuando cambie el servicio o la normativa. Publicaremos la nueva versión en esta página y actualizaremos la fecha anterior. Para cualquier pregunta sobre esta política, escribe a join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "terms": {
+        "label": "Legal",
+        "title": "Términos del servicio",
+        "description": "Las reglas aplicables cuando utilizas la web y las aplicaciones de Gotty.",
+        "lastUpdated": "Última actualización: 20 de septiembre de 2026",
+        "sections": [
+          {
+            "heading": "El servicio",
+            "paragraphs": [
+              "Gotty te ayuda a descubrir videojuegos, guardarlos en una biblioteca personal, organizar listas y seguir tu progreso. Podemos añadir, modificar o retirar funciones a medida que el servicio evolucione."
+            ]
+          },
+          {
+            "heading": "Tu cuenta",
+            "paragraphs": [
+              "Eres responsable de la información que facilitas, de mantener seguras tus credenciales y de la actividad realizada desde tu cuenta. No suplantes a otra persona ni crees una cuenta para alguien sin permiso."
+            ]
+          },
+          {
+            "heading": "Uso permitido",
+            "paragraphs": [
+              "Debes utilizar Gotty de forma legal y respetuosa. No interfieras con el servicio, accedas por medios no autorizados, abuses de las APIs, subas contenido malicioso, infrinjas derechos ni utilices el servicio para perjudicar a otras personas."
+            ]
+          },
+          {
+            "heading": "Datos de juegos y contenido de terceros",
+            "paragraphs": [
+              "La información de juegos, ilustraciones, marcas, enlaces y demás material de terceros pertenece a sus respectivos titulares. Gotty puede utilizar servicios externos de catálogo y plataformas; su disponibilidad y sus condiciones pueden cambiar de forma independiente."
+            ]
+          },
+          {
+            "heading": "Publicidad y servicios externos",
+            "paragraphs": [
+              "Gotty puede financiarse mediante publicidad y enlazar con servicios de terceros o utilizarlos. Esos servicios pueden tener sus propios términos y políticas de privacidad. Las opciones publicitarias de la web se gestionan mediante el mensaje de consentimiento de Google y la Configuración de privacidad."
+            ]
+          },
+          {
+            "heading": "Disponibilidad y cambios",
+            "paragraphs": [
+              "Intentamos que Gotty sea útil y esté disponible, pero no prometemos que funcione siempre sin interrupciones, errores o compatibilidad con todos los dispositivos. Podemos modificar estos términos o el servicio publicando una versión actualizada en esta página."
+            ]
+          },
+          {
+            "heading": "Suspensión y eliminación de la cuenta",
+            "paragraphs": [
+              "Puedes dejar de utilizar Gotty y eliminar tu cuenta en cualquier momento. Podemos suspender o cerrar cuentas que incumplan estos términos, generen riesgos o requieran medidas para cumplir la ley. Consulta las instrucciones de eliminación de cuenta para conocer el proceso y sus efectos."
+            ]
+          },
+          {
+            "heading": "Propiedad intelectual",
+            "paragraphs": [
+              "El nombre, la marca, el software y el contenido original de Gotty pertenecen a Gotty o a sus licenciantes. Salvo que la ley lo permita, no puedes copiarlos, modificarlos, distribuirlos ni explotarlos comercialmente sin autorización."
+            ]
+          },
+          {
+            "heading": "Contacto",
+            "paragraphs": [
+              "Puedes enviar preguntas sobre estos términos a join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "cookies": {
+        "label": "Legal",
+        "title": "Cookies y configuración de privacidad",
+        "description": "Cómo utiliza Gotty las cookies y tecnologías similares y cómo puedes controlar los tratamientos opcionales.",
+        "lastUpdated": "Última actualización: 20 de septiembre de 2026",
+        "sections": [
+          {
+            "heading": "Qué son las cookies",
+            "paragraphs": [
+              "Las cookies y tecnologías similares almacenan o leen información en tu navegador o dispositivo. Algunas son necesarias para que una web o aplicación funcione; otras son opcionales y ayudan con la analítica o la publicidad."
+            ]
+          },
+          {
+            "heading": "Almacenamiento necesario",
+            "paragraphs": [
+              "Gotty utiliza almacenamiento necesario para la autenticación, la seguridad, la sesión, el idioma o las preferencias de interfaz y para recordar opciones necesarias para prestar el servicio. Estas tecnologías no se pueden desactivar cuando son necesarias para una función solicitada."
+            ]
+          },
+          {
+            "heading": "Analítica",
+            "paragraphs": [
+              "En la web, la analítica de producto de Amplitude es opcional y solo se activa después de la señal de consentimiento aplicable. Vercel Analytics y Speed Insights se utilizan para obtener información agregada de uso y rendimiento."
+            ]
+          },
+          {
+            "heading": "Publicidad",
+            "paragraphs": [
+              "Google AdSense en la web y Google AdMob en las aplicaciones pueden utilizar información para mostrar, limitar y medir publicidad. El mensaje de consentimiento de Google gestiona las opciones necesarias en el Espacio Económico Europeo, el Reino Unido y Suiza."
+            ]
+          },
+          {
+            "heading": "Gestiona tus opciones",
+            "paragraphs": [
+              "Utiliza la Configuración de privacidad para volver a abrir el mensaje de consentimiento de Google y cambiar tus opciones. También puedes utilizar los controles de tu navegador o dispositivo para eliminar o bloquear el almacenamiento, aunque algunas funciones de Gotty podrían dejar de funcionar."
+            ]
+          },
+          {
+            "heading": "Contacto",
+            "paragraphs": [
+              "Para cualquier duda sobre cookies o tratamientos opcionales, escribe a join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "accountDeletion": {
+        "label": "Cuenta",
+        "title": "Eliminar tu cuenta de Gotty",
+        "description": "Cómo solicitar de forma permanente la eliminación de tu cuenta de Gotty y de los datos asociados.",
+        "lastUpdated": "Última actualización: 20 de septiembre de 2026",
+        "sections": [
+          {
+            "heading": "Desde la aplicación móvil",
+            "paragraphs": [
+              "Abre Gotty, entra en Perfil, desplázate hasta las acciones de cuenta, elige Eliminar cuenta y confirma la solicitud. La aplicación cerrará tu sesión cuando termine la eliminación."
+            ]
+          },
+          {
+            "heading": "Si no puedes acceder a tu cuenta",
+            "paragraphs": [
+              "Escribe a join@info.gottygames.com desde la dirección asociada a tu cuenta y solicita la eliminación. Podemos necesitar verificar la titularidad antes de tramitarla."
+            ]
+          },
+          {
+            "heading": "Qué se elimina",
+            "paragraphs": [
+              "Eliminamos o anonimizamos el perfil activo, el registro de autenticación, los juegos guardados, las listas personalizadas, el progreso, las preferencias y el feedback asociado a la cuenta, salvo las excepciones de conservación descritas en la Política de privacidad."
+            ]
+          },
+          {
+            "heading": "Después de eliminarla",
+            "paragraphs": [
+              "La eliminación está pensada para ser permanente. Puedes crear otra cuenta más adelante, pero los datos de la biblioteca anterior no se pueden recuperar. Algunos registros de seguridad, prevención del fraude, obligaciones legales o contables o resolución de conflictos pueden conservarse durante el tiempo necesario."
+            ]
+          }
+        ]
+      },
+      "support": {
+        "label": "Ayuda",
+        "title": "Soporte de Gotty",
+        "description": "Obtén ayuda con tu cuenta, la aplicación, las solicitudes de privacidad o cualquier cosa que no funcione como esperas.",
+        "lastUpdated": "Última actualización: 20 de septiembre de 2026",
+        "sections": [
+          {
+            "heading": "Contacta con nosotros",
+            "paragraphs": [
+              "Escribe a join@info.gottygames.com con una descripción clara del problema. Si está relacionado con tu cuenta, intenta escribir desde la dirección asociada siempre que sea posible."
+            ]
+          },
+          {
+            "heading": "Solicitudes sobre la cuenta",
+            "paragraphs": [
+              "Puedes eliminar tu cuenta desde Perfil en la aplicación móvil. Si no puedes acceder a la aplicación, contacta con nosotros y te ayudaremos con la solicitud después de verificar la titularidad."
+            ]
+          },
+          {
+            "heading": "Solicitudes de privacidad",
+            "paragraphs": [
+              "Para solicitar acceso, rectificación, eliminación, retirada de consentimiento u otros derechos de privacidad, escribe a join@info.gottygames.com. Consulta la Política de privacidad para más información."
+            ]
+          }
+        ]
+      }
+    },
     "nav": {
       "games": "Juegos",
       "options": "Opciones",

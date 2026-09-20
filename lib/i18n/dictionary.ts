@@ -52,6 +52,20 @@ const landingFeatureSchema = z.object({
   description: z.string(),
 })
 
+const legalSectionSchema = z.object({
+  heading: z.string(),
+  paragraphs: z.array(z.string()).min(1),
+  bullets: z.array(z.string()).optional(),
+})
+
+const legalDocumentSchema = z.object({
+  label: z.string(),
+  title: z.string(),
+  description: z.string(),
+  lastUpdated: z.string(),
+  sections: z.array(legalSectionSchema).min(1),
+})
+
 export const dictionarySchema = z.object({
   errors: z.object({
     byCode: errorByCodeSchema,
@@ -144,6 +158,21 @@ export const dictionarySchema = z.object({
       footer: z.object({
         rights: z.string(),
       }),
+    }),
+    legal: z.object({
+      links: z.object({
+        privacy: z.string(),
+        terms: z.string(),
+        cookies: z.string(),
+        accountDeletion: z.string(),
+        privacySettings: z.string(),
+        support: z.string(),
+      }),
+      privacy: legalDocumentSchema,
+      terms: legalDocumentSchema,
+      cookies: legalDocumentSchema,
+      accountDeletion: legalDocumentSchema,
+      support: legalDocumentSchema,
     }),
     nav: z.object({
       games: z.string(),
