@@ -39,5 +39,6 @@ export function errorResponse(error: unknown): NextResponse {
       { status: error.status },
     )
   }
+  console.error('[Auth BFF] Unexpected error', error)
   return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
 }
