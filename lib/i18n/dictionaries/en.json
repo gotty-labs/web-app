@@ -258,6 +258,257 @@
         "rights": "All rights reserved."
       }
     },
+    "legal": {
+      "links": {
+        "privacy": "Privacy policy",
+        "terms": "Terms of service",
+        "cookies": "Cookies & privacy settings",
+        "accountDeletion": "Delete account",
+        "privacySettings": "Privacy settings",
+        "support": "Support"
+      },
+      "privacy": {
+        "label": "Legal",
+        "title": "Privacy policy",
+        "description": "How Gotty collects, uses, shares, and protects information when you use our website and apps.",
+        "lastUpdated": "Last updated: September 20, 2026",
+        "sections": [
+          {
+            "heading": "Who we are",
+            "paragraphs": [
+              "Gotty is a service for discovering, saving, and tracking video games across platforms. For privacy questions or requests, contact us at join@info.gottygames.com."
+            ]
+          },
+          {
+            "heading": "Information we collect",
+            "paragraphs": [
+              "We collect the information needed to provide, secure, and improve the service."
+            ],
+            "bullets": [
+              "Account information: email address, nickname, profile photo, authentication-provider identifiers, and email-verification state.",
+              "Library and preferences: saved games, custom lists, progress, playtime, console visibility, and notification preferences.",
+              "Feedback and support: messages you send us and an email address if you ask us to reply.",
+              "Technical and security information: IP address, browser or device type, app version, diagnostic information, and security or server logs where applicable.",
+              "Analytics and advertising information: events, device or browser identifiers, and advertising signals processed by the services described below when they are enabled and permitted."
+            ]
+          },
+          {
+            "heading": "How we use information",
+            "paragraphs": [
+              "We use information to create and maintain your account, operate your library, authenticate requests, send service messages, respond to feedback, prevent abuse, troubleshoot failures, measure product usage, and display or measure advertising."
+            ]
+          },
+          {
+            "heading": "Legal bases",
+            "paragraphs": [
+              "Depending on the context, we process information because it is necessary to provide the service you requested, because you gave consent, because we have a legitimate interest in securing and improving Gotty, or because a legal obligation applies. You can withdraw consent at any time for processing based on consent."
+            ]
+          },
+          {
+            "heading": "Analytics and advertising",
+            "paragraphs": [
+              "On the website, product analytics through Amplitude is activated only after the applicable consent signal from Google's certified consent-management platform. If you do not consent, web product analytics is not enabled.",
+              "The website may show Google AdSense ads and the mobile apps may show Google AdMob ads. In the European Economic Area, the United Kingdom, and Switzerland, Google's consent message asks for the choices required for advertising and related measurement. You can change those choices through Privacy settings.",
+              "We also use Vercel Analytics and Speed Insights to monitor aggregate website usage and performance."
+            ]
+          },
+          {
+            "heading": "Service providers and sharing",
+            "paragraphs": [
+              "We share information with service providers that host the API, database, email delivery, authentication, analytics, advertising, error monitoring, and website infrastructure. They process information on our instructions or under their own applicable privacy policies. We may also disclose information when required by law, to protect users and the service, or as part of a business transfer."
+            ]
+          },
+          {
+            "heading": "Storage and retention",
+            "paragraphs": [
+              "We keep account and library information while your account is active or for as long as needed to provide the service. When you delete your account, we delete or anonymize the associated active account data, subject to information that must be retained for security, fraud prevention, legal, accounting, or dispute-resolution purposes. Backups and technical logs may take additional time to expire."
+            ]
+          },
+          {
+            "heading": "Your rights",
+            "paragraphs": [
+              "Subject to applicable law, you may ask for access, correction, deletion, restriction, portability, or objection to processing of your information. You may also withdraw consent for optional analytics or advertising through Privacy settings. Contact join@info.gottygames.com to exercise a right or raise a concern; you may also complain to your local data-protection authority."
+            ]
+          },
+          {
+            "heading": "Children",
+            "paragraphs": [
+              "Gotty is not directed to children who are below the minimum age allowed to use online services in their country. We do not knowingly collect personal information from children in breach of applicable law."
+            ]
+          },
+          {
+            "heading": "Changes and contact",
+            "paragraphs": [
+              "We may update this policy when the service or legal requirements change. We will publish the new version on this page and update the date above. Questions about this policy can be sent to join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "terms": {
+        "label": "Legal",
+        "title": "Terms of service",
+        "description": "The rules that apply when you use Gotty's website and apps.",
+        "lastUpdated": "Last updated: September 20, 2026",
+        "sections": [
+          {
+            "heading": "The service",
+            "paragraphs": [
+              "Gotty helps you discover video games, save them to a personal library, organize lists, and track progress. We may add, change, or remove features as the service develops."
+            ]
+          },
+          {
+            "heading": "Your account",
+            "paragraphs": [
+              "You are responsible for the information you provide, keeping your credentials secure, and activity carried out through your account. Do not impersonate another person or create an account for someone without permission."
+            ]
+          },
+          {
+            "heading": "Acceptable use",
+            "paragraphs": [
+              "You must use Gotty lawfully and respectfully. Do not interfere with the service, access it through unauthorized means, abuse APIs, upload malicious content, infringe rights, or use the service to harm others."
+            ]
+          },
+          {
+            "heading": "Game data and third-party content",
+            "paragraphs": [
+              "Game information, artwork, trademarks, links, and other third-party material belong to their respective owners. Gotty may rely on external catalog and platform services; their availability and terms may change independently of us."
+            ]
+          },
+          {
+            "heading": "Advertising and external services",
+            "paragraphs": [
+              "Gotty may be supported by advertising and may link to or use third-party services. Those services may have separate terms and privacy policies. Advertising choices for the website are managed through Google's consent message and Privacy settings."
+            ]
+          },
+          {
+            "heading": "Availability and changes",
+            "paragraphs": [
+              "We aim to keep Gotty useful and available, but we do not promise that it will always be uninterrupted, error-free, or compatible with every device. We may change these terms or the service by publishing an updated version on this page."
+            ]
+          },
+          {
+            "heading": "Suspension and account deletion",
+            "paragraphs": [
+              "You may stop using Gotty and delete your account at any time. We may suspend or close accounts that breach these terms, create risk, or require action to comply with law. See the account-deletion instructions for the available process and its effects."
+            ]
+          },
+          {
+            "heading": "Intellectual property",
+            "paragraphs": [
+              "The Gotty name, branding, software, and original content are owned by Gotty or its licensors. Except as permitted by law, you may not copy, modify, distribute, or commercially exploit them without permission."
+            ]
+          },
+          {
+            "heading": "Contact",
+            "paragraphs": [
+              "Questions about these terms can be sent to join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "cookies": {
+        "label": "Legal",
+        "title": "Cookies and privacy settings",
+        "description": "How Gotty uses cookies and similar technologies, and how you can control optional processing.",
+        "lastUpdated": "Last updated: September 20, 2026",
+        "sections": [
+          {
+            "heading": "What cookies are",
+            "paragraphs": [
+              "Cookies and similar technologies store or read information in your browser or device. Some are necessary for a website or app to work; others are optional and help with analytics or advertising."
+            ]
+          },
+          {
+            "heading": "Necessary storage",
+            "paragraphs": [
+              "Gotty uses necessary storage for authentication, security, session handling, language or interface preferences, and remembering choices needed to provide the service. These technologies cannot be switched off when they are required for a requested feature."
+            ]
+          },
+          {
+            "heading": "Analytics",
+            "paragraphs": [
+              "On the website, Amplitude product analytics is optional and is activated only after the applicable consent signal. Vercel Analytics and Speed Insights are used for aggregate usage and performance information."
+            ]
+          },
+          {
+            "heading": "Advertising",
+            "paragraphs": [
+              "Google AdSense on the website and Google AdMob in the apps may use information to deliver, limit, and measure advertising. Google's consent message handles the choices required in the European Economic Area, the United Kingdom, and Switzerland."
+            ]
+          },
+          {
+            "heading": "Manage your choices",
+            "paragraphs": [
+              "Use Privacy settings to reopen Google's consent message and change your choices. You can also use your browser or device controls to delete or block storage, although some Gotty features may stop working."
+            ]
+          },
+          {
+            "heading": "Contact",
+            "paragraphs": [
+              "For questions about cookies or optional processing, contact join@info.gottygames.com."
+            ]
+          }
+        ]
+      },
+      "accountDeletion": {
+        "label": "Account",
+        "title": "Delete your Gotty account",
+        "description": "How to permanently request deletion of your Gotty account and associated data.",
+        "lastUpdated": "Last updated: September 20, 2026",
+        "sections": [
+          {
+            "heading": "From the mobile app",
+            "paragraphs": [
+              "Open Gotty, go to Profile, scroll to the account actions, choose Delete account, and confirm the request. The app signs you out after the deletion is completed."
+            ]
+          },
+          {
+            "heading": "If you cannot access your account",
+            "paragraphs": [
+              "Email join@info.gottygames.com from the address associated with your account and ask for account deletion. We may need to verify ownership before processing the request."
+            ]
+          },
+          {
+            "heading": "What is deleted",
+            "paragraphs": [
+              "We delete or anonymize the active account profile, authentication record, saved games, custom lists, progress, preferences, and feedback associated with the account, subject to the retention exceptions described in the Privacy policy."
+            ]
+          },
+          {
+            "heading": "After deletion",
+            "paragraphs": [
+              "Deletion is intended to be permanent. You can create a new account later, but previously saved library data cannot be restored. Some security, fraud-prevention, legal, accounting, or dispute records may be retained for as long as necessary."
+            ]
+          }
+        ]
+      },
+      "support": {
+        "label": "Help",
+        "title": "Gotty support",
+        "description": "Get help with your account, the app, privacy requests, or anything that is not working as expected.",
+        "lastUpdated": "Last updated: September 20, 2026",
+        "sections": [
+          {
+            "heading": "Contact us",
+            "paragraphs": [
+              "Email join@info.gottygames.com with a clear description of the issue. If it concerns your account, write from the address associated with it whenever possible."
+            ]
+          },
+          {
+            "heading": "Account requests",
+            "paragraphs": [
+              "You can delete your account from Profile in the mobile app. If you cannot access the app, contact us and we will help you with the account-deletion request after verifying ownership."
+            ]
+          },
+          {
+            "heading": "Privacy requests",
+            "paragraphs": [
+              "For access, correction, deletion, consent, or other privacy requests, email join@info.gottygames.com. See the Privacy policy for more information."
+            ]
+          }
+        ]
+      }
+    },
     "nav": {
       "games": "Games",
       "options": "Options",

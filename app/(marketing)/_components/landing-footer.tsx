@@ -10,8 +10,10 @@ import { BrandMark } from '@/components/brand-mark'
 import { Separator } from '@/components/ui/separator'
 import type { Dictionary } from '@/lib/i18n'
 
+import { PrivacySettingsLink } from './privacy-settings-link'
+
 export function LandingFooter({ dict }: { dict: Dictionary }) {
-  const { brand, landing, actions } = dict.app
+  const { brand, landing, actions, legal } = dict.app
   const year = DateTime.now().year
 
   return (
@@ -41,9 +43,30 @@ export function LandingFooter({ dict }: { dict: Dictionary }) {
 
         <Separator className="bg-border/40" />
 
-        <p className="text-xs text-muted-foreground">
-          © {year} {brand.name}. {landing.footer.rights}
-        </p>
+        <div className="flex flex-col gap-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <nav className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link href="/privacy" className="transition-colors hover:text-foreground">
+              {legal.links.privacy}
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-foreground">
+              {legal.links.terms}
+            </Link>
+            <Link href="/cookies" className="transition-colors hover:text-foreground">
+              {legal.links.cookies}
+            </Link>
+            <Link href="/account-deletion" className="transition-colors hover:text-foreground">
+              {legal.links.accountDeletion}
+            </Link>
+            <Link href="/support" className="transition-colors hover:text-foreground">
+              {legal.links.support}
+            </Link>
+            <PrivacySettingsLink label={legal.links.privacySettings} fallbackHref="/cookies#privacy-settings" />
+          </nav>
+
+          <p>
+            © {year} {brand.name}. {landing.footer.rights}
+          </p>
+        </div>
       </div>
     </footer>
   )

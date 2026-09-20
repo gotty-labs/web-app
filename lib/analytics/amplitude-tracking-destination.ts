@@ -28,6 +28,11 @@ export class AmplitudeTrackingDestination implements TrackingDestination {
       })
   }
 
+  setEnabled(enabled: boolean): void {
+    amplitude.setOptOut(!enabled)
+    if (!enabled) amplitude.reset()
+  }
+
   flush(): void {
     void amplitude.flush().promise.catch((error: unknown) => {
       console.error('[Analytics] Unable to flush Amplitude events', error)
