@@ -185,6 +185,12 @@
       "reload": "Los he desactivado, recargar",
       "continue": "Continuar"
     },
+    "maintenance": {
+      "title": "Gotty se toma un pequeño descanso",
+      "description": "Estamos realizando tareas de mantenimiento programadas. Tus juegos y listas están a salvo.",
+      "availability": "Esperamos volver sobre las {time}.",
+      "retry": "Comprobar de nuevo"
+    },
     "actions": {
       "enterApp": "Entrar a la app",
       "signIn": "Iniciar sesión",

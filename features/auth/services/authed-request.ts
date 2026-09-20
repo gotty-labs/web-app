@@ -27,6 +27,7 @@ import { bffRequest } from '@/lib/api/bff-client'
 import { apiRequest, type ApiRequestOptions } from '@/lib/api/client'
 import { ApiException } from '@/lib/api/envelope'
 import { InternalCode } from '@/lib/api/error-codes'
+import { isMaintenanceError } from '@/lib/api/maintenance'
 import { getClientLocale } from '@/lib/i18n/locales'
 
 import { isAccessTokenExpired } from '../utils/jwt'
@@ -65,7 +66,9 @@ async function performRefresh(): Promise<string> {
     })
     sessionStore.setAccess(data)
     return data.accessToken
-  } catch {
+  } catch (error) {
+    if (isMaintenanceError(error)) throw error
+
     // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). Signal expiry; the
     // client session is cleared on the alert's acknowledgment, not here.
     signalSessionExpired()
