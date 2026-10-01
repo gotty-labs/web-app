@@ -25,7 +25,10 @@ import { rootHtmlClassName, rootMetadata, RootContent } from '../_shared'
 
 import '../globals.css'
 
-export const metadata = rootMetadata
+export const metadata = {
+  ...rootMetadata,
+  robots: { index: false, follow: false },
+}
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const locale = await getServerLocale()
