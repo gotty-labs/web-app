@@ -1,30 +1,25 @@
 /**
  * Sitemap with `generateSitemaps` (chunked, served at `/sitemap/[id].xml`) and
- * LOCALIZED entries (`alternates.languages` → hreflang). Each game is ONE entry
- * (the en URL) that declares its es alternate, so the entry count = number of
- * games (NOT 2×); chunking keeps each file under Google's 50k limit.
+ * LOCALIZED entries (`alternates.languages` → hreflang). Each locale has its
+ * own URL entry with the same alternates, as Google requires. Chunking keeps
+ * each file under the 50,000 URL limit.
  *
- * Resilient: if the SEO endpoints aren't ready, ships one chunk with the static
- * routes only.
+ * Fail if the SEO endpoint is unavailable. Serving a successful but incomplete
+ * sitemap can hide all game pages from crawlers until the next deployment.
  */
 import type { MetadataRoute } from 'next'
 
-import {
-  gameLanguageAlternates,
-  getSitemapEntries,
-} from '@/features/game/services/seo'
+import { gameLanguageAlternates, getSitemapEntries } from '@/features/game/services/seo'
+import { SITEMAP_CHUNK_SIZE } from '@/features/game/config/sitemap'
 import { env } from '@/lib/config/env'
+import { locales } from '@/lib/i18n'
 
-const CHUNK_SIZE = 45000 // under Google's 50k, with headroom
+export const revalidate = 3600
 
 export async function generateSitemaps(): Promise<{ id: number }[]> {
-  try {
-    const entries = await getSitemapEntries()
-    const count = Math.max(1, Math.ceil(entries.length / CHUNK_SIZE))
-    return Array.from({ length: count }, (_, id) => ({ id }))
-  } catch {
-    return [{ id: 0 }]
-  }
+  const entries = await getSitemapEntries()
+  const count = Math.max(1, Math.ceil(entries.length / SITEMAP_CHUNK_SIZE))
+  return Array.from({ length: count }, (_, id) => ({ id }))
 }
 
 export default async function sitemap({
@@ -35,26 +30,37 @@ export default async function sitemap({
   const chunk = Number(await id)
   const base = env.siteUrl
 
-  // Static routes live only in the first chunk.
+  // Public static routes live only in the first chunk.
+  const staticPaths = ['support', 'privacy', 'terms', 'cookies', 'account-deletion']
   const staticRoutes: MetadataRoute.Sitemap =
     chunk === 0
-      ? [{ url: `${base}/`, changeFrequency: 'weekly', priority: 1 }]
+      ? [
+          { url: `${base}/` },
+          ...staticPaths.flatMap((path) => {
+            const languages = {
+              en: `${base}/${path}`,
+              es: `${base}/es/${path}`,
+              'x-default': `${base}/${path}`,
+            }
+            return locales.map((locale) => ({
+              url: languages[locale],
+              alternates: { languages },
+            }))
+          }),
+        ]
       : []
 
-  try {
-    const entries = await getSitemapEntries()
-    const start = chunk * CHUNK_SIZE
-    const games: MetadataRoute.Sitemap = entries
-      .slice(start, start + CHUNK_SIZE)
-      .map((entry) => ({
-        url: `${base}/games/${entry.slug}`,
+  const entries = await getSitemapEntries()
+  const start = chunk * SITEMAP_CHUNK_SIZE
+  const games: MetadataRoute.Sitemap = entries
+    .slice(start, start + SITEMAP_CHUNK_SIZE)
+    .flatMap((entry) => {
+      const languages = gameLanguageAlternates(entry.slug)
+      return locales.map((locale) => ({
+        url: languages[locale],
         lastModified: entry.updatedAt,
-        changeFrequency: 'weekly',
-        priority: 0.7,
-        alternates: { languages: gameLanguageAlternates(entry.slug) },
+        alternates: { languages },
       }))
-    return [...staticRoutes, ...games]
-  } catch {
-    return staticRoutes
-  }
+    })
+  return [...staticRoutes, ...games]
 }
