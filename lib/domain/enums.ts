@@ -103,7 +103,6 @@ export const gameThemeSchema = z.enum([
   'WARFARE',
   'PARTY',
   'FOUR_X',
-  'EROTIC',
   'MYSTERY',
   'ROMANCE',
 ])
