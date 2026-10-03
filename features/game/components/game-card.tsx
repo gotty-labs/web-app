@@ -98,7 +98,7 @@ export function GameCard({
         )}
         {showRating ? (
           <div className="absolute top-2 right-2">
-            <RatingBadge value={game.rating?.value} className={OVERLAY_CHIP} />
+            <RatingBadge value={game.rating?.value} locale={locale} className={OVERLAY_CHIP} />
           </div>
         ) : null}
       </div>

@@ -57,6 +57,19 @@ export const appPromotionStore = {
     emit()
     return true
   },
+  /**
+   * Opens on explicit user intent (e.g. a guest choosing Save on a game page), on any
+   * viewport and even if the passive prompt already ran this session. It still counts
+   * as shown, so `request()` won't repeat it afterwards.
+   */
+  show(): void {
+    if (typeof window === 'undefined' || open) return
+
+    markShownThisSession()
+    afterDismiss = undefined
+    open = true
+    emit()
+  },
   dismiss(): void {
     if (!open) return
     open = false

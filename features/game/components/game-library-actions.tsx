@@ -1,23 +1,27 @@
 /**
- * Library actions, JustWatch-style: a horizontal row of round icon buttons with a
- * label underneath, instead of the old save button + three-dots menu. Rendered inside
- * the detail's client island (session + i18n + toaster on the otherwise-static page).
+ * Library actions for the game detail, rendered in the hero right under the title
+ * (where the visitor is already looking) and mirrored in a compact bar pinned to the
+ * top once that row scrolls away, so saving stays one click from anywhere on the page.
+ * Lives inside the detail's client island (session + i18n + toaster + app-download
+ * sheet on the otherwise-static page).
  *
- * The button set depends on the authenticated library state. It is omitted for
- * visitors without a session, so the row stays hidden for them.
- *  - saved = false   → Save · Whitelist · Lists.
- *  - saved = true    → Remove · Lists · Progress.
- * The Lists action is always available, reports the game's membership count, and opens a
- * toggleable membership sheet. Swapping sets re-keys the row so it animates in;
- * Progress remains a placeholder while every other action hits the backend.
+ *  - guest           → Save, which opens the app-download sheet (the web has no guest
+ *                      library flow; the native apps do).
+ *  - saved = false   → Save (primary) · Wishlist · Lists.
+ *  - saved = true    → "Saved ▾" (Progress placeholder, Remove) · Lists.
+ * Lists shows the game's membership count and opens a toggleable membership sheet.
+ * The sticky bar keeps the primary action visible and folds the rest into a menu.
  */
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
+  BookmarkCheckIcon,
   BookmarkPlusIcon,
   BookmarkXIcon,
   CheckIcon,
+  ChevronDownIcon,
+  EllipsisIcon,
   EyeIcon,
   GaugeIcon,
   ListPlusIcon,
@@ -27,6 +31,14 @@ import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
   Sheet,
@@ -39,14 +51,17 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { appPromotionStore } from '@/features/app-promotion'
 import { useReportError } from '@/hooks/use-report-error'
 import { useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import type { GameLibraryState } from '@/lib/domain/models'
-import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
+import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
+import { useScrolledPast } from '../hooks/use-scrolled-past'
 import { trackGameAdded, type GameAddedMetadata } from '../utils/analytics'
+import { formatCount } from '../utils/format'
 
 import {
   createLibraryList,
@@ -57,25 +72,11 @@ import {
 } from '../services/library'
 
 import { CreateLibraryListSheet } from './create-library-list-sheet'
+import { GameLibraryStickyBar, type StickyBarGame } from './game-library-sticky-bar'
 import { LibraryListIcon } from './library-list-icon'
 
-type Tone = 'primary' | 'default' | 'destructive'
-
-type Action = {
-  key: string
-  label: string
-  icon: ReactNode
-  tone: Tone
-  badge?: number
-  onClick: () => void
-}
-
-const TONE_CLASS: Record<Tone, string> = {
-  primary: 'bg-primary/15 text-primary ring-primary/30 group-hover:bg-primary/25',
-  default: 'bg-muted/60 text-foreground ring-border group-hover:bg-muted',
-  destructive:
-    'bg-destructive/10 text-destructive ring-destructive/25 group-hover:bg-destructive/20',
-}
+/** Mobile: full-width primary on its own row, the rest in two columns. Desktop: one row. */
+const ROW_CLASS = 'grid grid-cols-2 gap-2 sm:flex sm:flex-wrap'
 
 function haveSameIds(current: readonly string[], next: readonly string[]): boolean {
   if (current.length !== next.length) return false
@@ -83,49 +84,78 @@ function haveSameIds(current: readonly string[], next: readonly string[]): boole
   return next.every((id) => currentIds.has(id))
 }
 
-function ActionItem({
-  action,
-  disabled,
-  busy,
+type ActionsProps = {
+  game: GameAddedMetadata
+  slug: string
+  barGame: StickyBarGame
+  scrolledPast: boolean
+}
+
+export function GameLibraryActions({
+  game,
+  slug,
+  cover,
+  rating,
 }: {
-  action: Action
-  disabled: boolean
-  busy: boolean
+  game: GameAddedMetadata
+  slug: string
+  cover: string
+  rating?: string
 }) {
+  const { status } = useSession()
+  // The observed wrapper stays mounted across every state so the observer never
+  // watches a detached node.
+  const rowRef = useRef<HTMLDivElement>(null)
+  const scrolledPast = useScrolledPast(rowRef)
+  const props: ActionsProps = {
+    game,
+    slug,
+    barGame: { name: game.name, cover, rating },
+    scrolledPast,
+  }
+
   return (
-    <button
-      type="button"
-      onClick={action.onClick}
-      disabled={disabled}
-      className="group flex w-16 flex-col items-center gap-2 outline-none disabled:pointer-events-none disabled:opacity-60"
-    >
-      <span
-        className={cn(
-          'relative flex size-12 items-center justify-center rounded-full ring-1 transition-all duration-200',
-          'group-hover:-translate-y-0.5 group-active:scale-90 group-focus-visible:ring-2 group-focus-visible:ring-ring',
-          '[&_svg]:size-5 [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:scale-110',
-          TONE_CLASS[action.tone],
-        )}
-      >
-        {busy ? <Spinner className="size-5" /> : action.icon}
-        {action.badge !== undefined ? (
-          <Badge className="absolute -top-2 -right-2 min-w-5 px-1">{action.badge}</Badge>
-        ) : null}
-      </span>
-      <span className="text-center text-xs font-medium text-muted-foreground group-hover:text-foreground">
-        {action.label}
-      </span>
-    </button>
+    <div ref={rowRef} className="w-full max-w-sm sm:w-auto sm:max-w-none">
+      {status === 'authenticated' ? (
+        <SignedInLibraryActions {...props} />
+      ) : status === 'unauthenticated' ? (
+        <GuestLibraryActions {...props} />
+      ) : (
+        // Session still hydrating: most SEO visitors are guests, so reserve their row.
+        <div className={ROW_CLASS}>
+          <Skeleton className="col-span-2 h-9 sm:w-28" />
+        </div>
+      )}
+    </div>
   )
 }
 
-export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; slug: string }) {
+function GuestLibraryActions({ barGame, scrolledPast }: ActionsProps) {
+  const t = useDictionary().app.detail
+  const saveButton = (size: 'default' | 'lg', className?: string) => (
+    <Button type="button" size={size} className={className} onClick={appPromotionStore.show}>
+      <BookmarkPlusIcon data-icon="inline-start" />
+      {t.save}
+    </Button>
+  )
+
+  return (
+    <>
+      <div className={ROW_CLASS}>{saveButton('lg', 'col-span-2')}</div>
+      {scrolledPast ? (
+        <GameLibraryStickyBar game={barGame}>{saveButton('default')}</GameLibraryStickyBar>
+      ) : null}
+    </>
+  )
+}
+
+function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsProps) {
   const gameId = game.id
   const dict = useDictionary()
+  const locale = useLocale()
   const t = dict.app.detail
   const libraryT = dict.app.library
   const report = useReportError()
-  const { status } = useSession()
 
   const [libraryState, setLibraryState] = useState<GameLibraryState | null>(null)
   const [ready, setReady] = useState(false)
@@ -135,7 +165,6 @@ export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; sl
   const [draftGameListIds, setDraftGameListIds] = useState<string[]>([])
 
   useEffect(() => {
-    if (status !== 'authenticated') return
     let active = true
     getGameLibraryState(slug)
       .then((state) => {
@@ -151,23 +180,24 @@ export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; sl
     return () => {
       active = false
     }
-  }, [slug, status])
+  }, [slug])
 
-  // Hidden entirely for signed-out visitors; nothing to reserve while auth resolves.
-  if (status !== 'authenticated') return null
-
-  // Wait until we know the real library state before painting a button set, so we
-  // never flash "Save" for a game that's already saved.
+  // Wait until we know the real library state before painting the actions, so we
+  // never offer "Save" for a game that's already saved.
   if (!ready) {
     return (
-      <div className="flex gap-2 pt-1">
-        {[0, 1].map((i) => (
-          <div key={i} className="flex w-16 flex-col items-center gap-2">
-            <Skeleton className="size-12 rounded-full" />
-            <Skeleton className="h-3 w-10" />
-          </div>
-        ))}
-      </div>
+      <>
+        <div className={ROW_CLASS}>
+          <Skeleton className="col-span-2 h-9 sm:w-28" />
+          <Skeleton className="h-9 sm:w-28" />
+          <Skeleton className="h-9 sm:w-24" />
+        </div>
+        {scrolledPast ? (
+          <GameLibraryStickyBar game={barGame}>
+            <Skeleton className="h-8 w-24" />
+          </GameLibraryStickyBar>
+        ) : null}
+      </>
     )
   }
 
@@ -252,72 +282,164 @@ export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; sl
 
   const comingSoon = () => toast(t.comingSoon)
 
-  const listAction: Action = {
-    key: 'lists',
-    label: t.lists,
-    tone: 'default',
-    icon: <ListPlusIcon />,
-    badge: gameListIds.length,
-    onClick: openListSheet,
-  }
+  const removeFromLibrary = () =>
+    run(
+      'remove',
+      () => removeGameFromLibrary(gameId),
+      () => patchLibraryState({ saved: false, gameListIds: [] }),
+      t.removedToast,
+    )
+  const saveToLibrary = () => store('save', { status: 'SAVED' }, t.savedToast)
+  const saveToWishlist = () => store('whitelist', { status: 'WHITELIST' }, t.whitelistToast)
 
-  const actions: Action[] = saved
-    ? [
-        {
-          key: 'remove',
-          label: t.remove,
-          tone: 'destructive',
-          icon: <BookmarkXIcon />,
-          onClick: () =>
-            run(
-              'remove',
-              () => removeGameFromLibrary(gameId),
-              () => patchLibraryState({ saved: false, gameListIds: [] }),
-              t.removedToast,
-            ),
-        },
-        listAction,
-        {
-          key: 'progress',
-          label: t.progressLabel,
-          tone: 'default',
-          icon: <GaugeIcon />,
-          onClick: comingSoon,
-        },
-      ]
-    : [
-        {
-          key: 'save',
-          label: t.save,
-          tone: 'primary',
-          icon: <BookmarkPlusIcon />,
-          onClick: () => store('save', { status: 'SAVED' }, t.savedToast),
-        },
-        {
-          key: 'whitelist',
-          label: t.whitelistShort,
-          tone: 'default',
-          icon: <EyeIcon />,
-          onClick: () => store('whitelist', { status: 'WHITELIST' }, t.whitelistToast),
-        },
-        listAction,
-      ]
+  /** The action's icon, swapped for a spinner while that action is in flight. */
+  const actionIcon = (key: string, icon: ReactNode) =>
+    pendingKey === key ? <Spinner data-icon="inline-start" /> : icon
+
+  const listCount = gameListIds.length
+  const listCountLabel =
+    listCount > 0
+      ? (listCount === 1 ? t.inList : t.inLists).replace('{count}', formatCount(listCount, locale))
+      : undefined
+
+  const listsItem = (
+    <DropdownMenuItem onSelect={openListSheet}>
+      <ListPlusIcon />
+      <span className="flex flex-col">
+        {t.lists}
+        {listCountLabel ? (
+          <span className="text-xs text-muted-foreground">{listCountLabel}</span>
+        ) : null}
+      </span>
+    </DropdownMenuItem>
+  )
+  const progressItem = (
+    <DropdownMenuItem onSelect={comingSoon}>
+      <GaugeIcon />
+      {t.progressLabel}
+    </DropdownMenuItem>
+  )
+  const removeItem = (
+    <DropdownMenuItem variant="destructive" onSelect={removeFromLibrary}>
+      <BookmarkXIcon />
+      {t.remove}
+    </DropdownMenuItem>
+  )
+
+  /** "Saved ▾": the library status doubles as the entry point to its own actions. */
+  const savedMenu = (size: 'default' | 'lg', items: ReactNode) => (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button type="button" variant="secondary" size={size} disabled={pending}>
+          {actionIcon('remove', <BookmarkCheckIcon data-icon="inline-start" />)}
+          {t.saved}
+          <ChevronDownIcon data-icon="inline-end" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-44">
+        {items}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+
+  const row = saved ? (
+    <>
+      {savedMenu(
+        'lg',
+        <>
+          <DropdownMenuGroup>{progressItem}</DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>{removeItem}</DropdownMenuGroup>
+        </>,
+      )}
+      <ListsButton
+        label={t.lists}
+        countLabel={listCountLabel}
+        badge={listCount > 0 ? formatCount(listCount, locale) : undefined}
+        disabled={pending}
+        onClick={openListSheet}
+      />
+    </>
+  ) : (
+    <>
+      <Button
+        type="button"
+        size="lg"
+        className="col-span-2"
+        disabled={pending}
+        onClick={saveToLibrary}
+      >
+        {actionIcon('save', <BookmarkPlusIcon data-icon="inline-start" />)}
+        {t.save}
+      </Button>
+      <Button type="button" variant="outline" size="lg" disabled={pending} onClick={saveToWishlist}>
+        {actionIcon('whitelist', <EyeIcon data-icon="inline-start" />)}
+        {t.whitelistShort}
+      </Button>
+      <ListsButton
+        label={t.lists}
+        countLabel={listCountLabel}
+        badge={listCount > 0 ? formatCount(listCount, locale) : undefined}
+        disabled={pending}
+        onClick={openListSheet}
+      />
+    </>
+  )
+
+  const barActions = saved ? (
+    savedMenu(
+      'default',
+      <>
+        <DropdownMenuGroup>
+          {listsItem}
+          {progressItem}
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>{removeItem}</DropdownMenuGroup>
+      </>,
+    )
+  ) : (
+    <>
+      <Button type="button" disabled={pending} onClick={saveToLibrary}>
+        {actionIcon('save', <BookmarkPlusIcon data-icon="inline-start" />)}
+        {t.save}
+      </Button>
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            disabled={pending}
+            aria-label={t.moreActions}
+          >
+            {pendingKey === 'whitelist' ? <Spinner /> : <EllipsisIcon />}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-44">
+          <DropdownMenuGroup>
+            <DropdownMenuItem onSelect={saveToWishlist}>
+              <EyeIcon />
+              {t.whitelistShort}
+            </DropdownMenuItem>
+            {listsItem}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  )
 
   return (
     <>
       <div
         key={saved ? 'saved' : 'unsaved'}
-        className="flex flex-wrap gap-2 pt-1 duration-300 animate-in fade-in-50"
+        className={cn(ROW_CLASS, 'duration-300 animate-in fade-in-50')}
       >
-        {actions.map((action) => (
-          <ActionItem
-            key={action.key}
-            action={action}
-            disabled={pending}
-            busy={pendingKey === action.key || (action.key === 'lists' && pendingKey === 'lists')}
-          />
-        ))}
+        {row}
       </div>
+      {scrolledPast ? (
+        <GameLibraryStickyBar game={barGame}>{barActions}</GameLibraryStickyBar>
+      ) : null}
 
       <Sheet open={listSheetOpen && !createListOpen} onOpenChange={setListSheetOpen}>
         <SheetContent side="bottom" className="max-h-[85svh] rounded-t-2xl">
@@ -433,5 +555,36 @@ export function GameLibraryActions({ game, slug }: { game: GameAddedMetadata; sl
         sourceScreen="game_detail"
       />
     </>
+  )
+}
+
+/** Lists entry point; the badge reports how many of the user's lists include the game. */
+function ListsButton({
+  label,
+  countLabel,
+  badge,
+  disabled,
+  onClick,
+}: {
+  label: string
+  /** Spoken membership ("In 2 lists"); the visual badge only shows the number. */
+  countLabel?: string
+  badge?: string
+  disabled: boolean
+  onClick: () => void
+}) {
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="lg"
+      disabled={disabled}
+      aria-label={countLabel ? `${label}, ${countLabel}` : undefined}
+      onClick={onClick}
+    >
+      <ListPlusIcon data-icon="inline-start" />
+      {label}
+      {badge ? <Badge variant="secondary">{badge}</Badge> : null}
+    </Button>
   )
 }

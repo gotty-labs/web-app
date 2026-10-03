@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils'
 import { getGameCover } from '../config/images'
 import { progressStateBadgeClass } from '../config/progress-state-styles'
 import { DEFAULT_MAX_TIME_TO_BEAT } from '../constants/default-max-time-to-beast.const'
-import { formatReleaseChip, isBeforeToday, timeToBeatHours } from '../utils/format'
+import { formatRating, formatReleaseChip, isBeforeToday, timeToBeatHours } from '../utils/format'
 import { gameGenreLabel, gameProgressStateLabel } from '../utils/labels'
 import { gamePath } from '../utils/paths'
 
@@ -173,7 +173,7 @@ export function LibraryGameCard({
             {rating != null ? (
               <span className="flex shrink-0 items-center gap-1">
                 <StarIcon aria-hidden className="size-3" />
-                {Math.round(rating)}
+                {formatRating(rating, locale)}
               </span>
             ) : null}
           </CardDescription>
