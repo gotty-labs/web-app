@@ -521,6 +521,7 @@
       "library": "Biblioteca",
       "search": "Buscar",
       "consoleVisibility": "Visibilidad de consolas",
+      "consoleVisibilityCount": "Visibilidad de consolas ({count} visibles)",
       "feedback": "Feedback",
       "toggleSidebar": "Mostrar u ocultar el menú"
     },
@@ -559,12 +560,7 @@
     "feed": {
       "loadMore": "Cargar más",
       "empty": "Aquí no hay nada todavía.",
-      "error": "No pudimos cargar esto. Inténtalo de nuevo.",
-      "consoleVisibilityNotice": {
-        "title": "Tu feed tiene una visibilidad de consolas aplicada",
-        "description": "Algunas consolas están ocultas. Puedes revisar o cambiar esta configuración cuando quieras.",
-        "action": "Cambiar visibilidad"
-      }
+      "error": "No pudimos cargar esto. Inténtalo de nuevo."
     },
     "search": {
       "placeholder": "Buscar juegos…",

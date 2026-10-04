@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation'
 import { MessageSquareIcon, MonitorIcon } from 'lucide-react'
 
 import { BrandMark } from '@/components/brand-mark'
+import { Badge } from '@/components/ui/badge'
 import { AdSlot, adPlacement } from '@/features/advertising'
 import { appPromotionStore } from '@/features/app-promotion'
 import {
@@ -24,6 +25,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
@@ -41,7 +43,7 @@ export function AppSidebar() {
   const dict = useDictionary()
   const pathname = usePathname()
   const { isMobile, setOpenMobile, state } = useSidebar()
-  const { openConsoleVisibility } = useConsoleVisibility()
+  const { openConsoleVisibility, appliedConsoleCount } = useConsoleVisibility()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   // On mobile the sidebar is an off-canvas sheet; activating any item should dismiss
@@ -118,6 +120,11 @@ export function AppSidebar() {
                     <MonitorIcon />
                     <span>{dict.app.nav.consoleVisibility}</span>
                   </SidebarMenuButton>
+                  {appliedConsoleCount > 0 && (
+                    <SidebarMenuBadge>
+                      <Badge>{appliedConsoleCount}</Badge>
+                    </SidebarMenuBadge>
+                  )}
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton onClick={openFeedback} tooltip={dict.app.nav.feedback}>

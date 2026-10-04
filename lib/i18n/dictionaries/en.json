@@ -521,6 +521,7 @@
       "library": "Library",
       "search": "Search",
       "consoleVisibility": "Console visibility",
+      "consoleVisibilityCount": "Console visibility ({count} shown)",
       "feedback": "Feedback",
       "toggleSidebar": "Toggle sidebar"
     },
@@ -559,12 +560,7 @@
     "feed": {
       "loadMore": "Load more",
       "empty": "Nothing here yet.",
-      "error": "We couldn't load this. Please try again.",
-      "consoleVisibilityNotice": {
-        "title": "Your feed has console visibility preferences applied",
-        "description": "Some consoles are hidden. You can review or change this setting at any time.",
-        "action": "Change visibility"
-      }
+      "error": "We couldn't load this. Please try again."
     },
     "search": {
       "placeholder": "Search games…",

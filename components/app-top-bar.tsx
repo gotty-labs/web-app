@@ -6,21 +6,25 @@
  *
  * Lives in top-level `components/` (not a feature) because it's cross-feature chrome:
  * game/profile screens render it, and putting it in `features/shell` would create a
- * shell↔profile↔game import cycle. Must be inside `SidebarProvider` (uses `useSidebar`).
+ * shell↔profile↔game import cycle. Must be inside `SidebarProvider` (uses `useSidebar`)
+ * and `ConsoleVisibilityProvider` (both mounted by `AppShell`).
  */
 'use client'
 
 import { type CSSProperties, type ReactNode, type Ref } from 'react'
 import { MenuIcon } from 'lucide-react'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConsoleVisibility } from '@/hooks/use-console-visibility'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 export function AppTopBar({
   children,
+  trailing,
   panel,
   balanced = false,
   className,
@@ -29,6 +33,8 @@ export function AppTopBar({
   headerRef,
 }: {
   children?: ReactNode
+  /** Trailing action; it also balances the leading sidebar toggle. */
+  trailing?: ReactNode
   panel?: ReactNode
   balanced?: boolean
   className?: string
@@ -37,6 +43,7 @@ export function AppTopBar({
   headerRef?: Ref<HTMLElement>
 }) {
   const { toggleSidebar } = useSidebar()
+  const { appliedConsoleCount } = useConsoleVisibility()
   const dict = useDictionary()
 
   return (
@@ -61,15 +68,20 @@ export function AppTopBar({
               size="icon"
               onClick={toggleSidebar}
               aria-label={dict.app.nav.toggleSidebar}
-              className="shrink-0"
+              className="relative shrink-0"
             >
               <MenuIcon />
+              {/* While the sidebar is off-canvas, flags that its console visibility item
+                  limits the feed (that item shows the count). */}
+              {appliedConsoleCount > 0 && (
+                <Badge aria-hidden className="absolute top-1 right-1 size-2 p-0 md:hidden" />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>Ctrl / ⌘ + B</TooltipContent>
         </Tooltip>
         {children}
-        {balanced && <span aria-hidden className="hidden size-8 shrink-0 sm:block" />}
+        {trailing ?? (balanced && <span aria-hidden className="hidden size-8 shrink-0 sm:block" />)}
       </div>
       {panel && <div className="absolute inset-x-0 top-full">{panel}</div>}
     </header>

@@ -187,6 +187,7 @@ export const dictionarySchema = z.object({
       library: z.string(),
       search: z.string(),
       consoleVisibility: z.string(),
+      consoleVisibilityCount: z.string(),
       feedback: z.string(),
       toggleSidebar: z.string(),
     }),
@@ -226,11 +227,6 @@ export const dictionarySchema = z.object({
       loadMore: z.string(),
       empty: z.string(),
       error: z.string(),
-      consoleVisibilityNotice: z.object({
-        title: z.string(),
-        description: z.string(),
-        action: z.string(),
-      }),
     }),
     search: z.object({
       placeholder: z.string(),
