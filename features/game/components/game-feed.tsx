@@ -80,11 +80,7 @@ export function GameFeed() {
   const filterOptions = useCurrentFilterOptions()
   const { openConsoleVisibility, visibilityOverride, visibilityRevision } = useConsoleVisibility()
   const { loading, sections, error, reload } = useFeed(visibilityRevision)
-  const [seeAll, setSeeAll] = useState<{
-    section: GameSection
-    title: string
-    cursor?: string
-  } | null>(null)
+  const [seeAll, setSeeAll] = useState<{ section: GameSection; title: string } | null>(null)
 
   const hasAppliedVisibility =
     visibilityOverride ??
@@ -144,7 +140,7 @@ export function GameFeed() {
           onSeeAll={
             s.nextCursor
               ? () => {
-                  setSeeAll({ section: s.section, title: s.title, cursor: s.nextCursor })
+                  setSeeAll({ section: s.section, title: s.title })
                   appPromotionStore.request()
                 }
               : undefined
@@ -156,7 +152,6 @@ export function GameFeed() {
           key={seeAll.section}
           section={seeAll.section}
           title={seeAll.title}
-          initialCursor={seeAll.cursor}
           onClose={() => setSeeAll(null)}
         />
       )}
