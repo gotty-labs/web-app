@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent, type RefObject } from 'react'
 import {
   ChevronDownIcon,
   Gamepad2Icon,
@@ -78,6 +78,7 @@ export interface AppliedFilters {
 }
 
 export function FilterHeader({
+  headerRef,
   query,
   appliedFilters,
   options,
@@ -86,6 +87,7 @@ export function FilterHeader({
   onSubmitQuery,
   onApplyFilters,
 }: {
+  headerRef: RefObject<HTMLElement | null>
   query: string
   appliedFilters: AppliedFilters
   options: GameFilterOptions | null
@@ -96,7 +98,6 @@ export function FilterHeader({
 }) {
   const t = useDictionary().app.search
   const scrollProgress = useScrollProgress()
-  const headerRef = useRef<HTMLElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const consolesTriggerRef = useRef<HTMLButtonElement>(null)
   const contentTriggerRef = useRef<HTMLButtonElement>(null)
@@ -227,6 +228,9 @@ export function FilterHeader({
   return (
     <AppTopBar
       headerRef={headerRef}
+      // While the home hero shows behind it (`FeedSheetLayout` sets `data-over-hero`),
+      // the bar is see-through, like the apps' navigation bar over their hero.
+      className="data-over-hero:border-transparent data-over-hero:bg-transparent data-over-hero:backdrop-blur-none"
       trailing={<ConsoleVisibilityButton />}
       contentClassName="min-h-0 py-1"
       contentStyle={{ minHeight: `${headerHeight}rem` }}

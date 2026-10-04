@@ -227,6 +227,9 @@ export const dictionarySchema = z.object({
       loadMore: z.string(),
       empty: z.string(),
       error: z.string(),
+      hero: z.object({
+        consoleLabel: z.string(),
+      }),
     }),
     search: z.object({
       placeholder: z.string(),

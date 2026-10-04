@@ -8,11 +8,14 @@ export function BrandMark({
   wrapperClassName,
   priority = false,
   sizes = '48px',
+  pixelated = false,
 }: {
   className?: string
   wrapperClassName?: string
   priority?: boolean
   sizes?: string
+  /** Pixel art at its source pixels, scaled nearest-neighbor (no resampling blur). */
+  pixelated?: boolean
 }) {
   return (
     <AppImage
@@ -21,7 +24,8 @@ export function BrandMark({
       fill
       priority={priority}
       sizes={sizes}
-      className={cn('object-contain', className)}
+      unoptimized={pixelated}
+      className={cn('object-contain', pixelated && '[image-rendering:pixelated]', className)}
       wrapperClassName={cn('shrink-0 bg-transparent', wrapperClassName)}
     />
   )

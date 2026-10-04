@@ -155,6 +155,10 @@
    track built as TWO identical sets, each carrying its own trailing gap, so the
    -50% loop point is seamless. */
 @theme {
+  /* Home feed sheet (`FeedSheetLayout`): the apps' sheet shadow — their scrim color
+     (black at 70%) blurred by twice their large spacing. Clipped to the top edge. */
+  --shadow-sheet: 0 0 calc(var(--spacing) * 8) oklch(0 0 0 / 70%);
+
   --animate-marquee: marquee 45s linear infinite;
 
   @keyframes marquee {
@@ -214,4 +218,24 @@ input:-webkit-autofill:active {
   box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
   caret-color: var(--foreground);
   transition: background-color 9999s ease-in-out 0s;
+}
+
+/*
+ * Home feed sheet snapping, touch-only devices: after a fling the sheet settles on its
+ * collapsed position (the layout's top, scroll 0) or its expanded one (its top at the
+ * header's bottom) when it ends near either. `proximity` never fights momentum (the
+ * browser picks the target as the fling ends) and leaves the rest of the feed free.
+ * Wheels and trackpads (any device with a hovering primary pointer) never snap.
+ */
+@media (hover: none) and (pointer: coarse) {
+  :root:has([data-slot='feed-sheet-layout']) {
+    scroll-snap-type: y proximity;
+  }
+  [data-slot='feed-sheet-layout'] {
+    scroll-snap-align: start;
+  }
+  [data-slot='feed-sheet'] {
+    scroll-snap-align: start;
+    scroll-margin-top: var(--feed-header-height);
+  }
 }

@@ -15,6 +15,7 @@ import { track } from '@/lib/analytics'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
+import { FilterHeaderProvider } from '../contexts/filter-header-provider'
 import { FilterOptionsProvider } from '../contexts/filter-options-context'
 import { useFilterOptions } from '../hooks/use-filter-options'
 import { useSearch } from '../hooks/use-search'
@@ -34,6 +35,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
   const { items, loading, error, hasMore, touched, search, loadMore, reset } = useSearch()
   const [query, setQuery] = useState('')
   const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({ consoleIds: [] })
+  const headerRef = useRef<HTMLElement>(null)
   const searchedTextRef = useRef(false)
   const submittedQueryRef = useRef<string | null>(null)
 
@@ -117,49 +119,52 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
 
   return (
     <FilterOptionsProvider options={options}>
-      <main className="flex flex-col">
-        <FilterHeader
-          query={query}
-          appliedFilters={appliedFilters}
-          options={options}
-          optionsLoading={optionsLoading}
-          onQueryChange={changeQuery}
-          onSubmitQuery={submitQuery}
-          onApplyFilters={applyFilters}
-        />
+      <FilterHeaderProvider headerRef={headerRef}>
+        <main className="flex flex-col">
+          <FilterHeader
+            headerRef={headerRef}
+            query={query}
+            appliedFilters={appliedFilters}
+            options={options}
+            optionsLoading={optionsLoading}
+            onQueryChange={changeQuery}
+            onSubmitQuery={submitQuery}
+            onApplyFilters={applyFilters}
+          />
 
-        {showResults ? (
-          <div className="p-4 md:p-6">
-            <GameResultsGrid
-              items={items}
-              loading={loading}
-              error={error}
-              hasMore={hasMore}
-              onLoadMore={loadMore}
-              renderItem={(game) => <GameCard game={game} />}
-              emptyLabel={emptyLabel}
-              emptyAction={
-                !queryReady && hasFilters ? (
-                  <Button variant="outline" onClick={() => void applyFilters({ consoleIds: [] })}>
-                    {t.reset}
-                  </Button>
-                ) : undefined
-              }
-              skeletonCount={isMobile ? 4 : 6}
-            />
-          </div>
-        ) : (
-          (idle ?? (
+          {showResults ? (
             <div className="p-4 md:p-6">
-              <Empty>
-                <EmptyHeader>
-                  <EmptyTitle>{t.prompt}</EmptyTitle>
-                </EmptyHeader>
-              </Empty>
+              <GameResultsGrid
+                items={items}
+                loading={loading}
+                error={error}
+                hasMore={hasMore}
+                onLoadMore={loadMore}
+                renderItem={(game) => <GameCard game={game} />}
+                emptyLabel={emptyLabel}
+                emptyAction={
+                  !queryReady && hasFilters ? (
+                    <Button variant="outline" onClick={() => void applyFilters({ consoleIds: [] })}>
+                      {t.reset}
+                    </Button>
+                  ) : undefined
+                }
+                skeletonCount={isMobile ? 4 : 6}
+              />
             </div>
-          ))
-        )}
-      </main>
+          ) : (
+            (idle ?? (
+              <div className="p-4 md:p-6">
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyTitle>{t.prompt}</EmptyTitle>
+                  </EmptyHeader>
+                </Empty>
+              </div>
+            ))
+          )}
+        </main>
+      </FilterHeaderProvider>
     </FilterOptionsProvider>
   )
 }

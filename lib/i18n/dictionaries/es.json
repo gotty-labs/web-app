@@ -560,7 +560,10 @@
     "feed": {
       "loadMore": "Cargar más",
       "empty": "Aquí no hay nada todavía.",
-      "error": "No pudimos cargar esto. Inténtalo de nuevo."
+      "error": "No pudimos cargar esto. Inténtalo de nuevo.",
+      "hero": {
+        "consoleLabel": "Consola de Gotty. Arrástrala o usa las flechas para girarla."
+      }
     },
     "search": {
       "placeholder": "Buscar juegos…",

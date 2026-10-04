@@ -1,6 +1,6 @@
 /**
  * "See all" modal (Phase 5, Slice C) — opens from a feed section's interactive
- * title and shows the whole section as a paginated grid, from
+ * title or its hero callout and shows the whole section as a paginated grid, from
  * page one (so it starts with the carousel's games). Loads its first page on mount
  * and appends more via `useSectionPager` (cursor-based, opaque).
  *

@@ -1,14 +1,16 @@
 /**
  * Home feed (Phase 5, Slice C) — the Netflix-style screen: a vertical stack of
- * horizontal `GameCarousel` rows, one per section from `useFeed()`. Each row's
- * interactive title opens the `SeeAllDialog` for that section.
+ * horizontal `GameCarousel` rows, one per section from `useFeed()`, in a sheet that
+ * rises over the 3D console hero as the page scrolls (`FeedSheetLayout`, like the apps).
+ * Each row's interactive title — and its hero callout — opens the `SeeAllDialog` for
+ * that section.
  *
- * Handles the three load states (skeleton rows / error with retry / empty) so the
- * `/home` page stays a thin mount point.
+ * Handles the three load states (skeleton rows / error with retry / empty) inside the
+ * sheet so the `/home` page stays a thin mount point.
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -22,11 +24,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useConsoleVisibility } from '@/hooks/use-console-visibility'
 import { appPromotionStore } from '@/features/app-promotion'
 import type { GameSection } from '@/lib/domain/enums'
+import type { GameFeedSection } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 import { useErrorMessage } from '@/lib/i18n/hooks/use-error-message'
 
 import { useFeed } from '../hooks/use-feed'
 
+import { FeedHero } from './feed-hero'
+import { FeedSheetLayout } from './feed-sheet-layout'
 import { GameCardSkeleton } from './game-card-skeleton'
 import { GameCarousel } from './game-carousel'
 import { SeeAllDialog } from './see-all-dialog'
@@ -60,10 +65,19 @@ export function GameFeed() {
   const { loading, sections, error, reload } = useFeed(visibilityRevision)
   const [seeAll, setSeeAll] = useState<{ section: GameSection; title: string } | null>(null)
 
-  if (loading) return <FeedSkeleton />
+  // "See all" starts from page one, and only for sections with more games beyond the
+  // feed (a nextCursor); otherwise the carousel already shows everything.
+  function openSection(section: GameFeedSection) {
+    setSeeAll({ section: section.section, title: section.title })
+    appPromotionStore.request()
+  }
 
-  if (error) {
-    return (
+  const visible = sections.filter((s) => s.games.length > 0)
+  let content: ReactNode
+  if (loading) {
+    content = <FeedSkeleton />
+  } else if (error) {
+    content = (
       <div className="p-4 md:p-6">
         <Empty>
           <EmptyHeader>
@@ -78,12 +92,8 @@ export function GameFeed() {
         </Empty>
       </div>
     )
-  }
-
-  const visible = sections.filter((s) => s.games.length > 0)
-
-  if (visible.length === 0) {
-    return (
+  } else if (visible.length === 0) {
+    content = (
       <div className="p-4 md:p-6">
         <Empty>
           <EmptyHeader>
@@ -92,28 +102,31 @@ export function GameFeed() {
         </Empty>
       </div>
     )
+  } else {
+    content = (
+      <div className="flex min-w-0 flex-col gap-6 overflow-x-clip p-3 md:gap-8 md:p-6">
+        {visible.map((s) => (
+          <GameCarousel
+            key={s.section}
+            title={s.title}
+            games={s.games}
+            adLabel={dict.app.advertising.label}
+            onSeeAll={s.nextCursor ? () => openSection(s) : undefined}
+          />
+        ))}
+      </div>
+    )
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-6 overflow-x-hidden p-3 md:gap-8 md:p-6">
-      {visible.map((s) => (
-        <GameCarousel
-          key={s.section}
-          title={s.title}
-          games={s.games}
-          adLabel={dict.app.advertising.label}
-          // "See all" only when the section has more games beyond the feed (a
-          // nextCursor). Otherwise the carousel already shows everything.
-          onSeeAll={
-            s.nextCursor
-              ? () => {
-                  setSeeAll({ section: s.section, title: s.title })
-                  appPromotionStore.request()
-                }
-              : undefined
-          }
-        />
-      ))}
+    <>
+      <FeedSheetLayout
+        hero={(headerHeight) => (
+          <FeedHero sections={visible} topInset={headerHeight} onOpenSection={openSection} />
+        )}
+      >
+        {content}
+      </FeedSheetLayout>
       {seeAll && (
         <SeeAllDialog
           key={seeAll.section}
@@ -122,6 +135,6 @@ export function GameFeed() {
           onClose={() => setSeeAll(null)}
         />
       )}
-    </div>
+    </>
   )
 }

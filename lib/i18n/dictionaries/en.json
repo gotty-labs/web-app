@@ -560,7 +560,10 @@
     "feed": {
       "loadMore": "Load more",
       "empty": "Nothing here yet.",
-      "error": "We couldn't load this. Please try again."
+      "error": "We couldn't load this. Please try again.",
+      "hero": {
+        "consoleLabel": "Gotty console. Drag it or use the arrow keys to turn it."
+      }
     },
     "search": {
       "placeholder": "Search games…",
