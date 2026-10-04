@@ -1,8 +1,9 @@
 /**
  * "See all" pager (Phase 5, Slice C) — a thin binding of the shared
  * `useCursorPagerList` to one feed section (`GET /game/filter/all`, opaque
- * cursor). `section`/`initialCursor` are captured on mount: the see-all dialog
- * remounts per section (keyed by the flow), so they never change mid-life.
+ * cursor), from page one — like the apps, "see all" starts with the games the
+ * carousel already shows. `section` is captured on mount: the see-all dialog
+ * remounts per section (keyed by the flow), so it never changes mid-life.
  */
 'use client'
 
@@ -16,11 +17,8 @@ import type { GameSummary } from '@/lib/domain/models'
 
 import { getGamesBySection } from '../services/catalog'
 
-export function useSectionPager(
-  section: GameSection,
-  initialCursor?: string,
-): CursorPagerListState<GameSummary> {
+export function useSectionPager(section: GameSection): CursorPagerListState<GameSummary> {
   return useCursorPagerList<GameSummary>(
-    () => new CursorPager((cursor) => getGamesBySection({ section, cursor }), initialCursor),
+    () => new CursorPager((cursor) => getGamesBySection({ section, cursor })),
   )
 }

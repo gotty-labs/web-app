@@ -1,7 +1,8 @@
 /**
  * "See all" modal (Phase 5, Slice C) — opens from a feed section's interactive
- * title and shows the whole section as a paginated grid. Loads its first page on
- * mount and appends more via `useSectionPager` (cursor-based, opaque).
+ * title or its hero callout and shows the whole section as a paginated grid, from
+ * page one (so it starts with the carousel's games). Loads its first page on mount
+ * and appends more via `useSectionPager` (cursor-based, opaque).
  *
  * It's a normal (dismissable) dialog; the shared `GameResultsGrid` renders the
  * results so it matches search. The mount effect relies on `loadMore` being stable
@@ -24,23 +25,16 @@ import { GameResultsGrid } from './game-results-grid'
 export function SeeAllDialog({
   section,
   title,
-  initialCursor,
   onClose,
 }: {
   section: GameSection
   title: string
-  /** The feed section's `nextCursor` — the modal continues FROM here, so it shows
-   *  games BEYOND the ones already visible in the feed carousel (never duplicates). */
-  initialCursor?: string
   onClose: () => void
 }) {
   const dict = useDictionary()
   const advertising = useAdvertising()
   const canRenderCardAds = useCardAdViewport()
-  const { items, pageEnds, loading, error, hasMore, loadMore } = useSectionPager(
-    section,
-    initialCursor,
-  )
+  const { items, pageEnds, loading, error, hasMore, loadMore } = useSectionPager(section)
   const pageEndSet = new Set(pageEnds)
 
   useEffect(() => {

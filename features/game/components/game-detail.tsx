@@ -5,9 +5,10 @@
  *
  * It renders a full-bleed hero (artwork background + framed cover) and a stack of
  * content sections. The server resolves every enum/date to a localized string and
- * hands the interactive pieces (library actions, media gallery, release calendar,
+ * hands the interactive pieces (library menu, media gallery, release calendar,
  * storyline, DLC) compact plain-object view-models — so those client components ship
- * behavior, not the whole dictionary. Authed writes still live in `GameDetailIsland`.
+ * behavior, not the whole dictionary. Library writes still live in `GameDetailIsland`,
+ * slotted under the hero title; the rating summary leads the content.
  */
 import { notFound } from 'next/navigation'
 
@@ -16,11 +17,13 @@ import { getDictionary, type Locale } from '@/lib/i18n'
 
 import type { GameReleaseDate } from '@/lib/domain/models'
 
+import { getGameCover } from '../config/images'
 import { findPublicGame } from '../services/seo'
 import { gameRegionLabel, gameReleaseStatusLabel } from '../utils/labels'
 import {
   formatFullDate,
   formatMediumDate,
+  formatRating,
   formatTimeToBeat,
   formatYear,
   parseIsoDate,
@@ -37,6 +40,7 @@ import { GameHero } from './game-hero'
 import { GameLanguages } from './game-languages'
 import { GameMediaGallery } from './game-media-gallery'
 import { GamePlatforms } from './game-platforms'
+import { GameRatingSummary } from './game-rating-summary'
 import { GameReleaseDates, type ReleaseRow } from './game-release-dates'
 import { GameTags } from './game-tags'
 import { GameTimeToBeat, type TimeToBeatEntry } from './game-time-to-beat'
@@ -64,6 +68,11 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
 
   const t = dict.app.detail
   const releaseIso = earliestRelease(game.releaseDates)
+  // Same visibility rule as the rating summary: a score with at least one vote.
+  const ratingLabel =
+    game.rating?.value != null && (game.rating.quantity ?? 0) > 0
+      ? formatRating(game.rating.value, locale)
+      : undefined
 
   // --- view-models for the client islands (localized strings, plain objects) ---
   const releaseRows: ReleaseRow[] = [...game.releaseDates]
@@ -126,11 +135,11 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
   return (
     <AdvertisingProvider>
       <main>
-        <GameHero game={game} dict={dict} releaseYear={formatYear(releaseIso)} />
-
-        <GameDetailAdLayout label={dict.app.advertising.label}>
-          {/* Library actions (authed only) — hidden entirely for signed-out visitors. */}
-          <div className="mb-8 flex justify-center md:justify-start">
+        <GameHero
+          game={game}
+          dict={dict}
+          releaseYear={formatYear(releaseIso)}
+          actions={
             <GameDetailIsland
               game={{
                 id: game.id,
@@ -139,12 +148,18 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                 platforms: game.platforms.map(({ id }) => ({ id })),
               }}
               slug={slug}
+              cover={getGameCover(game.media?.cover)}
+              rating={ratingLabel}
               locale={locale}
               dictionary={dict}
             />
-          </div>
+          }
+        />
 
+        <GameDetailAdLayout label={dict.app.advertising.label}>
           <div className="flex flex-col gap-10">
+            <GameRatingSummary rating={game.rating} dict={dict} locale={locale} />
+
             {(game.description || game.storyline) && (
               <DetailSection
                 title={t.about}

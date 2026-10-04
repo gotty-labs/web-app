@@ -83,7 +83,6 @@
       "WARFARE": "Warfare",
       "PARTY": "Party",
       "FOUR_X": "4X",
-      "EROTIC": "Erotic",
       "MYSTERY": "Mystery",
       "ROMANCE": "Romance"
     },
@@ -522,6 +521,7 @@
       "library": "Library",
       "search": "Search",
       "consoleVisibility": "Console visibility",
+      "consoleVisibilityCount": "Console visibility ({count} shown)",
       "feedback": "Feedback",
       "toggleSidebar": "Toggle sidebar"
     },
@@ -561,10 +561,8 @@
       "loadMore": "Load more",
       "empty": "Nothing here yet.",
       "error": "We couldn't load this. Please try again.",
-      "consoleVisibilityNotice": {
-        "title": "Your feed has console visibility preferences applied",
-        "description": "Some consoles are hidden. You can review or change this setting at any time.",
-        "action": "Change visibility"
+      "hero": {
+        "consoleLabel": "Gotty console. Drag it or use the arrow keys to turn it."
       }
     },
     "search": {
@@ -618,6 +616,11 @@
       "listEmptyTitle": "No lists yet",
       "listEmptyDescription": "Create your first list to organize this game.",
       "listIncluded": "Included",
+      "inList": "In {count} list",
+      "inLists": "In {count} lists",
+      "rating": "rating",
+      "ratings": "ratings",
+      "ratingOutOf": "{value} out of 5",
       "about": "About",
       "storyline": "Storyline",
       "readStoryline": "Read the storyline",

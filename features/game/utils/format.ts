@@ -80,3 +80,16 @@ export function formatTimeToBeat(seconds: number): string {
 export function timeToBeatHours(seconds: number): number {
   return Duration.fromObject({ seconds }).as('hours')
 }
+
+/** 0 to 5 score with one or two decimals, e.g. "4.3" / "4,32" (the schema already rounds it). */
+export function formatRating(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+/** Whole count with the locale's grouping, e.g. "12,480" / "12.480". */
+export function formatCount(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(locale).format(value)
+}

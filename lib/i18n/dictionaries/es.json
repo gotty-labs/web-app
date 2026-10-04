@@ -83,7 +83,6 @@
       "WARFARE": "Bélico",
       "PARTY": "Fiesta",
       "FOUR_X": "4X",
-      "EROTIC": "Erótico",
       "MYSTERY": "Misterio",
       "ROMANCE": "Romance"
     },
@@ -522,6 +521,7 @@
       "library": "Biblioteca",
       "search": "Buscar",
       "consoleVisibility": "Visibilidad de consolas",
+      "consoleVisibilityCount": "Visibilidad de consolas ({count} visibles)",
       "feedback": "Feedback",
       "toggleSidebar": "Mostrar u ocultar el menú"
     },
@@ -561,10 +561,8 @@
       "loadMore": "Cargar más",
       "empty": "Aquí no hay nada todavía.",
       "error": "No pudimos cargar esto. Inténtalo de nuevo.",
-      "consoleVisibilityNotice": {
-        "title": "Tu feed tiene una visibilidad de consolas aplicada",
-        "description": "Algunas consolas están ocultas. Puedes revisar o cambiar esta configuración cuando quieras.",
-        "action": "Cambiar visibilidad"
+      "hero": {
+        "consoleLabel": "Consola de Gotty. Arrástrala o usa las flechas para girarla."
       }
     },
     "search": {
@@ -618,6 +616,11 @@
       "listEmptyTitle": "Todavía no tienes listas",
       "listEmptyDescription": "Crea tu primera lista para organizar este juego.",
       "listIncluded": "Incluido",
+      "inList": "En {count} lista",
+      "inLists": "En {count} listas",
+      "rating": "valoración",
+      "ratings": "valoraciones",
+      "ratingOutOf": "{value} de 5",
       "about": "Acerca de",
       "storyline": "Argumento",
       "readStoryline": "Leer el argumento",

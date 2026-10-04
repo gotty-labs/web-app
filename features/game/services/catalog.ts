@@ -34,13 +34,22 @@ export function getFeed(): Promise<GameFeedSection[]> {
   })
 }
 
-/** Available filter options (genres, themes, consoles). */
+let filterOptionsInFlight: Promise<GameFilterOptions> | null = null
+
+/**
+ * Available filter options (genres, themes, consoles). Concurrent callers share one
+ * request (the app shell and the explore controller both load it on /home); nothing is
+ * cached once it settles, so later callers always get fresh options.
+ */
 export function getFilterOptions(): Promise<GameFilterOptions> {
-  return authedRequest({
+  filterOptionsInFlight ??= authedRequest({
     method: 'GET',
     path: '/game/filter',
     schema: gameFilterOptionsSchema,
+  }).finally(() => {
+    filterOptionsInFlight = null
   })
+  return filterOptionsInFlight
 }
 
 /** Free-text + faceted search (paginated). */

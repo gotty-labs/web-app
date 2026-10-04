@@ -187,6 +187,7 @@ export const dictionarySchema = z.object({
       library: z.string(),
       search: z.string(),
       consoleVisibility: z.string(),
+      consoleVisibilityCount: z.string(),
       feedback: z.string(),
       toggleSidebar: z.string(),
     }),
@@ -226,10 +227,8 @@ export const dictionarySchema = z.object({
       loadMore: z.string(),
       empty: z.string(),
       error: z.string(),
-      consoleVisibilityNotice: z.object({
-        title: z.string(),
-        description: z.string(),
-        action: z.string(),
+      hero: z.object({
+        consoleLabel: z.string(),
       }),
     }),
     search: z.object({
@@ -283,6 +282,11 @@ export const dictionarySchema = z.object({
       listEmptyTitle: z.string(),
       listEmptyDescription: z.string(),
       listIncluded: z.string(),
+      inList: z.string(),
+      inLists: z.string(),
+      rating: z.string(),
+      ratings: z.string(),
+      ratingOutOf: z.string(),
       about: z.string(),
       storyline: z.string(),
       readStoryline: z.string(),

@@ -40,7 +40,8 @@ export function ConsoleVisibilityModal({
   onSaved,
 }: {
   onClose: () => void
-  onSaved?: (hasExcludedConsoles: boolean) => void
+  /** Consoles the feed is now limited to; `0` when none is hidden (no limit). */
+  onSaved?: (visibleCount: number) => void
 }) {
   const dict = useDictionary()
   const t = dict.app.consoleVisibility
@@ -88,7 +89,7 @@ export function ConsoleVisibilityModal({
     try {
       const excluded = consoles.filter((c) => !visible.has(c.id)).map((c) => c.id)
       await setConsoleExclusions({ consoleIds: excluded })
-      onSaved?.(excluded.length > 0)
+      onSaved?.(excluded.length > 0 ? visible.size : 0)
       toast.success(t.savedToast)
       onClose()
     } catch (e) {

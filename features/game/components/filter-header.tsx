@@ -1,11 +1,20 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { ChevronDownIcon, Gamepad2Icon, Layers3Icon, SearchIcon, XIcon } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState, type FormEvent, type RefObject } from 'react'
+import {
+  ChevronDownIcon,
+  Gamepad2Icon,
+  Layers3Icon,
+  MonitorIcon,
+  SearchIcon,
+  XIcon,
+} from 'lucide-react'
 
 import { AppTopBar } from '@/components/app-top-bar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConsoleVisibility } from '@/hooks/use-console-visibility'
 import {
   InputGroup,
   InputGroupAddon,
@@ -25,12 +34,51 @@ const FILTER_HEADER_EXPANDED_HEIGHT_REM = 5
 const FILTER_HEADER_COLLAPSED_HEIGHT_REM = 3
 const FILTER_HEADER_COMPACT_SCALE = 0.9
 
+/**
+ * Opens the console visibility setting, with a count badge while it limits the feed —
+ * like the apps' feed header button (it replaces the feed's former notice). From `sm`
+ * up only: on phones the row has no room for it, and the count shows on the sidebar
+ * item and the menu button instead (see `AppSidebar`, `AppTopBar`).
+ */
+function ConsoleVisibilityButton() {
+  const dict = useDictionary()
+  const label = dict.app.nav.consoleVisibility
+  const { openConsoleVisibility, appliedConsoleCount: count } = useConsoleVisibility()
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={
+            count > 0
+              ? dict.app.nav.consoleVisibilityCount.replace('{count}', String(count))
+              : label
+          }
+          onClick={openConsoleVisibility}
+          className="relative hidden shrink-0 sm:inline-flex"
+        >
+          <MonitorIcon />
+          {count > 0 && (
+            <Badge aria-hidden className="absolute -top-1 -right-1 h-4 min-w-4 px-1 tabular-nums">
+              {count}
+            </Badge>
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  )
+}
+
 export interface AppliedFilters {
   consoleIds: string[]
   content?: string
 }
 
 export function FilterHeader({
+  headerRef,
   query,
   appliedFilters,
   options,
@@ -39,6 +87,7 @@ export function FilterHeader({
   onSubmitQuery,
   onApplyFilters,
 }: {
+  headerRef: RefObject<HTMLElement | null>
   query: string
   appliedFilters: AppliedFilters
   options: GameFilterOptions | null
@@ -49,7 +98,6 @@ export function FilterHeader({
 }) {
   const t = useDictionary().app.search
   const scrollProgress = useScrollProgress()
-  const headerRef = useRef<HTMLElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const consolesTriggerRef = useRef<HTMLButtonElement>(null)
   const contentTriggerRef = useRef<HTMLButtonElement>(null)
@@ -180,7 +228,10 @@ export function FilterHeader({
   return (
     <AppTopBar
       headerRef={headerRef}
-      balanced
+      // While the home hero shows behind it (`FeedSheetLayout` sets `data-over-hero`),
+      // the bar is see-through, like the apps' navigation bar over their hero.
+      className="data-over-hero:border-transparent data-over-hero:bg-transparent data-over-hero:backdrop-blur-none"
+      trailing={<ConsoleVisibilityButton />}
       contentClassName="min-h-0 py-1"
       contentStyle={{ minHeight: `${headerHeight}rem` }}
       panel={

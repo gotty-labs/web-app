@@ -11,8 +11,24 @@ import { z } from 'zod'
 
 import { consoleFamilySchema, gameReleaseRegionSchema, gameReleaseStatusSchema } from '../enums'
 
+/** Upper bound of the score the app shows (a 0 to 5 scale). */
+export const RATING_MAX_VALUE = 5
+/** Upper bound of the score the backend sends (a 0 to 100 scale). */
+const BACKEND_RATING_MAX_VALUE = 100
+
+/**
+ * The backend sends `value` on a 0 to 100 scale; it is converted here, at the boundary,
+ * to a 0 to 5 score rounded to two decimals, so every consumer reads the same scale.
+ */
 export const ratingSchema = z.object({
-  value: z.number().optional(),
+  value: z
+    .number()
+    .transform((backendValue) => {
+      const scaled =
+        Math.min(Math.max(backendValue, 0), BACKEND_RATING_MAX_VALUE) / BACKEND_RATING_MAX_VALUE
+      return Math.round(scaled * RATING_MAX_VALUE * 100) / 100
+    })
+    .optional(),
   quantity: z.number().optional(),
 })
 export type Rating = z.infer<typeof ratingSchema>
