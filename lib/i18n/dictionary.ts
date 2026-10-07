@@ -275,6 +275,7 @@ export const dictionarySchema = z.object({
       comingSoon: z.string(),
       updateProgress: z.string(),
       signInToSave: z.string(),
+      backToHome: z.string(),
       moreActions: z.string(),
       savedToast: z.string(),
       whitelistToast: z.string(),

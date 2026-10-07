@@ -665,7 +665,8 @@
       "releaseDate": "Release date",
       "developer": "Developer",
       "publisher": "Publisher",
-      "timeToBeat": "Time to beat"
+      "timeToBeat": "Time to beat",
+      "backToHome": "Go to Gotty home"
     },
     "library": {
       "title": "My Library",

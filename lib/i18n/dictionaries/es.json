@@ -665,7 +665,8 @@
       "releaseDate": "Lanzamiento",
       "developer": "Desarrollador",
       "publisher": "Editor",
-      "timeToBeat": "Duración estimada"
+      "timeToBeat": "Duración estimada",
+      "backToHome": "Ir al inicio de Gotty"
     },
     "library": {
       "title": "Mi Biblioteca",
