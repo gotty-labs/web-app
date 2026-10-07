@@ -222,6 +222,8 @@ export const dictionarySchema = z.object({
       consoleExclusions: z.string(),
       logout: z.string(),
       version: z.string(),
+      guestTitle: z.string(),
+      guestDescription: z.string(),
     }),
     feed: z.object({
       loadMore: z.string(),
@@ -397,6 +399,8 @@ export const dictionarySchema = z.object({
       actionFailed: z.string(),
       releaseLabel: z.string(),
       released: z.string(),
+      guestTitle: z.string(),
+      guestDescription: z.string(),
     }),
     settings: z.object({
       title: z.string(),
@@ -490,6 +494,15 @@ export const dictionarySchema = z.object({
       forgotSentTitle: z.string(),
       forgotSentDescription: z.string(),
       backToLogin: z.string(),
+      guestAction: z.string(),
+      guestError: z.string(),
+      guestNotice: z.object({
+        title: z.string(),
+        description: z.string(),
+        accountBenefit: z.string(),
+        createAccount: z.string(),
+        continue: z.string(),
+      }),
     }),
   }),
 })

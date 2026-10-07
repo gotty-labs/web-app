@@ -5,17 +5,18 @@
  * nickname. The menu collects account-level actions: settings, hidden consoles,
  * notifications, and log out, with the app version pinned at the bottom.
  *
- * Reads the user from `useSession()` (so it only renders inside the authenticated
- * shell) and routes log-out through `signOut()` (clears the session + cookie, then
- * returns to the landing).
+ * Reads the user from `useSession()` and routes log-out through `signOut()` (clears
+ * the member session + cookie and continues as a fresh guest). Guests get no account
+ * actions: a "browsing as a guest" card whose Sign in button opens the auth prompt.
  */
 'use client'
 
 import Link from 'next/link'
-import { ChevronUpIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
+import { ChevronUpIcon, CircleUserRoundIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
-import { useSession } from '@/features/auth'
+import { authPromptStore, useSession } from '@/features/auth'
 import { appPromotionStore } from '@/features/app-promotion'
 import { useNeedsEmailVerification } from '@/features/profile'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
@@ -38,16 +39,44 @@ function initials(nickname: string): string {
 }
 
 export function ProfileMenu() {
-  const { user, signOut } = useSession()
+  const { status, user, signOut } = useSession()
   const dict = useDictionary()
-  const { setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, state } = useSidebar()
   const needsEmailVerification = useNeedsEmailVerification()
   const t = dict.app.profile
 
-  if (!user) return null
-
   // Selecting an account action dismisses the mobile sidebar sheet (see AppSidebar).
   const closeMobile = () => setOpenMobile(false)
+
+  if (status === 'guest') {
+    const signIn = () => {
+      authPromptStore.show()
+      closeMobile()
+    }
+
+    // Collapsed rail: just the entry point, with the card's title as tooltip.
+    if (!isMobile && state === 'collapsed') {
+      return (
+        <SidebarMenuButton size="lg" tooltip={t.guestTitle} onClick={signIn}>
+          <CircleUserRoundIcon />
+          <span>{dict.app.actions.signIn}</span>
+        </SidebarMenuButton>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-2 rounded-lg border border-sidebar-border bg-sidebar-accent/30 p-3">
+        <p className="text-sm font-medium">{t.guestTitle}</p>
+        <p className="text-xs text-muted-foreground">{t.guestDescription}</p>
+        <Button size="sm" className="mt-1" onClick={signIn}>
+          <CircleUserRoundIcon data-icon="inline-start" />
+          {dict.app.actions.signIn}
+        </Button>
+      </div>
+    )
+  }
+
+  if (!user) return null
 
   const avatar = (
     <Avatar className="size-8 rounded-md">

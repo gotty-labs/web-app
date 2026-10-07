@@ -5,7 +5,7 @@
       "resetLinkExpired": "Este enlace de recuperación ha caducado. Solicita uno nuevo.",
       "userNotFound": "No encontramos esa cuenta.",
       "invalidOAuthCredentials": "Esa cuenta aún no está registrada. Prueba a crear una.",
-      "guestNotAllowed": "Crea una cuenta para continuar.",
+      "guestNotAllowed": "Necesitas iniciar sesión para usar esta función.",
       "registerUnavailable": "Ese email o nombre de usuario ya está en uso.",
       "oauthAlreadyRegistered": "Esta cuenta ya existe. Prueba a iniciar sesión.",
       "invalidVerificationCode": "El código de verificación es incorrecto o ha caducado.",
@@ -555,7 +555,9 @@
       "notifications": "Notificaciones",
       "consoleExclusions": "Consolas ocultas",
       "logout": "Cerrar sesión",
-      "version": "Versión"
+      "version": "Versión",
+      "guestTitle": "Estás navegando como invitado",
+      "guestDescription": "Inicia sesión para sincronizar tu biblioteca y gestionar tu cuenta."
     },
     "feed": {
       "loadMore": "Cargar más",
@@ -730,7 +732,9 @@
       "removedFromListToast": "Eliminado de la lista",
       "actionFailed": "No se pudo completar la acción. Reintenta.",
       "releaseLabel": "Lanzamiento",
-      "released": "Ya disponible"
+      "released": "Ya disponible",
+      "guestTitle": "Tu biblioteca vive aquí",
+      "guestDescription": "Inicia sesión para guardar juegos, crear listas y seguir tu progreso."
     },
     "settings": {
       "title": "Ajustes",
@@ -836,7 +840,16 @@
       "haveAccountPrompt": "¿Ya tienes cuenta?",
       "forgotSentTitle": "Revisa tu bandeja de entrada",
       "forgotSentDescription": "Si ese email está registrado, recibirás un enlace de recuperación en breve.",
-      "backToLogin": "Volver a iniciar sesión"
+      "backToLogin": "Volver a iniciar sesión",
+      "guestAction": "Continuar como invitado",
+      "guestError": "No hemos podido iniciar una sesión de invitado. Inténtalo de nuevo.",
+      "guestNotice": {
+        "title": "Disfruta de todo Gotty",
+        "description": "Puedes continuar como invitado, pero verás anuncios con más frecuencia y no podrás guardar juegos, crear listas, usar la lista de deseos ni registrar tu progreso.",
+        "accountBenefit": "Crear una cuenta gratuita lleva aproximadamente un minuto y te permite disfrutar de la experiencia completa con menos interrupciones.",
+        "createAccount": "Crear una cuenta gratuita",
+        "continue": "Continuar como invitado"
+      }
     }
   }
 }

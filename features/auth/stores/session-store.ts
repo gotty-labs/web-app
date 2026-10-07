@@ -12,8 +12,12 @@
  *  - The snapshot reference only changes on write/storage events, so
  *    `useSyncExternalStore` stays stable.
  *
- * Two setters: `setSession` (full, on login/register) and `setAccess` (token-only,
- * on refresh — preserves the existing profile).
+ * Two setters: `setSession` (full, on login/register/guest login) and `setAccess`
+ * (token-only, on refresh — preserves the existing profile and audience).
+ *
+ * `guest` is the session audience. The backend only encodes it inside the JWT, so —
+ * like the native apps — the client records it when the session is created. Guests
+ * have no profile (`user: null`).
  */
 import type { UserProfile } from '@/lib/domain/models'
 
@@ -23,6 +27,7 @@ export interface ClientSession {
   id: string
   accessToken: string
   user: UserProfile | null
+  guest: boolean
 }
 
 interface Snapshot {
@@ -43,8 +48,10 @@ function load(): void {
   if (typeof window === 'undefined') return
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY)
+    const stored = raw ? (JSON.parse(raw) as ClientSession) : null
     clientSnapshot = {
-      session: raw ? (JSON.parse(raw) as ClientSession) : null,
+      // Sessions stored before guests existed on web are always members.
+      session: stored ? { ...stored, guest: stored.guest === true } : null,
       hydrated: true,
     }
   } catch {
@@ -105,6 +112,7 @@ export const sessionStore = {
       id: partial.id,
       accessToken: partial.accessToken,
       user: clientSnapshot.session?.user ?? null,
+      guest: clientSnapshot.session?.guest ?? false,
     })
   },
   // Persist a verified email onto the stored profile so a reload (which paints the user

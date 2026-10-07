@@ -1,13 +1,15 @@
 /**
  * Shared opener and state for the console visibility sheet: how many consoles the feed
  * is limited to (the count badges on the header button and the sidebar item, like the
- * apps' feed header) and a revision the feed reloads on after a save.
+ * apps' feed header) and a revision the feed reloads on after a save. Exclusions are
+ * saved per account, so a guest opening it gets the auth prompt instead.
  */
 'use client'
 
 import { createContext, useEffect, useState, type ReactNode } from 'react'
 
 import { appPromotionStore } from '@/features/app-promotion'
+import { authPromptStore, useSession } from '@/features/auth'
 import { getFilterOptions } from '@/features/game/services/catalog'
 import { ConsoleVisibilityModal } from '@/features/profile/components/console-visibility-modal'
 import type { GameFilterOptions } from '@/lib/domain/models'
@@ -27,6 +29,7 @@ function countVisibleConsoles(consoles: GameFilterOptions['consoles']): number {
 }
 
 export function ConsoleVisibilityProvider({ children }: { children: ReactNode }) {
+  const { status } = useSession()
   const [open, setOpen] = useState(false)
   const [loadedCount, setLoadedCount] = useState<number | null>(null)
   const [savedCount, setSavedCount] = useState<number | null>(null)
@@ -51,6 +54,10 @@ export function ConsoleVisibilityProvider({ children }: { children: ReactNode })
   }
 
   function openConsoleVisibility() {
+    if (status !== 'authenticated') {
+      authPromptStore.show()
+      return
+    }
     if (!appPromotionStore.request(() => setOpen(true))) setOpen(true)
   }
 

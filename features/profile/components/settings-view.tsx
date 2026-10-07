@@ -1,11 +1,14 @@
 /**
  * Settings screen (Phase 5, Slice G). The email-verification section opens the OTP
  * modal and follows the shared session/startup state; change-password emails a secure
- * link. Console visibility lives in the sidebar "Options" group.
+ * link. Console visibility lives in the sidebar "Options" group. Guests have no account
+ * to manage: they get a "browsing as a guest" card with a Sign in entry point instead
+ * of the account sections, and keep the device-level preferences.
  */
 'use client'
 
 import { useEffect, useState } from 'react'
+import { CircleUserRoundIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
@@ -15,6 +18,7 @@ import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import { AppTopBar } from '@/components/app-top-bar'
+import { authPromptStore, useSession } from '@/features/auth'
 import { useReportError } from '@/hooks/use-report-error'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
@@ -28,6 +32,8 @@ const PASSWORD_COOLDOWN = 60
 export function SettingsView() {
   const dict = useDictionary()
   const s = dict.app.settings
+  const p = dict.app.profile
+  const isGuest = useSession().status === 'guest'
   const report = useReportError()
   const needsEmailVerification = useNeedsEmailVerification()
 
@@ -64,6 +70,21 @@ export function SettingsView() {
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4 md:p-6">
         <h1 className="font-heading text-2xl font-semibold">{s.title}</h1>
 
+        {isGuest && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{p.guestTitle}</CardTitle>
+              <CardDescription>{p.guestDescription}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={authPromptStore.show}>
+                <CircleUserRoundIcon data-icon="inline-start" />
+                {dict.app.actions.signIn}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* A verified email needs no action, so the whole section is hidden then. */}
         {needsEmailVerification && (
           <Card>
@@ -80,22 +101,24 @@ export function SettingsView() {
           </Card>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{s.password.title}</CardTitle>
-            <CardDescription>{s.password.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              variant="outline"
-              onClick={handleChangePassword}
-              disabled={changingPassword || pwCooldown > 0}
-            >
-              {changingPassword && <Spinner data-icon="inline-start" />}
-              {pwCooldown > 0 ? `${s.password.retryIn} ${pwCooldown}s` : s.password.cta}
-            </Button>
-          </CardContent>
-        </Card>
+        {!isGuest && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{s.password.title}</CardTitle>
+              <CardDescription>{s.password.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                onClick={handleChangePassword}
+                disabled={changingPassword || pwCooldown > 0}
+              >
+                {changingPassword && <Spinner data-icon="inline-start" />}
+                {pwCooldown > 0 ? `${s.password.retryIn} ${pwCooldown}s` : s.password.cta}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>

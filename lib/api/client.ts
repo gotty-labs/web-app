@@ -36,6 +36,8 @@ export interface ApiRequestOptions<T> {
   body?: unknown
   /** Session JWT for protected routes. */
   token?: string
+  /** Stable browser id, only for guest login (server-side, from the BFF cookie). */
+  deviceId?: string
   language?: GtLanguage
   /** Next.js fetch cache mode (e.g. `force-cache`, `no-store`). */
   cache?: RequestCache
@@ -75,6 +77,7 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
     query,
     body,
     token,
+    deviceId,
     language,
     cache,
     next,
@@ -85,7 +88,7 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
 
   const response = await fetch(buildUrl(path, query), {
     method,
-    headers: buildHeaders({ token, language, hasBody }),
+    headers: buildHeaders({ token, deviceId, language, hasBody }),
     body: hasBody ? JSON.stringify(body) : undefined,
     cache,
     next,
