@@ -83,6 +83,7 @@ export function FilterHeader({
   appliedFilters,
   options,
   optionsLoading,
+  showConsoleVisibility,
   onQueryChange,
   onSubmitQuery,
   onApplyFilters,
@@ -92,6 +93,11 @@ export function FilterHeader({
   appliedFilters: AppliedFilters
   options: GameFilterOptions | null
   optionsLoading: boolean
+  /**
+   * Console visibility only limits the feed, so it's offered while the feed shows and
+   * hidden over search results (where toggling it would change nothing).
+   */
+  showConsoleVisibility: boolean
   onQueryChange: (value: string) => void
   onSubmitQuery: () => void
   onApplyFilters: (filters: AppliedFilters) => Promise<boolean>
@@ -231,7 +237,9 @@ export function FilterHeader({
       // While the home hero shows behind it (`FeedSheetLayout` sets `data-over-hero`),
       // the bar is see-through, like the apps' navigation bar over their hero.
       className="data-over-hero:border-transparent data-over-hero:bg-transparent data-over-hero:backdrop-blur-none"
-      trailing={<ConsoleVisibilityButton />}
+      // Hidden, a spacer keeps the search centered against the sidebar toggle.
+      trailing={showConsoleVisibility ? <ConsoleVisibilityButton /> : undefined}
+      balanced
       contentClassName="min-h-0 py-1"
       contentStyle={{ minHeight: `${headerHeight}rem` }}
       panel={

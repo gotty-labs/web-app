@@ -132,6 +132,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
             appliedFilters={appliedFilters}
             options={options}
             optionsLoading={optionsLoading}
+            showConsoleVisibility={!showResults}
             onQueryChange={changeQuery}
             onSubmitQuery={submitQuery}
             onApplyFilters={applyFilters}
