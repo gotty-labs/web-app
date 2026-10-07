@@ -4,7 +4,7 @@
  * A Server Component that reads the dictionary at the DEFAULT locale only: it must
  * NOT call `getServerLocale()` (that reads `headers()` and would force dynamic
  * rendering, breaking SSG of this zone — see AGENTS.md i18n). All CTAs link into
- * the `(app)` zone (`/home`), where `AuthGate` handles authentication via the modal.
+ * the `(app)` zone (`/home`), which visitors enter as guests (see `AuthGate`).
  */
 import type { Metadata } from 'next'
 
@@ -20,7 +20,10 @@ import { LandingHowItWorks } from '../_components/landing-how-it-works'
 
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary(defaultLocale)
-  return { description: dict.app.landing.heroSubtitle }
+  return {
+    description: dict.app.landing.heroSubtitle,
+    alternates: { canonical: '/' },
+  }
 }
 
 export default async function LandingPage() {

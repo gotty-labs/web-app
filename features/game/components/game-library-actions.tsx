@@ -2,11 +2,11 @@
  * Library actions for the game detail, rendered in the hero right under the title
  * (where the visitor is already looking) and mirrored in a compact bar pinned to the
  * top once that row scrolls away, so saving stays one click from anywhere on the page.
- * Lives inside the detail's client island (session + i18n + toaster + app-download
- * sheet on the otherwise-static page).
+ * Lives inside the detail's client island (session + i18n + toaster + auth prompt on
+ * the otherwise-static page).
  *
- *  - guest           → Save, which opens the app-download sheet (the web has no guest
- *                      library flow; the native apps do).
+ *  - guest / no session → "Sign in to save", which opens the auth prompt (the library
+ *                         is member-only, as in the native apps).
  *  - saved = false   → Save (primary) · Wishlist · Lists.
  *  - saved = true    → "Saved ▾" (Progress placeholder, Remove) · Lists.
  * Lists shows the game's membership count and opens a toggleable membership sheet.
@@ -51,9 +51,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { appPromotionStore } from '@/features/app-promotion'
 import { useReportError } from '@/hooks/use-report-error'
-import { useSession } from '@/features/auth'
+import { authPromptStore, useSession } from '@/features/auth'
 import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import type { GameLibraryState } from '@/lib/domain/models'
 import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
@@ -118,7 +117,7 @@ export function GameLibraryActions({
     <div ref={rowRef} className="w-full max-w-sm sm:w-auto sm:max-w-none">
       {status === 'authenticated' ? (
         <SignedInLibraryActions {...props} />
-      ) : status === 'unauthenticated' ? (
+      ) : status !== 'loading' ? (
         <GuestLibraryActions {...props} />
       ) : (
         // Session still hydrating: most SEO visitors are guests, so reserve their row.
@@ -133,9 +132,9 @@ export function GameLibraryActions({
 function GuestLibraryActions({ barGame, scrolledPast }: ActionsProps) {
   const t = useDictionary().app.detail
   const saveButton = (size: 'default' | 'lg', className?: string) => (
-    <Button type="button" size={size} className={className} onClick={appPromotionStore.show}>
+    <Button type="button" size={size} className={className} onClick={authPromptStore.show}>
       <BookmarkPlusIcon data-icon="inline-start" />
-      {t.save}
+      {t.signInToSave}
     </Button>
   )
 

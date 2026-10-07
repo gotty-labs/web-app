@@ -1,42 +1,49 @@
 /**
- * Client-side auth gate for the `(app)` zone (Phase 5). Instead of redirecting
- * unauthenticated users away, it renders the undismissable `AuthModal` IN PLACE —
- * matching the UX spec where the web app is always authenticated and login happens
- * through a modal, never a separate page.
+ * Client session gate for the `(app)` zone. The app is usable WITHOUT an account, like
+ * the native apps: a visitor with no session gets a guest session silently, so the
+ * real feed renders immediately and member-only features are gated in place (see
+ * `authPromptStore`). The start-of-visit auth prompt is raised by the shell.
  *
- * Three states from `useSession()`:
- *  - `loading`        → the session store is still hydrating from localStorage; show
- *                       a neutral full-screen spinner (avoids a modal flash on reload).
- *  - `authenticated`  → render the app shell (`children`).
- *  - `unauthenticated`→ render the `AuthModal` over an empty backdrop. A successful
- *                       login flips the store to `authenticated` and this swaps to the
- *                       shell with no redirect.
+ * States from `useSession()`:
+ *  - `loading`             → the session store is still hydrating from localStorage;
+ *                            neutral full-screen spinner (avoids a flash on reload).
+ *  - `unauthenticated`     → bootstrap a guest session (spinner meanwhile). If that
+ *                            fails, fall back to the `AuthModal`, whose "Continue as
+ *                            guest" retries it.
+ *  - `guest`/`authenticated` → render the app shell (`children`).
  */
 'use client'
 
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
 
 import { useSession } from '../hooks/use-session'
+import { loginAsGuest } from '../services/auth-client'
 
 import { AuthModal } from './auth-modal'
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { status } = useSession()
+  const [bootstrapFailed, setBootstrapFailed] = useState(false)
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status !== 'unauthenticated' || bootstrapFailed) return
+    loginAsGuest().catch(() => setBootstrapFailed(true))
+  }, [status, bootstrapFailed])
+
+  if (status === 'unauthenticated' && bootstrapFailed) {
     return (
-      <div className="flex min-h-svh items-center justify-center">
-        <Spinner className="size-6 text-muted-foreground" />
+      <div className="min-h-svh bg-background">
+        <AuthModal />
       </div>
     )
   }
 
-  if (status === 'unauthenticated') {
+  if (status === 'loading' || status === 'unauthenticated') {
     return (
-      <div className="min-h-svh bg-background">
-        <AuthModal />
+      <div className="flex min-h-svh items-center justify-center">
+        <Spinner className="size-6 text-muted-foreground" />
       </div>
     )
   }

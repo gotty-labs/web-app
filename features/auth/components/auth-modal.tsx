@@ -1,9 +1,13 @@
 /**
- * Undismissable auth modal the web app's single entry
- * point to a session. Web is ALWAYS authenticated, so this modal cannot be closed: no
- * close button, no Esc, no click-outside. `AuthGate` mounts it whenever the session is
- * `unauthenticated`; a successful login/register updates `sessionStore`, which flips
- * the gate to `authenticated` and unmounts this modal — so it never closes itself.
+ * Undismissable auth modal — the web's entry point to a member session. No Esc, no
+ * click-outside: the way out is choosing login, register or "Continue as guest" (which
+ * first shows the `GuestNoticeDialog` nudging towards a free account). Two mounts:
+ *  - Prompt (`onComplete` given): `AuthPrompt` over a guest session — the start-of-visit
+ *    prompt and every gated action. Finishing any path calls `onComplete`; continuing
+ *    as guest is then a no-op login that just closes it.
+ *  - Gate (no `onComplete`): `AuthGate` when no session could be bootstrapped. "Continue
+ *    as guest" creates the guest session, which unmounts the gate's modal; a close
+ *    button also escapes to the landing `/`.
  *
  * One component, four views (login / register / forgot / forgotSent) driven by local
  * state, all sharing the same branded shell: logo card over a soft violet gradient
@@ -59,6 +63,7 @@ import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import {
   forgotPassword,
+  loginAsGuest,
   loginEmail,
   loginOAuth,
   registerEmail,
@@ -66,12 +71,13 @@ import {
 } from '../services/auth-client'
 
 import { GoogleSignInButton } from './google-sign-in-button'
+import { GuestNoticeDialog } from './guest-notice-dialog'
 import { LottieCheck } from './lottie-check'
 
 type AuthView = 'login' | 'register' | 'forgot' | 'forgotSent'
 type FieldErrors = { email?: string; password?: string; nickname?: string }
 
-export function AuthModal() {
+export function AuthModal({ onComplete }: { onComplete?: () => void } = {}) {
   const dict = useDictionary()
   const t = dict.app.auth
   const report = useReportError()
@@ -85,6 +91,8 @@ export function AuthModal() {
   const [password, setPassword] = useState('')
   const [nickname, setNickname] = useState('')
   const [oauthToken, setOauthToken] = useState<string | null>(null)
+  const [guestNoticeOpen, setGuestNoticeOpen] = useState(false)
+  const [guestPending, setGuestPending] = useState(false)
 
   const isGoogleRegister = view === 'register' && oauthToken !== null
 
@@ -137,17 +145,19 @@ export function AuthModal() {
     try {
       if (view === 'login') {
         await loginEmail(email, password)
+        onComplete?.()
       } else if (view === 'register') {
         if (oauthToken) {
           await registerOAuth('google', oauthToken, nickname)
         } else {
           await registerEmail(email, nickname, password)
         }
+        onComplete?.()
       } else if (view === 'forgot') {
         await forgotPassword(email)
         setView('forgotSent')
       }
-      // On login/register success the session store updates and AuthGate unmounts us.
+      // On login/register success the session store flips to `authenticated` too.
     } catch (err) {
       // Generic path: the app-wide error modal (stacks over this dialog, dismiss to
       // return here). It already maps by internalCode, so no per-flow handling needed.
@@ -164,6 +174,7 @@ export function AuthModal() {
     try {
       if (view === 'login') {
         await loginOAuth('google', token)
+        onComplete?.()
       } else if (view === 'register') {
         setOauthToken(token)
         const result = oauthRegisterInputSchema.safeParse({ token, nickname })
@@ -172,6 +183,7 @@ export function AuthModal() {
           return
         }
         await registerOAuth('google', token, nickname)
+        onComplete?.()
       }
     } catch (error) {
       if (
@@ -192,6 +204,27 @@ export function AuthModal() {
     toast.info(t.googleUnavailable)
   }
 
+  async function continueAsGuest() {
+    if (guestPending) return
+
+    setGuestPending(true)
+    try {
+      // No-op when a guest session already exists (prompt mode): it just closes.
+      await loginAsGuest()
+      setGuestNoticeOpen(false)
+      onComplete?.()
+    } catch {
+      toast.error(t.guestError)
+    } finally {
+      setGuestPending(false)
+    }
+  }
+
+  function chooseRegistration() {
+    setGuestNoticeOpen(false)
+    go('register')
+  }
+
   const titles: Record<AuthView, { title: string; description: string }> = {
     login: { title: t.loginTitle, description: t.loginDescription },
     register: { title: t.registerTitle, description: t.registerDescription },
@@ -203,29 +236,28 @@ export function AuthModal() {
     view === 'login' ? t.submitLogin : view === 'register' ? t.submitRegister : t.submitForgot
 
   return (
-    <Dialog
-      open
-      onOpenChange={(next) => {
-        if (!next) router.push('/')
-      }}
-    >
+    <Dialog open>
       <DialogContent
         showCloseButton={false}
+        onEscapeKeyDown={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
         className="gap-0 overflow-hidden p-0 sm:max-w-md"
       >
         {/*
-         * Custom close (escape hatch to the landing `/`).
+         * Custom close, gate mode only (escape hatch to the landing `/`): over a guest
+         * session the way out is "Continue as guest", as in the native apps.
          */}
-        <button
-          type="button"
-          onClick={() => router.push('/')}
-          aria-label={dict.app.actions.close}
-          className="absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-        >
-          <XIcon className="size-4" />
-        </button>
+        {!onComplete && (
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            aria-label={dict.app.actions.close}
+            className="absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <XIcon className="size-4" />
+          </button>
+        )}
 
         {/* Decorative branded backdrop: soft violet gradient + faint tiled logo. */}
         <div
@@ -422,6 +454,21 @@ export function AuthModal() {
                 </div>
               )}
 
+              {(view === 'login' || view === 'register') && (
+                <div className="mt-2 flex justify-center">
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="text-muted-foreground"
+                    disabled={pending || guestPending}
+                    onClick={() => setGuestNoticeOpen(true)}
+                  >
+                    {t.guestAction}
+                  </Button>
+                </div>
+              )}
+
               {view === 'forgot' && (
                 <div className="mt-6 flex justify-center">
                   <Button
@@ -439,6 +486,14 @@ export function AuthModal() {
           </>
         )}
       </DialogContent>
+
+      <GuestNoticeDialog
+        open={guestNoticeOpen}
+        pending={guestPending}
+        onOpenChange={setGuestNoticeOpen}
+        onCreateAccount={chooseRegistration}
+        onContinue={continueAsGuest}
+      />
     </Dialog>
   )
 }

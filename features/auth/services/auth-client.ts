@@ -7,8 +7,8 @@
  * e.g. 50040 INVALID_CREDENTIALS → inline form error; 50046 INVALID_OAUTH_CREDENTIALS
  * → route to OAuth register.
  *
- * Still TODO (next slice): forgot-password, reset-password, delete-account, and a
- * React session context that wires `setOnSessionExpired` to the router.
+ * Guests (`loginAsGuest`) go through the BFF too: their session also has a refresh
+ * token that must stay in the httpOnly cookie.
  */
 import { DateTime } from 'luxon'
 import { z } from 'zod'
@@ -29,11 +29,17 @@ const sessionPayloadSchema = z.object({
 })
 type SessionPayload = z.infer<typeof sessionPayloadSchema>
 
+const guestSessionPayloadSchema = z.object({
+  id: z.string(),
+  accessToken: z.string(),
+})
+
 function storeSession(payload: SessionPayload): UserProfile {
   sessionStore.setSession({
     id: payload.id,
     accessToken: payload.accessToken,
     user: payload.user,
+    guest: false,
   })
   return payload.user
 }
@@ -113,6 +119,39 @@ export async function registerOAuth(
       schema: sessionPayloadSchema,
     }),
   )
+}
+
+let guestLoginInFlight: Promise<void> | null = null
+
+async function performGuestLogin(): Promise<void> {
+  const payload = await bffRequest({
+    path: '/api/auth/guest',
+    schema: guestSessionPayloadSchema,
+  })
+  // A member may have signed in while the request was in flight; never downgrade them.
+  if (sessionStore.getId()) return
+  tracking.setUserId(payload.id)
+  sessionStore.setSession({
+    id: payload.id,
+    accessToken: payload.accessToken,
+    user: null,
+    guest: true,
+  })
+}
+
+/**
+ * Starts a guest session unless one (guest or member) already exists, so it is safe to
+ * call from every entry point: the silent bootstrap and the auth modal's "Continue as
+ * guest". Single-flight, so concurrent callers share one backend guest login.
+ */
+export function loginAsGuest(): Promise<void> {
+  if (sessionStore.getId()) return Promise.resolve()
+  if (!guestLoginInFlight) {
+    guestLoginInFlight = performGuestLogin().finally(() => {
+      guestLoginInFlight = null
+    })
+  }
+  return guestLoginInFlight
 }
 
 export async function logout(): Promise<void> {

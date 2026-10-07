@@ -5,7 +5,7 @@
       "resetLinkExpired": "This reset link has expired. Please request a new one.",
       "userNotFound": "We couldn't find that account.",
       "invalidOAuthCredentials": "That account isn't registered yet. Try signing up.",
-      "guestNotAllowed": "Create an account to continue.",
+      "guestNotAllowed": "You need to sign in to use this feature.",
       "registerUnavailable": "That email or nickname is already taken.",
       "oauthAlreadyRegistered": "This account already exists. Try logging in instead.",
       "invalidVerificationCode": "That verification code is wrong or expired.",
@@ -555,7 +555,9 @@
       "notifications": "Notifications",
       "consoleExclusions": "Hidden consoles",
       "logout": "Log out",
-      "version": "Version"
+      "version": "Version",
+      "guestTitle": "You're browsing as a guest",
+      "guestDescription": "Sign in to sync your library and manage your account."
     },
     "feed": {
       "loadMore": "Load more",
@@ -593,6 +595,7 @@
       "clearConsoles": "Remove console filter",
       "clearContent": "Remove content filter",
       "noQueryResults": "We couldn't find games matching “{query}”.",
+      "noQueryFilterResults": "We couldn't find games matching “{query}” with these filters.",
       "noFilterResults": "No games match these filters."
     },
     "detail": {
@@ -662,7 +665,8 @@
       "releaseDate": "Release date",
       "developer": "Developer",
       "publisher": "Publisher",
-      "timeToBeat": "Time to beat"
+      "timeToBeat": "Time to beat",
+      "backToHome": "Go to Gotty home"
     },
     "library": {
       "title": "My Library",
@@ -729,7 +733,9 @@
       "removedFromListToast": "Removed from the list",
       "actionFailed": "The action could not be completed. Try again.",
       "releaseLabel": "Release",
-      "released": "Available now"
+      "released": "Available now",
+      "guestTitle": "Your library lives here",
+      "guestDescription": "Sign in to save games, build lists and track your progress."
     },
     "settings": {
       "title": "Settings",
@@ -835,7 +841,16 @@
       "haveAccountPrompt": "Already have an account?",
       "forgotSentTitle": "Check your inbox",
       "forgotSentDescription": "If that email is registered, you'll receive a reset link shortly.",
-      "backToLogin": "Back to sign in"
+      "backToLogin": "Back to sign in",
+      "guestAction": "Continue as guest",
+      "guestError": "We couldn't start a guest session. Try again.",
+      "guestNotice": {
+        "title": "Make the most of Gotty",
+        "description": "You can continue as a guest, but you'll see ads more often and won't be able to save games, create lists, use the wishlist, or track your progress.",
+        "accountBenefit": "Creating a free account takes about a minute and gives you the full experience with fewer interruptions.",
+        "createAccount": "Create a free account",
+        "continue": "Continue as guest"
+      }
     }
   }
 }

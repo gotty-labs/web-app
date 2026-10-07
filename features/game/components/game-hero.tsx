@@ -4,7 +4,8 @@
  * framed in a violet gradient border on top. Meta (category / year / developer)
  * sits beside the cover — bottom-aligned on desktop, stacked and centered on mobile.
  * `actions` (the library actions island) sits right under the title and meta, where
- * the visitor is already looking.
+ * the visitor is already looking. `GameDetailHeader` overlays its top edge with the way
+ * back into the app.
  * Presentational + server-safe (AppImage is a client child, which is fine).
  */
 import type { ReactNode } from 'react'
@@ -15,6 +16,8 @@ import type { GameDto } from '@/lib/domain/models'
 
 import { getGameCover } from '../config/images'
 import { gameCategoryLabel } from '../utils/labels'
+
+import { GameDetailHeader } from './game-detail-header'
 
 export function GameHero({
   game,
@@ -33,6 +36,8 @@ export function GameHero({
 
   return (
     <header className="relative isolate overflow-hidden">
+      <GameDetailHeader dict={dict} />
+
       {/* Background layer */}
       <div className="absolute inset-0 -z-10">
         {artwork ? (

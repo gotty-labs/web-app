@@ -83,18 +83,27 @@ export function FilterHeader({
   appliedFilters,
   options,
   optionsLoading,
+  showConsoleVisibility,
   onQueryChange,
   onSubmitQuery,
   onApplyFilters,
+  onClearAll,
 }: {
   headerRef: RefObject<HTMLElement | null>
   query: string
   appliedFilters: AppliedFilters
   options: GameFilterOptions | null
   optionsLoading: boolean
+  /**
+   * Console visibility only limits the feed, so it's offered while the feed shows and
+   * hidden over search results (where toggling it would change nothing).
+   */
+  showConsoleVisibility: boolean
   onQueryChange: (value: string) => void
   onSubmitQuery: () => void
   onApplyFilters: (filters: AppliedFilters) => Promise<boolean>
+  /** Drops the query AND every filter at once. */
+  onClearAll: () => void
 }) {
   const t = useDictionary().app.search
   const scrollProgress = useScrollProgress()
@@ -111,6 +120,9 @@ export function FilterHeader({
   const searchExpanded = searchFocused || queryMode
   const consolesApplied = appliedFilters.consoleIds.length > 0
   const contentApplied = !!appliedFilters.content
+  // "Clear all" only earns its place when it saves taps: with a single criterion
+  // active, that criterion's own ✕ already does the same.
+  const canClearAll = [queryMode, consolesApplied, contentApplied].filter(Boolean).length >= 2
 
   const discardDraft = useCallback(
     (returnFocus = false) => {
@@ -209,6 +221,15 @@ export function FilterHeader({
     }
   }
 
+  function clearAll() {
+    setActivePanel(null)
+    setDraftConsoleIds([])
+    setDraftContent(undefined)
+    onClearAll()
+    // The button unmounts with nothing left to clear; keep focus in the filter row.
+    window.requestAnimationFrame(() => consolesTriggerRef.current?.focus())
+  }
+
   function submitQuery(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     onSubmitQuery()
@@ -231,8 +252,12 @@ export function FilterHeader({
       // While the home hero shows behind it (`FeedSheetLayout` sets `data-over-hero`),
       // the bar is see-through, like the apps' navigation bar over their hero.
       className="data-over-hero:border-transparent data-over-hero:bg-transparent data-over-hero:backdrop-blur-none"
-      trailing={<ConsoleVisibilityButton />}
-      contentClassName="min-h-0 py-1"
+      // Hidden, a spacer keeps the search centered against the sidebar toggle.
+      trailing={showConsoleVisibility ? <ConsoleVisibilityButton /> : undefined}
+      balanced
+      // Below `sm` the search block flattens (`contents`) into this row, so the filter
+      // pills can wrap onto a full-width line of their own under the menu + search.
+      contentClassName="min-h-0 py-1 max-sm:flex-wrap"
       contentStyle={{ minHeight: `${headerHeight}rem` }}
       panel={
         activePanel ? (
@@ -256,7 +281,7 @@ export function FilterHeader({
     >
       <div
         role="search"
-        className="mx-auto flex min-w-0 max-w-4xl flex-1 flex-wrap items-center justify-center gap-1.5 will-change-transform sm:gap-2 motion-reduce:transform-none"
+        className="mx-auto flex min-w-0 max-w-4xl flex-1 flex-wrap items-center justify-center gap-2 will-change-transform max-sm:contents motion-reduce:transform-none"
         style={{ transform: `scale(${controlsScale})` }}
       >
         <form
@@ -264,7 +289,7 @@ export function FilterHeader({
           className={cn(
             'min-w-0 transition-[width,max-width,flex-basis] duration-300 ease-out',
             searchExpanded
-              ? 'basis-full sm:min-w-52 sm:flex-1 sm:basis-auto sm:max-w-xl'
+              ? 'flex-1 sm:min-w-52 sm:max-w-xl'
               : 'w-10 flex-none sm:min-w-44 sm:flex-1 sm:max-w-md',
           )}
         >
@@ -306,8 +331,9 @@ export function FilterHeader({
 
         <div
           className={cn(
-            'flex min-w-0 max-w-full flex-wrap items-center justify-center gap-2',
-            searchExpanded && 'w-full sm:w-auto',
+            // Mobile: one swipeable row (never wraps); `py-1` keeps focus rings unclipped.
+            'flex min-w-0 touch-pan-x items-center gap-2 overflow-x-auto py-1 [scrollbar-width:none] max-sm:-my-1 sm:max-w-full sm:flex-wrap sm:justify-center sm:overflow-visible sm:py-0 [&::-webkit-scrollbar]:hidden',
+            searchExpanded ? 'basis-full sm:basis-auto' : 'flex-1 sm:flex-none',
           )}
         >
           <div className="flex shrink-0 items-center">
@@ -388,6 +414,19 @@ export function FilterHeader({
               </Button>
             )}
           </div>
+
+          {canClearAll && (
+            <Button
+              type="button"
+              size="pill"
+              variant="ghost"
+              disabled={applying}
+              onClick={clearAll}
+              className="shrink-0"
+            >
+              {t.reset}
+            </Button>
+          )}
         </div>
       </div>
     </AppTopBar>

@@ -14,7 +14,7 @@ or shadcn docs first — this stack is ahead of training data.
 ## Architecture (the big picture)
 
 - Three zones: **`(marketing)`** = static landing `/` + SEO `/games/[slug]` (public, ISR);
-  **`(app)`** = `/home` + descendants (always authenticated). Use App Router **route groups**.
+  **`(app)`** = `/home` + descendants (always has a session: member or guest). Use App Router **route groups**.
 - Build the **domain/business layer before UI**, feature by feature.
 - The browser talks to the backend **directly** for data (token in `Authorization`); a tiny
   **BFF** (`app/api/auth/*`) exists ONLY for operations that must touch the httpOnly cookie.
@@ -81,7 +81,13 @@ or shadcn docs first — this stack is ahead of training data.
 
 - **Hybrid token storage:** access token (~2h) in `localStorage` (working copy); full session
   incl. refresh token (~6m) in an **httpOnly cookie** set by the BFF. Never expose the refresh
-  token to JS. Web is always authenticated (no guest flow — blocked on WEB, 50080).
+  token to JS.
+- **Guest mode (mirrors the native apps):** `(app)` `AuthGate` silently starts a guest session
+  (`loginAsGuest` → BFF `/api/auth/guest`, keyed on the httpOnly `gt_device` browser id) when
+  there is none. `useSession().status` is `loading | unauthenticated | guest | authenticated`;
+  guests have `user: null`. Member-only features (library, lists, progress, console visibility,
+  account settings) are gated on the client: for guests call `authPromptStore.show()`, never
+  hit the endpoint (the backend answers 50047). Sign-out continues as a fresh guest.
 
 ## Internationalization (i18n) — `lib/i18n/`
 

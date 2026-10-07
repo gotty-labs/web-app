@@ -1,3 +1,7 @@
+/**
+ * Library screen. Member-only like in the native apps: guests get `LibraryGuestState`
+ * and no library endpoint is ever called for them.
+ */
 'use client'
 
 import { useMemo, useRef, useState } from 'react'
@@ -16,6 +20,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Spinner } from '@/components/ui/spinner'
+import { useSession } from '@/features/auth'
 import type { GameLibraryProgressState, UserGameLibraryStatus } from '@/lib/domain/enums'
 import type { GameLibrary, GameLibraryList } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
@@ -33,6 +38,7 @@ import {
 import { CreateLibraryListSheet } from './create-library-list-sheet'
 import { LibraryGameActionsSheet } from './library-game-actions-sheet'
 import { LibraryGameGrid } from './library-game-grid'
+import { LibraryGuestState } from './library-guest-state'
 import { LibraryHeader } from './library-header'
 import { LibraryListSelector } from './library-list-selector'
 
@@ -48,13 +54,17 @@ function modeForStatus(status: UserGameLibraryStatus): ViewMode {
   return status === 'WHITELIST' ? 'whitelist' : 'library'
 }
 
-export function GameLibrary({
-  initialMode = 'library',
-  initialListId,
-}: {
+type GameLibraryProps = {
   initialMode?: ViewMode
   initialListId?: string
-}) {
+}
+
+export function GameLibrary(props: GameLibraryProps) {
+  const { status } = useSession()
+  return status === 'authenticated' ? <MemberLibrary {...props} /> : <LibraryGuestState />
+}
+
+function MemberLibrary({ initialMode = 'library', initialListId }: GameLibraryProps) {
   const router = useRouter()
   const dict = useDictionary()
   const t = dict.app.library

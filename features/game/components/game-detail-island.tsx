@@ -5,15 +5,15 @@
  * NONE of the app providers. This island re-mounts just what the library actions
  * need — `I18nProvider` (dict passed as a prop, so no re-detection and no dynamic
  * rendering), `SessionProvider` (hydrates the token from localStorage), a dark
- * `Toaster` for action feedback, and the app-download sheet guests reach from Save —
- * scoped to this widget. The page stays static; the island hydrates on the client.
+ * `Toaster` for action feedback, and the auth prompt guests reach from "Sign in to
+ * save" — scoped to this widget. No guest session is bootstrapped here: SEO visitors
+ * only become guests if they choose to in that prompt. The page stays static; the island hydrates on the client.
  */
 'use client'
 
 import { Toaster } from '@/components/ui/sonner'
 import { ErrorProvider } from '@/contexts/error-provider'
-import { AppDownloadPrompt } from '@/features/app-promotion'
-import { SessionProvider } from '@/features/auth'
+import { AuthPrompt, SessionProvider } from '@/features/auth'
 import type { Dictionary, Locale } from '@/lib/i18n'
 import { I18nProvider } from '@/lib/i18n/contexts/i18n-provider'
 
@@ -43,7 +43,7 @@ export function GameDetailIsland({
         <SessionProvider>
           <GameLibraryActions game={game} slug={slug} cover={cover} rating={rating} />
           <Toaster theme="dark" position="top-center" />
-          <AppDownloadPrompt />
+          <AuthPrompt />
         </SessionProvider>
       </ErrorProvider>
     </I18nProvider>

@@ -33,6 +33,8 @@ export interface HeaderOptions {
   language?: GtLanguage
   /** Whether a JSON body is being sent (adds `content-type`). */
   hasBody?: boolean
+  /** Stable browser id the backend keys guest accounts on (sent as `id`). */
+  deviceId?: string
 }
 
 export function buildHeaders(options: HeaderOptions = {}): Headers {
@@ -42,6 +44,7 @@ export function buildHeaders(options: HeaderOptions = {}): Headers {
   headers.set('gt-platform-buildnumber', PLATFORM.buildNumber)
   headers.set('gt-language', options.language ?? DEFAULT_LANGUAGE)
   if (options.token) headers.set('authorization', `Bearer ${options.token}`)
+  if (options.deviceId) headers.set('id', options.deviceId)
   if (options.hasBody) headers.set('content-type', 'application/json')
   return headers
 }
