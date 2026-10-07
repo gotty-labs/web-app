@@ -491,7 +491,7 @@
         "label": "Ayuda",
         "title": "Soporte de Gotty",
         "description": "Obtén ayuda con tu cuenta, la aplicación, las solicitudes de privacidad o cualquier cosa que no funcione como esperas.",
-        "lastUpdated": "Última actualización: 23 de septiembre de 2026",
+        "lastUpdated": "Última actualización: 7 de octubre de 2026",
         "sections": [
           {
             "heading": "Contacta con nosotros",
@@ -512,6 +512,10 @@
             ]
           }
         ]
+      },
+      "igdbAttribution": {
+        "heading": "Datos de juegos",
+        "text": "La información de los juegos en Gotty, como títulos, portadas, fechas de lanzamiento y valoraciones, procede de {igdb}."
       }
     },
     "nav": {

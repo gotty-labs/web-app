@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 
 import { Separator } from '@/components/ui/separator'
@@ -12,11 +13,14 @@ export function LegalPage({
   legal,
   prefix = '',
   privacySettingsAnchor = false,
+  children,
 }: {
   document: LegalDocument
   legal: Dictionary['app']['legal']
   prefix?: '' | '/es'
   privacySettingsAnchor?: boolean
+  /** Extra sections rendered after the document's own (e.g. attribution with links). */
+  children?: ReactNode
 }) {
   const links = {
     privacy: `${prefix}/privacy`,
@@ -57,6 +61,7 @@ export function LegalPage({
               ) : null}
             </section>
           ))}
+          {children}
         </div>
 
         <Separator className="bg-border/40" />

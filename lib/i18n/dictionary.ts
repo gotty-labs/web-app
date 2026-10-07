@@ -179,6 +179,11 @@ export const dictionarySchema = z.object({
       cookies: legalDocumentSchema,
       accountDeletion: legalDocumentSchema,
       support: legalDocumentSchema,
+      /** Game-data attribution on the support page; `{igdb}` becomes the IGDB.com link. */
+      igdbAttribution: z.object({
+        heading: z.string(),
+        text: z.string().includes('{igdb}'),
+      }),
     }),
     nav: z.object({
       games: z.string(),
