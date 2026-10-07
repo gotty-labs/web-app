@@ -87,6 +87,7 @@ export function FilterHeader({
   onQueryChange,
   onSubmitQuery,
   onApplyFilters,
+  onClearAll,
 }: {
   headerRef: RefObject<HTMLElement | null>
   query: string
@@ -101,6 +102,8 @@ export function FilterHeader({
   onQueryChange: (value: string) => void
   onSubmitQuery: () => void
   onApplyFilters: (filters: AppliedFilters) => Promise<boolean>
+  /** Drops the query AND every filter at once. */
+  onClearAll: () => void
 }) {
   const t = useDictionary().app.search
   const scrollProgress = useScrollProgress()
@@ -117,6 +120,9 @@ export function FilterHeader({
   const searchExpanded = searchFocused || queryMode
   const consolesApplied = appliedFilters.consoleIds.length > 0
   const contentApplied = !!appliedFilters.content
+  // "Clear all" only earns its place when it saves taps: with a single criterion
+  // active, that criterion's own ✕ already does the same.
+  const canClearAll = [queryMode, consolesApplied, contentApplied].filter(Boolean).length >= 2
 
   const discardDraft = useCallback(
     (returnFocus = false) => {
@@ -213,6 +219,15 @@ export function FilterHeader({
       setDraftConsoleIds(panel === 'consoles' ? [] : appliedFilters.consoleIds)
       setDraftContent(panel === 'content' ? undefined : appliedFilters.content)
     }
+  }
+
+  function clearAll() {
+    setActivePanel(null)
+    setDraftConsoleIds([])
+    setDraftContent(undefined)
+    onClearAll()
+    // The button unmounts with nothing left to clear; keep focus in the filter row.
+    window.requestAnimationFrame(() => consolesTriggerRef.current?.focus())
   }
 
   function submitQuery(event: FormEvent<HTMLFormElement>) {
@@ -399,6 +414,19 @@ export function FilterHeader({
               </Button>
             )}
           </div>
+
+          {canClearAll && (
+            <Button
+              type="button"
+              size="pill"
+              variant="ghost"
+              disabled={applying}
+              onClick={clearAll}
+              className="shrink-0"
+            >
+              {t.reset}
+            </Button>
+          )}
         </div>
       </div>
     </AppTopBar>

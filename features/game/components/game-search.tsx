@@ -136,6 +136,7 @@ export function GameSearch({ idle }: { idle?: ReactNode }) {
             onQueryChange={changeQuery}
             onSubmitQuery={submitQuery}
             onApplyFilters={applyFilters}
+            onClearAll={clearAll}
           />
 
           {showResults ? (
