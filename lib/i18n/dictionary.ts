@@ -259,6 +259,7 @@ export const dictionarySchema = z.object({
       clearConsoles: z.string(),
       clearContent: z.string(),
       noQueryResults: z.string(),
+      noQueryFilterResults: z.string(),
       noFilterResults: z.string(),
     }),
     detail: z.object({

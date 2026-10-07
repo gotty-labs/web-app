@@ -593,6 +593,7 @@
       "clearConsoles": "Remove console filter",
       "clearContent": "Remove content filter",
       "noQueryResults": "We couldn't find games matching “{query}”.",
+      "noQueryFilterResults": "We couldn't find games matching “{query}” with these filters.",
       "noFilterResults": "No games match these filters."
     },
     "detail": {

@@ -593,6 +593,7 @@
       "clearConsoles": "Quitar filtro de consolas",
       "clearContent": "Quitar filtro de contenido",
       "noQueryResults": "No encontramos juegos que coincidan con «{query}».",
+      "noQueryFilterResults": "No encontramos juegos que coincidan con «{query}» con estos filtros.",
       "noFilterResults": "No hay juegos que coincidan con estos filtros."
     },
     "detail": {

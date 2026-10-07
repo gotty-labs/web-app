@@ -3,7 +3,8 @@
  *
  * Criteria: free-text `query` (sent only when ≥3 chars, per the backend), N
  * `consoleIds`, and a single `content` key (one genre OR theme — the backend takes
- * one for now). `search(criteria)` builds the request and swaps in a fresh pager via
+ * one for now). They combine freely (AND): any subset, from one field to all three.
+ * `search(criteria)` builds the request and swaps in a fresh pager via
  * the shared `useCursorPagerList` (which also invalidates any in-flight page from
  * the previous criteria, so stale results never overwrite the new search).
  *
@@ -32,9 +33,9 @@ export interface SearchCriteria {
 
 function buildInput(criteria: SearchCriteria, cursor?: string): GameSearchInput {
   const query = criteria.query.trim()
-  if (query.length >= 3) return { query, cursor }
 
   return {
+    query: query.length >= 3 ? query : undefined,
     consoleIds: criteria.consoleIds.length > 0 ? criteria.consoleIds : undefined,
     content: criteria.content || undefined,
     cursor,
