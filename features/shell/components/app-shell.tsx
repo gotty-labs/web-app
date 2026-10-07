@@ -2,7 +2,7 @@
  * App shell (Phase 5, Slice B) — the chrome wrapping every authenticated screen.
  *
  * Mounted INSIDE `AuthGate`'s session branch (see the `(app)` layout), so it renders
- * for members and guests alike; guests get the auth prompt at the start of a visit and
+ * for members and guests alike; normally guests get the auth prompt at the start of a visit and
  * whenever they reach a member-only feature (`AuthPrompt`). `SidebarProvider` owns the open/collapsed
  * state (persisted to a cookie by the primitive); `SidebarInset` is the main content
  * column. A slim top bar carries the `SidebarTrigger` for mobile (where the sidebar
@@ -18,6 +18,7 @@ import { AppDownloadPrompt } from '@/features/app-promotion'
 import { AdBlockPrompt } from '@/features/advertising'
 import { AuthPrompt } from '@/features/auth'
 
+import { TEMPORARILY_SKIP_ENTRY_PROMPTS_FOR_ADSENSE } from '../config/entry-flow'
 import { useStartupAuthPrompt } from '../hooks/use-startup-auth-prompt'
 
 import { AppSidebar } from './app-sidebar'
@@ -36,7 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             container and break sticky headers. The sidebar toggle now lives in each
             page's <AppTopBar/>. */}
         <SidebarInset className="min-w-0">{children}</SidebarInset>
-        <OnboardingFlow />
+        {!TEMPORARILY_SKIP_ENTRY_PROMPTS_FOR_ADSENSE ? <OnboardingFlow /> : null}
         <AppDownloadPrompt />
         <AdBlockPrompt />
         <AuthPrompt />

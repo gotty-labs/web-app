@@ -9,6 +9,7 @@ import { useEffect, useSyncExternalStore } from 'react'
 
 import { authPromptStore, useSession } from '@/features/auth'
 
+import { TEMPORARILY_SKIP_ENTRY_PROMPTS_FOR_ADSENSE } from '../config/entry-flow'
 import { onboardingStore } from '../stores/onboarding-store'
 
 export function useStartupAuthPrompt(): void {
@@ -20,6 +21,7 @@ export function useStartupAuthPrompt(): void {
   )
 
   useEffect(() => {
+    if (TEMPORARILY_SKIP_ENTRY_PROMPTS_FOR_ADSENSE) return
     if (status === 'guest' && onboarded) authPromptStore.requestStartup()
   }, [status, onboarded])
 }
