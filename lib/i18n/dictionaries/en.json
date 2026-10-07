@@ -491,7 +491,7 @@
         "label": "Help",
         "title": "Gotty support",
         "description": "Get help with your account, the app, privacy requests, or anything that is not working as expected.",
-        "lastUpdated": "Last updated: September 23, 2026",
+        "lastUpdated": "Last updated: October 7, 2026",
         "sections": [
           {
             "heading": "Contact us",
@@ -512,6 +512,10 @@
             ]
           }
         ]
+      },
+      "igdbAttribution": {
+        "heading": "Game data",
+        "text": "Game information in Gotty, such as titles, covers, release dates and ratings, is provided by {igdb}."
       }
     },
     "nav": {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { getDictionary } from '@/lib/i18n'
 
+import { IgdbAttribution } from '../../_components/igdb-attribution'
 import { LegalPage } from '../../_components/legal-page'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -11,5 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function SupportPage() {
   const dict = await getDictionary('en')
-  return <LegalPage document={dict.app.legal.support} legal={dict.app.legal} />
+  return (
+    <LegalPage document={dict.app.legal.support} legal={dict.app.legal}>
+      <IgdbAttribution copy={dict.app.legal.igdbAttribution} />
+    </LegalPage>
+  )
 }
