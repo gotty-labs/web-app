@@ -670,7 +670,10 @@
       "developer": "Developer",
       "publisher": "Publisher",
       "timeToBeat": "Time to beat",
-      "backToHome": "Go to Gotty home"
+      "backToHome": "Go to Gotty home",
+      "related": {
+        "title": "Related games"
+      }
     },
     "library": {
       "title": "My Library",

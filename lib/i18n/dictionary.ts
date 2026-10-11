@@ -330,6 +330,9 @@ export const dictionarySchema = z.object({
       developer: z.string(),
       publisher: z.string(),
       timeToBeat: z.string(),
+      related: z.object({
+        title: z.string(),
+      }),
       progress: z.object({
         title: z.string(),
         description: z.string(),

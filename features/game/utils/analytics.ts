@@ -28,3 +28,15 @@ export function trackGameAdded(
 
   track({ name: 'game_added', properties })
 }
+
+/** A game opened from the detail's "Related games" block (`position` is 1-based). */
+export function trackRelatedGameOpened(
+  sourceGameId: string,
+  gameId: string,
+  position: number,
+): void {
+  track({
+    name: 'related_game_opened',
+    properties: { source_game_id: sourceGameId, game_id: gameId, position },
+  })
+}

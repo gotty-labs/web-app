@@ -144,5 +144,8 @@ export const gameDtoSchema = z.object({
   languages: z.array(gameLanguageSchema),
   platforms: z.array(gameConsoleSchema),
   releaseDates: z.array(gameReleaseDateSchema),
+  // Precomputed related games (4–10, or empty). Optional + `[]` default so a backend
+  // that doesn't send it yet still validates (the detail just omits the block).
+  related: z.array(gameSummarySchema).optional().default([]),
 })
 export type GameDto = z.infer<typeof gameDtoSchema>

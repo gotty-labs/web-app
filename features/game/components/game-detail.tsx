@@ -41,6 +41,7 @@ import { GameLanguages } from './game-languages'
 import { GameMediaGallery } from './game-media-gallery'
 import { GamePlatforms } from './game-platforms'
 import { GameRatingSummary } from './game-rating-summary'
+import { GameRelatedSection } from './game-related-section'
 import { GameReleaseDates, type ReleaseRow } from './game-release-dates'
 import { GameTags } from './game-tags'
 import { GameTimeToBeat, type TimeToBeatEntry } from './game-time-to-beat'
@@ -279,6 +280,15 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                 <GameLanguages dict={dict} languages={game.languages} />
               </DetailSection>
             )}
+
+            {/* Always the last block; hidden under the minimum (handled inside). */}
+            <GameRelatedSection
+              key={game.id}
+              sourceGameId={game.id}
+              games={game.related}
+              locale={locale}
+              dictionary={dict}
+            />
           </div>
         </GameDetailAdLayout>
       </main>
