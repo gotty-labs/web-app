@@ -670,7 +670,10 @@
       "developer": "Desarrollador",
       "publisher": "Editor",
       "timeToBeat": "Duración estimada",
-      "backToHome": "Ir al inicio de Gotty"
+      "backToHome": "Ir al inicio de Gotty",
+      "related": {
+        "title": "Juegos relacionados"
+      }
     },
     "library": {
       "title": "Mi Biblioteca",

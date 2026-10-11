@@ -2,6 +2,7 @@
 
 import { CalendarIcon } from 'lucide-react'
 import Link from 'next/link'
+import type { MouseEventHandler } from 'react'
 
 import { AppImage } from '@/components/app-image'
 import { Badge } from '@/components/ui/badge'
@@ -35,15 +36,22 @@ const INFORMATIVE_STATUSES: GameStatus[] = ['ALPHA', 'BETA', 'EARLY_ACCESS', 'RU
  *   4. RELEASED/UNKNOWN → nothing (both are noise on a card).
  * Used in the authed app (feed/search/library) → client component, reads labels
  * from the dictionary. Links to `href` (defaults to the locale-specific public
- * game URL when a slug is present).
+ * game URL when a slug is present) — in a new tab by default (the app keeps its
+ * state), or in the same tab with `newTab={false}` (e.g. related games on the
+ * public detail). `onClick` runs before the link navigates; `preventDefault()` in
+ * it cancels the navigation.
  */
 export function GameCard({
   game,
   href,
+  newTab = true,
+  onClick,
   className,
 }: {
   game: GameSummary
   href?: string
+  newTab?: boolean
+  onClick?: MouseEventHandler<HTMLAnchorElement>
   className?: string
 }) {
   const dict = useDictionary()
@@ -101,6 +109,11 @@ export function GameCard({
             <RatingBadge value={game.rating?.value} locale={locale} className={OVERLAY_CHIP} />
           </div>
         ) : null}
+        {/* Keyboard focus ring drawn INSIDE the cover: carousels clip anything outside. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-lg opacity-0 ring-2 ring-ring ring-inset group-focus-visible/link:opacity-100"
+        />
       </div>
       <div className="flex flex-col">
         <p className="truncate text-sm font-medium">{game.name}</p>
@@ -112,10 +125,11 @@ export function GameCard({
   return target ? (
     <Link
       href={target}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={newTab ? '_blank' : undefined}
+      rel={newTab ? 'noopener noreferrer' : undefined}
       prefetch={false}
-      className="block"
+      onClick={onClick}
+      className="group/link block outline-none"
     >
       {card}
     </Link>
