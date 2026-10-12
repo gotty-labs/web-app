@@ -108,7 +108,8 @@ or shadcn docs first — this stack is ahead of training data.
 - **SEO language = Option B (per-locale URLs, SEO zone only):** en at `/games/[slug]`, es at
   `/es/games/[slug]` (two thin pages sharing `GameDetail` + `buildGameMetadata`). Pages emit
   hreflang (`alternates.canonical` + `alternates.languages`); the sitemap is localized
-  (`alternates.languages` → one `<url>`/game) + chunked via `generateSitemaps` (45k, under 50k).
+  (`alternates.languages` → one `<url>` per game/locale) + chunked via `generateSitemaps`
+  (2,000 games per chunk; keep XML responses small for Vercel ISR cache misses).
   `generateStaticParams` returns `[]` (render on-demand; avoid 2×N build fetches). The `(app)` zone
   stays noindex + homogeneous (system locale, same URL).
 
