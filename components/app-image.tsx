@@ -23,6 +23,8 @@ export function AppImage({
   wrapperStyle,
   alt,
   igdbKind = 'cover',
+  onLoad,
+  onError,
   ...props
 }: ImageProps & {
   wrapperClassName?: string
@@ -55,8 +57,14 @@ export function AppImage({
         alt={alt}
         {...props}
         loader={loader}
-        onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(true)}
+        onLoad={(event) => {
+          setLoaded(true)
+          onLoad?.(event)
+        }}
+        onError={(event) => {
+          setLoaded(true)
+          onError?.(event)
+        }}
         className={cn(
           'transition-opacity duration-300',
           loaded ? 'opacity-100' : 'opacity-0',

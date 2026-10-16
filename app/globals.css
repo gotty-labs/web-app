@@ -159,6 +159,15 @@
      (black at 70%) blurred by twice their large spacing. Clipped to the top edge. */
   --shadow-sheet: 0 0 calc(var(--spacing) * 8) oklch(0 0 0 / 70%);
 
+  /* News cards (`newsCardImageAspectRatio` / `newsCardMinWidth`, shared with the apps):
+     a fixed landscape image box avoids layout shifts while outlet images load, and the
+     grid's minimum column keeps headline + summary readable at the default text size
+     (never applied above the available width). */
+  --aspect-news-card: 16 / 9;
+  --news-card-min-width: 20rem;
+  /* Card hover elevation (Paper: scrim at 0 12px 32px); cards never scale on hover. */
+  --shadow-card-hover: 0 12px 32px oklch(0 0 0 / 70%);
+
   --animate-marquee: marquee 45s linear infinite;
 
   @keyframes marquee {

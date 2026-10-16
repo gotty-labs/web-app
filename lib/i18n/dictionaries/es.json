@@ -523,6 +523,7 @@
       "options": "Opciones",
       "feed": "Feed",
       "library": "Biblioteca",
+      "news": "Noticias",
       "search": "Buscar",
       "consoleVisibility": "Visibilidad de consolas",
       "consoleVisibilityCount": "Visibilidad de consolas ({count} visibles)",
@@ -743,6 +744,61 @@
       "released": "Ya disponible",
       "guestTitle": "Tu biblioteca vive aquí",
       "guestDescription": "Inicia sesión para guardar juegos, crear listas y seguir tu progreso."
+    },
+    "news": {
+      "page": {
+        "title": "Noticias",
+        "documentTitle": "Noticias · Gotty"
+      },
+      "filter": {
+        "label": "Filtrar fuentes",
+        "a11yCountOne": "Filtrar fuentes, 1 fuente visible",
+        "a11yCountOther": "Filtrar fuentes, {count} fuentes visibles"
+      },
+      "sources": {
+        "title": "Fuentes de noticias",
+        "description": "Elige qué medios quieres ver en Noticias.",
+        "showAll": "Mostrar todas",
+        "hideAll": "Ocultar todas",
+        "save": "Guardar",
+        "empty": "No hay fuentes disponibles ahora mismo."
+      },
+      "language": {
+        "nameEn": "Inglés",
+        "nameEs": "Español",
+        "badgeEn": "EN",
+        "badgeEs": "ES",
+        "a11yEn": "Noticia en inglés",
+        "a11yEs": "Noticia en español"
+      },
+      "alsoIn": {
+        "label": "También en {sources}",
+        "labelMore": "También en {sources} +{count}",
+        "a11y": "Elegir medio. También en {sources}",
+        "title": "Leer en…",
+        "description": "Elige con qué medio quieres leer esta noticia."
+      },
+      "card": {
+        "openHint": "Abre la noticia original en {source}",
+        "newTab": "(se abre en una pestaña nueva)"
+      },
+      "date": {
+        "justNow": "Ahora",
+        "minutesAgo": "Hace {count} min",
+        "hoursAgo": "Hace {count} h"
+      },
+      "empty": {
+        "title": "Aún no hay noticias",
+        "description": "Vuelve en un rato para ponerte al día."
+      },
+      "allHidden": {
+        "title": "Has ocultado todas las fuentes",
+        "description": "Activa al menos un medio para ver noticias.",
+        "action": "Elegir fuentes"
+      },
+      "error": {
+        "nextPage": "No pudimos cargar más noticias."
+      }
     },
     "settings": {
       "title": "Ajustes",
