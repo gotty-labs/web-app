@@ -25,8 +25,9 @@ import {
 import { getGameCover } from '../config/images'
 import { gamePath } from '../utils/paths'
 
-/** Shared SEO revalidation window (1h); on-demand revalidation handles freshness. */
-export const SEO_REVALIDATE_SECONDS = 3600
+/** 78-hour fallback; backend webhooks invalidate changed content before this expires.
+ * Keep the route-level revalidate literals in game pages and sitemaps in sync. */
+export const SEO_REVALIDATE_SECONDS = 280800
 
 /** All publishable games (id/slug/updatedAt) for static params + sitemap. */
 export function getSitemapEntries(): Promise<GameSitemapEntry[]> {

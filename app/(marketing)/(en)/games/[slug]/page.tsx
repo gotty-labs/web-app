@@ -4,7 +4,8 @@ import type { Metadata } from 'next'
 import { GameDetail } from '@/features/game/components/game-detail'
 import { buildGameMetadata } from '@/features/game/services/seo'
 
-export const revalidate = 3600
+// 78-hour fallback; keep in sync with SEO_REVALIDATE_SECONDS (Next requires a literal).
+export const revalidate = 280800
 export const dynamicParams = true
 
 export function generateStaticParams(): { slug: string }[] {

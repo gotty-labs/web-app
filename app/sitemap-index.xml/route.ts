@@ -2,7 +2,8 @@ import { SITEMAP_CHUNK_SIZE } from '@/features/game/config/sitemap'
 import { getSitemapEntries } from '@/features/game/services/seo'
 import { env } from '@/lib/config/env'
 
-export const revalidate = 3600
+// 78-hour fallback; keep in sync with SEO_REVALIDATE_SECONDS (Next requires a literal).
+export const revalidate = 280800
 
 /** A stable sitemap URL for Google Search Console, even when the catalog grows. */
 export async function GET(): Promise<Response> {
