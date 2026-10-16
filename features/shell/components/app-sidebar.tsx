@@ -89,6 +89,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={active} tooltip={label}>
                         <Link
                           href={item.href}
+                          data-testid={`link.nav.${item.key}`}
                           onClick={() => {
                             closeMobile()
                             if (item.href === '/library') requestAppPromotion()

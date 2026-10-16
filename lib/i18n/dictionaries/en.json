@@ -523,6 +523,7 @@
       "options": "Options",
       "feed": "Feed",
       "library": "Library",
+      "news": "News",
       "search": "Search",
       "consoleVisibility": "Console visibility",
       "consoleVisibilityCount": "Console visibility ({count} shown)",
@@ -743,6 +744,61 @@
       "released": "Available now",
       "guestTitle": "Your library lives here",
       "guestDescription": "Sign in to save games, build lists and track your progress."
+    },
+    "news": {
+      "page": {
+        "title": "News",
+        "documentTitle": "News · Gotty"
+      },
+      "filter": {
+        "label": "Filter sources",
+        "a11yCountOne": "Filter sources, 1 source visible",
+        "a11yCountOther": "Filter sources, {count} sources visible"
+      },
+      "sources": {
+        "title": "News sources",
+        "description": "Choose which outlets you want to see in News.",
+        "showAll": "Show all",
+        "hideAll": "Hide all",
+        "save": "Save",
+        "empty": "There are no sources available right now."
+      },
+      "language": {
+        "nameEn": "English",
+        "nameEs": "Spanish",
+        "badgeEn": "EN",
+        "badgeEs": "ES",
+        "a11yEn": "Article in English",
+        "a11yEs": "Article in Spanish"
+      },
+      "alsoIn": {
+        "label": "Also in {sources}",
+        "labelMore": "Also in {sources} +{count}",
+        "a11y": "Choose outlet. Also in {sources}",
+        "title": "Read on…",
+        "description": "Choose which outlet to read this story on."
+      },
+      "card": {
+        "openHint": "Opens the original article on {source}",
+        "newTab": "(opens in a new tab)"
+      },
+      "date": {
+        "justNow": "Just now",
+        "minutesAgo": "{count} min ago",
+        "hoursAgo": "{count} h ago"
+      },
+      "empty": {
+        "title": "No news yet",
+        "description": "Check back soon to catch up."
+      },
+      "allHidden": {
+        "title": "You've hidden every source",
+        "description": "Turn on at least one outlet to see news.",
+        "action": "Choose sources"
+      },
+      "error": {
+        "nextPage": "We couldn't load more news."
+      }
     },
     "settings": {
       "title": "Settings",

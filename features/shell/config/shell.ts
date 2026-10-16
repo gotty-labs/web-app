@@ -6,14 +6,14 @@
  * typed list lets the sidebar map over it and lets active-state detection live in one
  * place.
  */
-import { HomeIcon, LibraryIcon, type LucideIcon } from 'lucide-react'
+import { HomeIcon, LibraryIcon, NewspaperIcon, type LucideIcon } from 'lucide-react'
 
 import type { Dictionary } from '@/lib/i18n'
 
 export type NavKey = keyof Dictionary['app']['nav']
 
 export interface NavItem {
-  key: Extract<NavKey, 'feed' | 'library'>
+  key: Extract<NavKey, 'feed' | 'library' | 'news'>
   href: string
   icon: LucideIcon
 }
@@ -21,6 +21,7 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { key: 'feed', href: '/home', icon: HomeIcon },
   { key: 'library', href: '/library', icon: LibraryIcon },
+  { key: 'news', href: '/news', icon: NewspaperIcon },
 ]
 
 /**

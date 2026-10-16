@@ -190,6 +190,7 @@ export const dictionarySchema = z.object({
       options: z.string(),
       feed: z.string(),
       library: z.string(),
+      news: z.string(),
       search: z.string(),
       consoleVisibility: z.string(),
       consoleVisibilityCount: z.string(),
@@ -410,6 +411,62 @@ export const dictionarySchema = z.object({
       released: z.string(),
       guestTitle: z.string(),
       guestDescription: z.string(),
+    }),
+    news: z.object({
+      page: z.object({
+        title: z.string(),
+        documentTitle: z.string(),
+      }),
+      /** Web plural of the filter's accessible label: `count === 1` picks `a11yCountOne`. */
+      filter: z.object({
+        label: z.string(),
+        a11yCountOne: z.string(),
+        a11yCountOther: z.string().includes('{count}'),
+      }),
+      sources: z.object({
+        title: z.string(),
+        description: z.string(),
+        showAll: z.string(),
+        hideAll: z.string(),
+        save: z.string(),
+        empty: z.string(),
+      }),
+      language: z.object({
+        nameEn: z.string(),
+        nameEs: z.string(),
+        badgeEn: z.string(),
+        badgeEs: z.string(),
+        a11yEn: z.string(),
+        a11yEs: z.string(),
+      }),
+      alsoIn: z.object({
+        label: z.string().includes('{sources}'),
+        labelMore: z.string().includes('{sources}').includes('{count}'),
+        a11y: z.string().includes('{sources}'),
+        title: z.string(),
+        description: z.string(),
+      }),
+      card: z.object({
+        openHint: z.string().includes('{source}'),
+        newTab: z.string(),
+      }),
+      date: z.object({
+        justNow: z.string(),
+        minutesAgo: z.string().includes('{count}'),
+        hoursAgo: z.string().includes('{count}'),
+      }),
+      empty: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      allHidden: z.object({
+        title: z.string(),
+        description: z.string(),
+        action: z.string(),
+      }),
+      error: z.object({
+        nextPage: z.string(),
+      }),
     }),
     settings: z.object({
       title: z.string(),
