@@ -14,7 +14,8 @@ import { SITEMAP_CHUNK_SIZE } from '@/features/game/config/sitemap'
 import { env } from '@/lib/config/env'
 import { locales } from '@/lib/i18n'
 
-export const revalidate = 3600
+// 78-hour fallback; keep in sync with SEO_REVALIDATE_SECONDS (Next requires a literal).
+export const revalidate = 280800
 
 export async function generateSitemaps(): Promise<{ id: number }[]> {
   const entries = await getSitemapEntries()
