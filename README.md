@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Guest session recovery
+
+When refresh confirms that a guest session is invalid, the client clears it and the
+existing `AuthGate` starts a new guest session automatically. Members keep the explicit
+expiry acknowledgement. Stale token failures cannot expire a replacement session;
+temporary network/server errors and maintenance do not trigger guest recreation.
+
 ## Getting Started
 
 First, run the development server:

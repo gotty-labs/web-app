@@ -9,8 +9,8 @@
  *   4. If the backend answers 401 / `REAUTHENTICATION_REQUIRED_TOKEN` (50042),
  *      refresh and replay the request once.
  *   5. On `INVALID_TOKEN` (50041) or `FORCE_NEW_MANUAL_LOGIN` (50043), the
- *      session is unrecoverable → signal the app (expiry alert). The store is NOT
- *      cleared here — see `signalSessionExpired`.
+ *      session is unrecoverable → signal the app (automatic guest recovery or a
+ *      member expiry alert). The store is not cleared in this service.
  *
  * SINGLE-FLIGHT is the critical correctness property: many components can hit a
  * 401 at once, but they must share ONE refresh promise and then all replay —
@@ -23,7 +23,7 @@
  */
 import { z } from 'zod'
 
-import { bffRequest } from '@/lib/api/bff-client'
+import { BffError, bffRequest } from '@/lib/api/bff-client'
 import { apiRequest, type ApiRequestOptions } from '@/lib/api/client'
 import { ApiException } from '@/lib/api/envelope'
 import { InternalCode } from '@/lib/api/error-codes'
@@ -38,7 +38,7 @@ const refreshPayloadSchema = z.object({
   accessToken: z.string(),
 })
 
-/** Set by `SessionProvider` to surface the expiry alert on hard session loss. */
+/** Set by `SessionProvider` to handle hard session loss for the current audience. */
 let onSessionExpired: (() => void) | null = null
 export function setOnSessionExpired(handler: (() => void) | null): void {
   onSessionExpired = handler
@@ -54,24 +54,41 @@ export class SessionExpiredError extends Error {
 
 let refreshInFlight: Promise<string> | null = null
 
-function signalSessionExpired(): void {
+function signalSessionExpired(failedToken: string | null): void {
+  // Late failures from the old session must not clear a replacement guest/member.
+  if (!failedToken || sessionStore.getAccessToken() !== failedToken) return
   onSessionExpired?.()
 }
 
 async function performRefresh(): Promise<string> {
+  const failedToken = sessionStore.getAccessToken()
   try {
     const data = await bffRequest({
       path: '/api/auth/refresh',
       schema: refreshPayloadSchema,
     })
+    if (sessionStore.getAccessToken() !== failedToken) {
+      // Never replay an old request with another session's permissions.
+      throw new SessionExpiredError()
+    }
     sessionStore.setAccess(data)
     return data.accessToken
   } catch (error) {
     if (isMaintenanceError(error)) throw error
 
-    // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). Signal expiry; the
-    // client session is cleared on the alert's acknowledgment, not here.
-    signalSessionExpired()
+    // A temporary transport/server failure is not a reason to keep creating guests.
+    const guest = sessionStore.getSnapshot().session?.guest === true
+    const invalidSession =
+      error instanceof BffError &&
+      (error.status === 401 ||
+        error.internalCode === InternalCode.INVALID_TOKEN ||
+        error.internalCode === InternalCode.REAUTHENTICATION_REQUIRED_TOKEN ||
+        error.internalCode === InternalCode.FORCE_NEW_MANUAL_LOGIN)
+    if (guest && !invalidSession) throw error
+
+    // BFF already cleared the cookie (e.g. FORCE_NEW_MANUAL_LOGIN). The provider
+    // handles guest recovery or asks the member to acknowledge expiry.
+    signalSessionExpired(failedToken)
     throw new SessionExpiredError()
   }
 }
@@ -92,9 +109,10 @@ function refresh(): Promise<string> {
  * cannot be recovered, or the original `ApiException` for other domain errors.
  */
 export async function authedRequest<T>(options: Omit<ApiRequestOptions<T>, 'token'>): Promise<T> {
+  const sessionID = sessionStore.getId()
   let token = sessionStore.getAccessToken()
   if (!token) {
-    signalSessionExpired()
+    signalSessionExpired(token)
     throw new SessionExpiredError('No active session')
   }
 
@@ -111,14 +129,30 @@ export async function authedRequest<T>(options: Omit<ApiRequestOptions<T>, 'toke
   } catch (error) {
     if (error instanceof ApiException) {
       if (error.internalCode === InternalCode.REAUTHENTICATION_REQUIRED_TOKEN) {
-        const fresh = await refresh()
-        return apiRequest({ language, ...options, token: fresh })
+        const currentToken = sessionStore.getAccessToken()
+        if (!currentToken || sessionStore.getId() !== sessionID) throw new SessionExpiredError()
+        // Another request may already have refreshed this same session.
+        const fresh = currentToken !== token ? currentToken : await refresh()
+        try {
+          return await apiRequest({ language, ...options, token: fresh })
+        } catch (retryError) {
+          if (
+            retryError instanceof ApiException &&
+            (retryError.internalCode === InternalCode.INVALID_TOKEN ||
+              retryError.internalCode === InternalCode.FORCE_NEW_MANUAL_LOGIN ||
+              retryError.internalCode === InternalCode.REAUTHENTICATION_REQUIRED_TOKEN)
+          ) {
+            signalSessionExpired(fresh)
+            throw new SessionExpiredError()
+          }
+          throw retryError
+        }
       }
       if (
         error.internalCode === InternalCode.INVALID_TOKEN ||
         error.internalCode === InternalCode.FORCE_NEW_MANUAL_LOGIN
       ) {
-        signalSessionExpired()
+        signalSessionExpired(token)
         throw new SessionExpiredError()
       }
     }
