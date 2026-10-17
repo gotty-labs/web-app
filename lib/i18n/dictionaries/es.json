@@ -209,7 +209,8 @@
       "secondaryCta": "Cómo funciona",
       "nav": {
         "features": "Funciones",
-        "how": "Cómo funciona"
+        "how": "Cómo funciona",
+        "discover": "Descubrir juegos"
       },
       "mock": {
         "trending": "Tendencias de la semana",
@@ -405,9 +406,7 @@
           },
           {
             "heading": "Contacto",
-            "paragraphs": [
-              "Puedes enviar preguntas sobre estos términos a espeso86@gmail.com."
-            ]
+            "paragraphs": ["Puedes enviar preguntas sobre estos términos a espeso86@gmail.com."]
           }
         ]
       },
@@ -925,6 +924,63 @@
         "accountBenefit": "Crear una cuenta gratuita lleva aproximadamente un minuto y te permite disfrutar de la experiencia completa con menos interrupciones.",
         "createAccount": "Crear una cuenta gratuita",
         "continue": "Continuar como invitado"
+      }
+    },
+    "discovery": {
+      "title": "Encuentra tu próximo juego",
+      "description": "El próximo juego depende del tiempo, la atención y la compañía que tengas. Empieza por tres pequeñas selecciones con motivos para elegir cada propuesta y aspectos que conviene conocer antes de decidirte.",
+      "eyebrow": "Selecciones de Gotty",
+      "collectionLabel": "Elige una selección",
+      "whyPick": "Por qué elegirlo",
+      "consider": "Antes de empezar",
+      "viewGame": "Explorar este juego",
+      "methodTitle": "Cómo utilizar estas selecciones",
+      "methodDescription": "Son puntos de partida para distintas formas de jugar, no una clasificación general. Cada pareja plantea una elección: explorar o resolver puzles, organizar una rutina o investigar con calma, compartir una aventura o centrarse en un reto cooperativo. Las notas describen el diseño de los juegos para ayudarte a elegir; no son reseñas basadas en partidas personales. Consulta las plataformas y los idiomas en la ficha antes de incorporarlo a tus planes.",
+      "dataDescription": "La información de los juegos y sus portadas procede del catálogo, con datos facilitados por IGDB. Gotty aporta los criterios de selección y las orientaciones que los acompañan.",
+      "dataLink": "Sobre nuestras fuentes de datos",
+      "exploreApp": "Explorar el catálogo completo",
+      "collections": {
+        "unwind": {
+          "title": "Una aventura más pequeña",
+          "description": "Cuando otro mapa enorme se parece demasiado a una lista de tareas, un escenario acotado puede devolver las ganas de explorar. Estas dos propuestas ofrecen satisfacciones distintas sin exigir aprender muchos sistemas.",
+          "comparison": "Elige A Short Hike para deambular con libertad; Donut County, para resolver puzles por niveles con un toque travieso."
+        },
+        "stories": {
+          "title": "Historias que cambian con tus decisiones",
+          "description": "Leer y decidir ocupan el centro de estas experiencias. Encajan en esas tardes en las que apetece ponerse en la piel de un personaje y pensar en las consecuencias, en lugar de entrenar reflejos.",
+          "comparison": "Elige Citizen Sleeper para organizar decisiones alrededor de recursos diarios; Disco Elysium, para una investigación abierta entre voces interiores que compiten."
+        },
+        "together": {
+          "title": "Cooperar es lo importante",
+          "description": "Jugar en compañía funciona mejor cuando ambas personas tienen algo significativo que hacer. Aquí coordinarse forma parte del propio juego, en lugar de limitarse a compartir un escenario.",
+          "comparison": "Elige It Takes Two para una aventura variada diseñada para dos; la campaña cooperativa de Portal 2, para resolver problemas espaciales en equipo."
+        }
+      },
+      "games": {
+        "aShortHike": {
+          "reason": "Una isla pequeña y el ascenso a su cima dan una dirección clara al paseo sin dictar cada paso. Los desvíos, las conversaciones y el movimiento son parte de la recompensa. Encaja cuando buscas descubrir sin un registro de misiones abarrotado. Frente a Donut County, ofrece más libertad para decidir dónde ir y cuánto detenerte.",
+          "consideration": "Su atractivo es la exploración tranquila, no el combate ni una larga progresión. Elígelo por el recorrido por la isla, sin esperar un mundo abierto enorme o una experiencia de acción exigente."
+        },
+        "donutCounty": {
+          "reason": "Mover un agujero por el escenario convierte recoger objetos en un puzle travieso: empiezas por los pequeños, creces y descubres cómo engullir el resto. Los niveles separados ofrecen puntos naturales para parar. Elígelo frente a una aventura abierta si te apetece resolver un problema concreto y avanzar entre pequeños descubrimientos sin tener que decidir una ruta.",
+          "consideration": "Los puzles están al servicio de una historia desenfadada y del humor visual, no de una simulación profunda. Es una experiencia concentrada; si buscas configuraciones complejas, mucha personalización o una campaña larga, conviene elegir otra propuesta."
+        },
+        "citizenSleeper": {
+          "reason": "Cada ciclo pide repartir dados y recursos limitados entre el trabajo, las relaciones y la supervivencia. Esa estructura convierte la precariedad de la historia en decisiones prácticas: ayudar a alguien puede competir con mantenerte a flote. Encaja si disfrutas organizando un día, asumiendo riesgos y viendo cómo las relaciones avanzan junto a la gestión de recursos.",
+          "consideration": "Hay bastante lectura y presión por la escasez de recursos. Su ritmo se acerca a una aventura narrativa inspirada en el rol de mesa, por lo que no es la mejor elección si necesitas que el combate sostenga la experiencia."
+        },
+        "discoElysium": {
+          "reason": "La investigación avanza entre conversaciones, observaciones y discusiones entre las propias facultades del protagonista. Construir a tu detective cambia la forma de interpretar personas y situaciones: el diálogo es el terreno que exploras. Elígelo frente a Citizen Sleeper si prefieres una investigación más abierta y desordenada a una rutina organizada en ciclos diarios.",
+          "consideration": "El texto denso, los temas adultos y un protagonista poco convencional exigen atención. No es un RPG centrado en el combate y su tono resulta considerablemente más duro que el de las aventuras pequeñas de la primera selección."
+        },
+        "itTakesTwo": {
+          "reason": "La necesidad de dos jugadores es su razón de ser: las habilidades y los obstáculos piden una y otra vez repartirse tareas y combinarlas. Los cambios de mecánicas dan a la pareja mucho que descubrir. Encaja cuando ambos queréis comprometeros con una aventura compartida y alternar plataformas, puzles y acción, en lugar de mantener una sola mecánica.",
+          "consideration": "Necesitas otra persona: no es una campaña individual con compañía opcional. Ambos jugadores deben sentirse cómodos con controles activos. Comprueba los requisitos y las modalidades para jugar juntos en la plataforma elegida."
+        },
+        "portal2": {
+          "reason": "Su campaña cooperativa independiente da portales a dos jugadores y plantea problemas que ninguno puede completar por separado. Explicar qué ves y coordinar una secuencia importan tanto como ejecutarla. Elígelo cuando lo que os apetece es conversar hasta encontrar una solución, en lugar de seguir una aventura que cambia constantemente de mecánicas.",
+          "consideration": "La historia individual y la campaña cooperativa son distintas: para esta recomendación, elige el modo cooperativo. El movimiento en primera persona y el razonamiento espacial son centrales; comprobad que a ambos os guste esa perspectiva y ese tipo de puzles."
+        }
       }
     }
   }

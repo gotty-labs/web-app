@@ -13,6 +13,7 @@ import { gameLanguageAlternates, getSitemapEntries } from '@/features/game/servi
 import { SITEMAP_CHUNK_SIZE } from '@/features/game/config/sitemap'
 import { env } from '@/lib/config/env'
 import { locales } from '@/lib/i18n'
+import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
 
 // 78-hour fallback; keep in sync with SEO_REVALIDATE_SECONDS (Next requires a literal).
 export const revalidate = 280800
@@ -37,6 +38,7 @@ export default async function sitemap({
     chunk === 0
       ? [
           { url: `${base}/` },
+          { url: `${base}${DISCOVERY_PATH}` },
           ...staticPaths.flatMap((path) => {
             const languages = {
               en: `${base}/${path}`,

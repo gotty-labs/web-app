@@ -8,13 +8,23 @@ import Link from 'next/link'
 
 import { BrandMark } from '@/components/brand-mark'
 import { Separator } from '@/components/ui/separator'
-import type { Dictionary } from '@/lib/i18n'
+import type { Dictionary, Locale } from '@/lib/i18n'
+import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
 
 import { PrivacySettingsLink } from './privacy-settings-link'
 
-export function LandingFooter({ dict }: { dict: Dictionary }) {
+export function LandingFooter({
+  dict,
+  locale = 'en',
+  sectionBase = '',
+}: {
+  dict: Dictionary
+  locale?: Locale
+  sectionBase?: string
+}) {
   const { brand, landing, actions, legal } = dict.app
   const year = DateTime.now().year
+  const legalPrefix = locale === 'es' ? '/es' : ''
 
   return (
     <footer className="border-t border-border/40 px-6 py-12">
@@ -29,12 +39,18 @@ export function LandingFooter({ dict }: { dict: Dictionary }) {
           </div>
 
           <nav className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <a href="#features" className="transition-colors hover:text-foreground">
+            <a href={`${sectionBase}#features`} className="transition-colors hover:text-foreground">
               {landing.nav.features}
             </a>
-            <a href="#how-it-works" className="transition-colors hover:text-foreground">
+            <a
+              href={`${sectionBase}#how-it-works`}
+              className="transition-colors hover:text-foreground"
+            >
               {landing.nav.how}
             </a>
+            <Link href={DISCOVERY_PATH} className="transition-colors hover:text-foreground">
+              {landing.nav.discover}
+            </Link>
             <Link href="/home" className="transition-colors hover:text-foreground">
               {actions.enterApp}
             </Link>
@@ -45,22 +61,37 @@ export function LandingFooter({ dict }: { dict: Dictionary }) {
 
         <div className="flex flex-col gap-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link href="/privacy" className="transition-colors hover:text-foreground">
+            <Link
+              href={`${legalPrefix}/privacy`}
+              className="transition-colors hover:text-foreground"
+            >
               {legal.links.privacy}
             </Link>
-            <Link href="/terms" className="transition-colors hover:text-foreground">
+            <Link href={`${legalPrefix}/terms`} className="transition-colors hover:text-foreground">
               {legal.links.terms}
             </Link>
-            <Link href="/cookies" className="transition-colors hover:text-foreground">
+            <Link
+              href={`${legalPrefix}/cookies`}
+              className="transition-colors hover:text-foreground"
+            >
               {legal.links.cookies}
             </Link>
-            <Link href="/account-deletion" className="transition-colors hover:text-foreground">
+            <Link
+              href={`${legalPrefix}/account-deletion`}
+              className="transition-colors hover:text-foreground"
+            >
               {legal.links.accountDeletion}
             </Link>
-            <Link href="/support" className="transition-colors hover:text-foreground">
+            <Link
+              href={`${legalPrefix}/support`}
+              className="transition-colors hover:text-foreground"
+            >
               {legal.links.support}
             </Link>
-            <PrivacySettingsLink label={legal.links.privacySettings} fallbackHref="/cookies#privacy-settings" />
+            <PrivacySettingsLink
+              label={legal.links.privacySettings}
+              fallbackHref={`${legalPrefix}/cookies#privacy-settings`}
+            />
           </nav>
 
           <p>
