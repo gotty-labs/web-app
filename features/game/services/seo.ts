@@ -1,13 +1,15 @@
 /**
  * PUBLIC SEO catalog clients (server-side, NO token) for the static `/games/[slug]`
  * zone. Uses `apiRequest` directly (Option A: public read-only endpoints) and
- * Next's ISR caching (`next: { revalidate, tags }`) so a page is fetched once and
- * served static, then refreshed in the background / on-demand via the revalidate
- * webhook (`game:<slug>` and `game-sitemap` tags).
+ * Next's ISR caching (`next: { revalidate, tags }`; the oversized sitemap catalogue
+ * uses `unstable_cache` instead) so data is fetched once and served static, then
+ * refreshed in the background / on-demand via the revalidate webhook
+ * (`game:<slug>` and `game-sitemap` tags).
  */
 import { z } from 'zod'
 
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 
 import { apiRequest } from '@/lib/api/client'
 import { ApiException } from '@/lib/api/envelope'
@@ -29,18 +31,38 @@ import { gamePath } from '../utils/paths'
  * Keep the route-level revalidate literals in game pages and sitemaps in sync. */
 export const SEO_REVALIDATE_SECONDS = 280800
 
-/** All publishable games (id/slug/updatedAt) for static params + sitemap. */
-export function getSitemapEntries(): Promise<GameSitemapEntry[]> {
-  // Idempotent GET on the cold-render path → back off + retry on 429 (rate limit)
-  // instead of failing the build/render when many cold pages hit the backend at once.
-  return retryOn429(() =>
-    apiRequest({
-      method: 'GET',
-      path: '/game/sitemaps',
-      schema: z.array(gameSitemapEntrySchema),
-      next: { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] },
-    }),
-  )
+/** What the sitemaps need from each publishable game. */
+export type SitemapEntry = Pick<GameSitemapEntry, 'slug' | 'updatedAt'>
+
+/**
+ * The full catalogue response (~2.2 MB JSON for ~22k games, ~2.9 MB once the fetch
+ * cache base64-encodes it) exceeds Next's 2 MB data-cache entry limit, so a cached
+ * `fetch` silently stays uncached and every sitemap chunk re-downloads it. Instead,
+ * fetch uncached (`fetch` is no-store inside `unstable_cache`) and cache only compact
+ * `[slug, updatedAt]` tuples: ~54 bytes/game serialized → fits up to ~38k games.
+ * Errors are not cached, so a backend failure still fails the sitemap render.
+ */
+const getCachedSitemapTuples = unstable_cache(
+  async (): Promise<[slug: string, updatedAt: string][]> => {
+    // Idempotent GET on the cold-render path → back off + retry on 429 (rate limit)
+    // instead of failing the build/render when many cold pages hit the backend at once.
+    const entries = await retryOn429(() =>
+      apiRequest({
+        method: 'GET',
+        path: '/game/sitemaps',
+        schema: z.array(gameSitemapEntrySchema),
+      }),
+    )
+    return entries.map(({ slug, updatedAt }) => [slug, updatedAt])
+  },
+  ['game-sitemap-entries'],
+  { revalidate: SEO_REVALIDATE_SECONDS, tags: ['game-sitemap'] },
+)
+
+/** All publishable games (slug/updatedAt) for the sitemap, in backend order. */
+export async function getSitemapEntries(): Promise<SitemapEntry[]> {
+  const tuples = await getCachedSitemapTuples()
+  return tuples.map(([slug, updatedAt]) => ({ slug, updatedAt }))
 }
 
 /** Public game detail by slug (no user-specific fields). */
