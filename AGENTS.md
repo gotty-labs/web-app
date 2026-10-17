@@ -88,6 +88,10 @@ or shadcn docs first — this stack is ahead of training data.
   guests have `user: null`. Member-only features (library, lists, progress, console visibility,
   account settings) are gated on the client: for guests call `authPromptStore.show()`, never
   hit the endpoint (the backend answers 50047). Sign-out continues as a fresh guest.
+- An unrecoverable **guest** session is cleared automatically so `AuthGate` can bootstrap
+  another guest; members retain the explicit session-expired alert. Ignore expiry
+  signals from superseded access tokens. Temporary refresh/network failures must not
+  repeatedly create new guest sessions.
 
 ## Internationalization (i18n) — `lib/i18n/`
 

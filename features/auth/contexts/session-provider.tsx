@@ -64,14 +64,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     sessionStore.getServerSnapshot,
   )
 
-  // Centralized hard-session-loss handling: `authedRequest`'s `hardLogout` fires this
-  // when a refresh can't be recovered. Registering the callback here (not calling
-  // setState in the effect body) keeps the `set-state-in-effect` rule happy. On expiry
-  // we surface a blocking alert WITHOUT clearing the session, so the user still sees their
-  // last screen behind it; acknowledging it clears the session (a new guest follows).
+  // An expired guest can restart anonymously through AuthGate; no account decision
+  // is needed. Members keep the explicit expiry alert so account loss is visible.
   const [expired, setExpired] = useState(false)
   useEffect(() => {
-    setOnSessionExpired(() => setExpired(true))
+    setOnSessionExpired(() => {
+      const current = sessionStore.getSnapshot().session
+      if (!current) return
+      if (current.guest) {
+        sessionStore.clear()
+        return
+      }
+      setExpired(true)
+    })
     return () => setOnSessionExpired(null)
   }, [])
 
