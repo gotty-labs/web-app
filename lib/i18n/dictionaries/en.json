@@ -201,6 +201,7 @@
       "close": "Close"
     },
     "landing": {
+      "metaTitle": "Gotty · Discover, save and track your games",
       "heroBadge": "Free · Every platform · One library",
       "heroTitleLead": "Every game you love,",
       "heroTitleAccent": "in one library.",
@@ -262,6 +263,11 @@
       },
       "footer": {
         "rights": "All rights reserved."
+      },
+      "language": {
+        "label": "Language",
+        "en": "English",
+        "es": "Español"
       }
     },
     "legal": {
@@ -406,7 +412,9 @@
           },
           {
             "heading": "Contact",
-            "paragraphs": ["Questions about these terms can be sent to espeso86@gmail.com."]
+            "paragraphs": [
+              "Questions about these terms can be sent to espeso86@gmail.com."
+            ]
           }
         ]
       },

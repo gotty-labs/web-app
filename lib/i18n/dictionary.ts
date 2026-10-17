@@ -139,6 +139,7 @@ export const dictionarySchema = z.object({
       close: z.string(),
     }),
     landing: z.object({
+      metaTitle: z.string(),
       heroBadge: z.string(),
       heroTitleLead: z.string(),
       heroTitleAccent: z.string(),
@@ -175,6 +176,12 @@ export const dictionarySchema = z.object({
       }),
       footer: z.object({
         rights: z.string(),
+      }),
+      /** Language names are endonyms, identical in every dictionary. */
+      language: z.object({
+        label: z.string(),
+        en: z.string(),
+        es: z.string(),
       }),
     }),
     discovery: z.object({

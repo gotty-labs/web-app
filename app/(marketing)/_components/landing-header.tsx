@@ -6,11 +6,12 @@ import Link from 'next/link'
 
 import { BrandMark } from '@/components/brand-mark'
 import { Button } from '@/components/ui/button'
-import type { Dictionary, Locale } from '@/lib/i18n'
-import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
+import { localizedPath, type Dictionary, type Locale } from '@/lib/i18n'
+import { discoveryPath } from '@/features/game/utils/discovery-path'
 
 export function LandingHeader({
   dict,
+  locale = 'en',
   sectionBase = '',
 }: {
   dict: Dictionary
@@ -22,7 +23,7 @@ export function LandingHeader({
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href={localizedPath('/', locale)} className="flex items-center gap-2.5">
           <BrandMark wrapperClassName="h-10 w-14" sizes="56px" priority />
           <span className="font-heading text-lg font-bold tracking-tight">{brand.name}</span>
         </Link>
@@ -37,7 +38,7 @@ export function LandingHeader({
           >
             {landing.nav.how}
           </a>
-          <Link href={DISCOVERY_PATH} className="transition-colors hover:text-foreground">
+          <Link href={discoveryPath(locale)} className="transition-colors hover:text-foreground">
             {landing.nav.discover}
           </Link>
         </nav>

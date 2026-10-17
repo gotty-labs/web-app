@@ -12,7 +12,7 @@ import type { MetadataRoute } from 'next'
 import { gameLanguageAlternates, getSitemapEntries } from '@/features/game/services/seo'
 import { SITEMAP_CHUNK_SIZE } from '@/features/game/config/sitemap'
 import { env } from '@/lib/config/env'
-import { locales } from '@/lib/i18n'
+import { languageAlternates, locales } from '@/lib/i18n'
 import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
 
 // 78-hour fallback; keep in sync with SEO_REVALIDATE_SECONDS (Next requires a literal).
@@ -32,25 +32,25 @@ export default async function sitemap({
   const chunk = Number(await id)
   const base = env.siteUrl
 
-  // Public static routes live only in the first chunk.
-  const staticPaths = ['support', 'privacy', 'terms', 'cookies', 'account-deletion']
+  // Public static routes (published in every locale) live only in the first chunk.
+  const staticPaths = [
+    '/',
+    DISCOVERY_PATH,
+    '/support',
+    '/privacy',
+    '/terms',
+    '/cookies',
+    '/account-deletion',
+  ]
   const staticRoutes: MetadataRoute.Sitemap =
     chunk === 0
-      ? [
-          { url: `${base}/` },
-          { url: `${base}${DISCOVERY_PATH}` },
-          ...staticPaths.flatMap((path) => {
-            const languages = {
-              en: `${base}/${path}`,
-              es: `${base}/es/${path}`,
-              'x-default': `${base}/${path}`,
-            }
-            return locales.map((locale) => ({
-              url: languages[locale],
-              alternates: { languages },
-            }))
-          }),
-        ]
+      ? staticPaths.flatMap((path) => {
+          const languages = languageAlternates(path, base)
+          return locales.map((locale) => ({
+            url: languages[locale],
+            alternates: { languages },
+          }))
+        })
       : []
 
   const entries = await getSitemapEntries()

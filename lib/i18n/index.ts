@@ -4,5 +4,6 @@
  * in `./hooks/*`.
  */
 export { type Locale, locales, defaultLocale, resolveLocale, getClientLocale } from './locales'
+export { localizedPath, languageAlternates } from './paths'
 export { type Dictionary, type ErrorByCodeKey, dictionarySchema, getDictionary } from './dictionary'
 export { type ErrorKind, type ClassifiedError, classifyError, getErrorMessage } from './errors'

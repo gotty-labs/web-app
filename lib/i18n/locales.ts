@@ -1,6 +1,8 @@
 /**
- * Locale model (shared). We support `en` (default) and `es`, detected from the
- * user's system — NO user toggle and NO locale in the URL (homogeneous routing).
+ * Locale model (shared). We support `en` (default) and `es`. The `(app)` zone
+ * detects it from the user's system — NO user toggle and NO locale in the URL
+ * (homogeneous routing). The public marketing pages instead use fixed per-locale
+ * URLs (`/` vs `/es`, see `./paths`).
  * This uses the Next docs' "Localization" (dictionaries) approach decoupled from
  * its `[lang]` routing approach.
  *

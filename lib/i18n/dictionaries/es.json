@@ -201,6 +201,7 @@
       "close": "Cerrar"
     },
     "landing": {
+      "metaTitle": "Gotty · Descubre, guarda y sigue tus videojuegos",
       "heroBadge": "Gratis · Todas las plataformas · Una biblioteca",
       "heroTitleLead": "Todos los juegos que te encantan,",
       "heroTitleAccent": "en una sola biblioteca.",
@@ -262,6 +263,11 @@
       },
       "footer": {
         "rights": "Todos los derechos reservados."
+      },
+      "language": {
+        "label": "Idioma",
+        "en": "English",
+        "es": "Español"
       }
     },
     "legal": {
@@ -406,7 +412,9 @@
           },
           {
             "heading": "Contacto",
-            "paragraphs": ["Puedes enviar preguntas sobre estos términos a espeso86@gmail.com."]
+            "paragraphs": [
+              "Puedes enviar preguntas sobre estos términos a espeso86@gmail.com."
+            ]
           }
         ]
       },

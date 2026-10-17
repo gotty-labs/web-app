@@ -1,22 +1,33 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Public discovery
+## Public landing and discovery
 
-`/discover` exposes small, explained game selections in English only, without a
-language selector, an account or a guest session. It shares the marketing
-design and existing public game endpoints; `/home` keeps the interactive app flow.
+The public landing and discovery pages are published in English and Spanish, each at
+its own fixed URL, regardless of the browser language (no detection, cookies or
+redirects):
 
-- Selection membership: `features/game/config/discovery.ts` (canonical game slugs).
-- Original guidance: `app.discovery` in the English dictionary. The shared dictionary
-  contract retains the Spanish copy, but discovery always loads English.
-- Live catalogue facts and covers: `features/game/services/discovery.ts`, using the
-  existing public SEO clients and 78-hour ISR fallback. Backend failures propagate;
-  a missing game is omitted rather than linked to a 404. Review selections when
-  changing or removing a configured game.
-- The route renders its content and links on the server, declares its own canonical,
-  and appears once in sitemap chunk 0. Landing headers and footers in any language
-  link to `/discover`. There is no `/es/discover` route. No new backend API or
-  advertising-only feature flag is used.
+| Page      | English     | Spanish        |
+| --------- | ----------- | -------------- |
+| Landing   | `/`         | `/es`          |
+| Discovery | `/discover` | `/es/discover` |
+
+- Both routes of a pair render the same shared component with a fixed locale
+  (`app/(marketing)/_components/landing-page.tsx`, `discovery-page.tsx`); copy comes
+  from the `en`/`es` dictionaries. Pages stay static/ISR and server-rendered.
+- Each page sets `<html lang>` (via the `(en)`/`(es)` root layouts), a translated title
+  and description, its own canonical and reciprocal hreflang (`en`, `es`, `x-default` →
+  English) built by `languageAlternates()` in `lib/i18n/paths.ts`.
+- The footer has a crawlable «English / Español» link switcher. On Spanish pages the
+  discover, legal and support links point to their `/es` versions; app entry points
+  always go to `/home`.
+- All of these URLs, with their alternates, are listed in sitemap chunk 0; game chunks
+  keep 2,000 games each.
+- Discovery selection membership: `features/game/config/discovery.ts` (canonical game
+  slugs). Guidance: `app.discovery` in each dictionary. Live catalogue facts and covers:
+  `features/game/services/discovery.ts`, using the existing public SEO clients in the
+  page locale and the 78-hour ISR fallback. Backend failures propagate; a missing game
+  is omitted rather than linked to a 404. Review selections when changing or removing
+  a configured game. No new backend API or advertising-only feature flag is used.
 - These improvements do not guarantee AdSense approval. Request another review only
   after publishing and checking the actual public pages.
 

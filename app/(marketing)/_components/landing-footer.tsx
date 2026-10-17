@@ -8,23 +8,27 @@ import Link from 'next/link'
 
 import { BrandMark } from '@/components/brand-mark'
 import { Separator } from '@/components/ui/separator'
-import type { Dictionary, Locale } from '@/lib/i18n'
-import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
+import { localizedPath, type Dictionary, type Locale } from '@/lib/i18n'
+import { discoveryPath } from '@/features/game/utils/discovery-path'
 
+import { LanguageSwitcher } from './language-switcher'
 import { PrivacySettingsLink } from './privacy-settings-link'
 
 export function LandingFooter({
   dict,
   locale = 'en',
+  path = '/',
   sectionBase = '',
 }: {
   dict: Dictionary
   locale?: Locale
+  /** Unprefixed path of the current page, for the language switcher. */
+  path?: string
   sectionBase?: string
 }) {
   const { brand, landing, actions, legal } = dict.app
   const year = DateTime.now().year
-  const legalPrefix = locale === 'es' ? '/es' : ''
+  const legalPath = (route: string) => localizedPath(route, locale)
 
   return (
     <footer className="border-t border-border/40 px-6 py-12">
@@ -48,7 +52,7 @@ export function LandingFooter({
             >
               {landing.nav.how}
             </a>
-            <Link href={DISCOVERY_PATH} className="transition-colors hover:text-foreground">
+            <Link href={discoveryPath(locale)} className="transition-colors hover:text-foreground">
               {landing.nav.discover}
             </Link>
             <Link href="/home" className="transition-colors hover:text-foreground">
@@ -61,42 +65,36 @@ export function LandingFooter({
 
         <div className="flex flex-col gap-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link
-              href={`${legalPrefix}/privacy`}
-              className="transition-colors hover:text-foreground"
-            >
+            <Link href={legalPath('/privacy')} className="transition-colors hover:text-foreground">
               {legal.links.privacy}
             </Link>
-            <Link href={`${legalPrefix}/terms`} className="transition-colors hover:text-foreground">
+            <Link href={legalPath('/terms')} className="transition-colors hover:text-foreground">
               {legal.links.terms}
             </Link>
-            <Link
-              href={`${legalPrefix}/cookies`}
-              className="transition-colors hover:text-foreground"
-            >
+            <Link href={legalPath('/cookies')} className="transition-colors hover:text-foreground">
               {legal.links.cookies}
             </Link>
             <Link
-              href={`${legalPrefix}/account-deletion`}
+              href={legalPath('/account-deletion')}
               className="transition-colors hover:text-foreground"
             >
               {legal.links.accountDeletion}
             </Link>
-            <Link
-              href={`${legalPrefix}/support`}
-              className="transition-colors hover:text-foreground"
-            >
+            <Link href={legalPath('/support')} className="transition-colors hover:text-foreground">
               {legal.links.support}
             </Link>
             <PrivacySettingsLink
               label={legal.links.privacySettings}
-              fallbackHref={`${legalPrefix}/cookies#privacy-settings`}
+              fallbackHref={`${legalPath('/cookies')}#privacy-settings`}
             />
           </nav>
 
-          <p>
-            © {year} {brand.name}. {landing.footer.rights}
-          </p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <LanguageSwitcher dict={dict} locale={locale} path={path} />
+            <p>
+              © {year} {brand.name}. {landing.footer.rights}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -4,19 +4,24 @@ import { ArrowRightIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getDiscoveryCollections } from '@/features/game/services/discovery'
 import { DiscoveryGameCard } from '@/features/game/components/discovery-game-card'
-import { getDictionary } from '@/lib/i18n'
+import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
+import { getDictionary, localizedPath, type Locale } from '@/lib/i18n'
 
 import { LandingHeader } from './landing-header'
 import { LandingFooter } from './landing-footer'
 
-export async function DiscoveryPage() {
-  const [dict, collections] = await Promise.all([getDictionary('en'), getDiscoveryCollections()])
+export async function DiscoveryPage({ locale }: { locale: Locale }) {
+  const [dict, collections] = await Promise.all([
+    getDictionary(locale),
+    getDiscoveryCollections(locale),
+  ])
+  const landingPath = localizedPath('/', locale)
   const t = dict.app.discovery
   const visibleCollections = collections.filter((collection) => collection.games.length > 0)
 
   return (
     <>
-      <LandingHeader dict={dict} sectionBase="/" />
+      <LandingHeader dict={dict} locale={locale} sectionBase={landingPath} />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pt-28 pb-20 md:gap-20 md:pt-36">
         <header className="flex max-w-3xl flex-col gap-6">
           <p className="text-sm font-medium tracking-wide text-primary">{t.eyebrow}</p>
@@ -57,7 +62,7 @@ export async function DiscoveryPage() {
                   slug={slug}
                   copy={t.games[copyKey]}
                   dict={dict}
-                  locale="en"
+                  locale={locale}
                 />
               ))}
             </div>
@@ -74,7 +79,10 @@ export async function DiscoveryPage() {
           <p className="leading-relaxed text-muted-foreground">{t.methodDescription}</p>
           <p className="leading-relaxed text-muted-foreground">
             {t.dataDescription}{' '}
-            <Link href="/support" className="text-foreground underline underline-offset-4">
+            <Link
+              href={localizedPath('/support', locale)}
+              className="text-foreground underline underline-offset-4"
+            >
               {t.dataLink}
             </Link>
           </p>
@@ -88,7 +96,7 @@ export async function DiscoveryPage() {
           </div>
         </section>
       </main>
-      <LandingFooter dict={dict} sectionBase="/" />
+      <LandingFooter dict={dict} locale={locale} path={DISCOVERY_PATH} sectionBase={landingPath} />
     </>
   )
 }

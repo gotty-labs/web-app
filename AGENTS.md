@@ -13,14 +13,19 @@ or shadcn docs first — this stack is ahead of training data.
 
 ## Architecture (the big picture)
 
-- Three zones: **`(marketing)`** = static landing `/` + SEO `/games/[slug]` (public, ISR);
+- Three zones: **`(marketing)`** = static landing `/` (en) + `/es` (es) + SEO `/games/[slug]` (public, ISR);
   **`(app)`** = `/home` + descendants (always has a session: member or guest). Use App Router **route groups**.
-- Public discovery lives only at `/discover`, in English without a language selector:
-  editorial selections in `features/game/config/discovery.ts`, guidance from the English
-  dictionary, game facts from existing public SEO reads. Keep links and guidance
-  in the server-rendered HTML, with its own canonical and one URL in sitemap chunk 0.
-  Links from Spanish pages also point to `/discover`; do not add `/es/discover`.
-  It does not depend on a guest session or change the `/home` experience.
+- Public landing and discovery are published per language: `/` + `/discover` (en) and
+  `/es` + `/es/discover` (es). Both routes of a pair render the SAME shared component with
+  a FIXED locale (`_components/landing-page.tsx`, `_components/discovery-page.tsx`) — no
+  detection, no cookies, no redirects. Editorial selections live in
+  `features/game/config/discovery.ts`, guidance in each dictionary, game facts from the
+  public SEO reads in that locale. Each page emits its own canonical + reciprocal hreflang
+  (`languageAlternates()` in `lib/i18n/paths.ts`; `x-default` → English) and the footer's
+  crawlable «English / Español» `LanguageSwitcher`. On Spanish pages, internal links
+  (discover, legal, support) use `localizedPath()`; app entry points stay `/home`. Both
+  locales appear in sitemap chunk 0. Discovery does not depend on a guest session or
+  change the `/home` experience.
 - Build the **domain/business layer before UI**, feature by feature.
 - The browser talks to the backend **directly** for data (token in `Authorization`); a tiny
   **BFF** (`app/api/auth/*`) exists ONLY for operations that must touch the httpOnly cookie.
@@ -116,7 +121,9 @@ or shadcn docs first — this stack is ahead of training data.
   forces dynamic rendering and breaks SSG of the SEO zone. Mount `I18nProvider` (dict passed as a
   prop) in the `(app)` layout; the static marketing zone passes the SEO-strategy locale.
 - **SEO language = Option B (per-locale URLs, SEO zone only):** en at `/games/[slug]`, es at
-  `/es/games/[slug]` (two thin pages sharing `GameDetail` + `buildGameMetadata`). Pages emit
+  `/es/games/[slug]` (two thin pages sharing `GameDetail` + `buildGameMetadata`). The landing
+  (`/` ↔ `/es`), discovery (`/discover` ↔ `/es/discover`) and legal pages follow the same
+  pattern: thin per-locale routes under `(en)`/`(es)` root layouts (`<html lang>`). Pages emit
   hreflang (`alternates.canonical` + `alternates.languages`); the sitemap is localized
   (`alternates.languages` → one `<url>` per game/locale) + chunked via `generateSitemaps`
   (2,000 games per chunk; keep XML responses small for Vercel ISR cache misses).
