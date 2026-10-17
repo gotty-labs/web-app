@@ -209,7 +209,8 @@
       "secondaryCta": "See how it works",
       "nav": {
         "features": "Features",
-        "how": "How it works"
+        "how": "How it works",
+        "discover": "Discover games"
       },
       "mock": {
         "trending": "Trending this week",
@@ -405,9 +406,7 @@
           },
           {
             "heading": "Contact",
-            "paragraphs": [
-              "Questions about these terms can be sent to espeso86@gmail.com."
-            ]
+            "paragraphs": ["Questions about these terms can be sent to espeso86@gmail.com."]
           }
         ]
       },
@@ -925,6 +924,63 @@
         "accountBenefit": "Creating a free account takes about a minute and gives you the full experience with fewer interruptions.",
         "createAccount": "Create a free account",
         "continue": "Continue as guest"
+      }
+    },
+    "discovery": {
+      "title": "Find your next game",
+      "description": "A good next game depends on the time, attention and company you have. Start with three small selections, with reasons to choose each game and the trade-offs worth knowing before you commit.",
+      "eyebrow": "Gotty selections",
+      "collectionLabel": "Choose a collection",
+      "whyPick": "Why choose it",
+      "consider": "Before you start",
+      "viewGame": "Explore this game",
+      "methodTitle": "How to use these selections",
+      "methodDescription": "These are starting points for different ways of playing, rather than an overall ranking. Each pair highlights a meaningful choice: exploration or puzzles, a daily routine or a dense investigation, an ongoing partnership or a focused co-op challenge. The notes describe the games’ design and help you decide what fits; they are not personal playthrough reviews. Check the game page for platforms and language support before adding it to your plans.",
+      "dataDescription": "Game facts and cover images come from the catalogue, with data supplied by IGDB. Gotty provides the selection criteria and accompanying guidance.",
+      "dataLink": "About our data sources",
+      "exploreApp": "Explore the full catalogue",
+      "collections": {
+        "unwind": {
+          "title": "A smaller adventure",
+          "description": "When another sprawling map feels like homework, a contained setting can make exploring enjoyable again. These two games offer different kinds of satisfaction without asking you to learn a large set of systems.",
+          "comparison": "Choose A Short Hike for freedom to wander; choose Donut County for playful, level-based puzzles."
+        },
+        "stories": {
+          "title": "Stories shaped by your choices",
+          "description": "These games make reading and deciding central to the experience. They suit evenings when you want to inhabit a character and think about consequences, rather than practise reflexes.",
+          "comparison": "Choose Citizen Sleeper for decisions structured around daily resources; choose Disco Elysium for an open-ended investigation and competing inner voices."
+        },
+        "together": {
+          "title": "Make cooperation the main event",
+          "description": "Playing together works best when both people have something meaningful to do. These picks make coordination part of the game itself, rather than simply placing two players in the same space.",
+          "comparison": "Choose It Takes Two for a varied adventure built for two; choose Portal 2’s co-op campaign for solving spatial problems together."
+        }
+      },
+      "games": {
+        "aShortHike": {
+          "reason": "A small island and a climb to its summit give your wandering a clear direction without prescribing every step. Detours, conversations and movement are the reward, so it is a useful pick when you want discovery without a crowded quest log. Compared with Donut County, it gives you more control over where to go and how long to linger.",
+          "consideration": "The appeal is gentle exploration, not combat or a long progression ladder. Pick it for the journey around the island rather than expecting a large open world or demanding action."
+        },
+        "donutCounty": {
+          "reason": "Moving a hole through a scene turns tidying up into a mischievous puzzle: start with small objects, grow, and work out how to swallow what remains. Its separate levels provide natural stopping points. Choose it over a free-roaming adventure when a concrete problem and a compact sequence of discoveries sound more inviting than deciding your own route.",
+          "consideration": "The puzzles serve a playful story and visual joke, rather than a deep simulation. It is a focused experience; players looking for complex builds, extensive customisation or a long campaign should look elsewhere."
+        },
+        "citizenSleeper": {
+          "reason": "Each cycle asks you to allocate dice and limited resources across work, relationships and survival. That structure turns a story about precarity into practical choices: helping someone can compete with keeping yourself going. Choose it when you enjoy planning a day, taking a risk and seeing relationships develop alongside the resource decisions.",
+          "consideration": "Expect substantial reading and pressure around scarce resources. Its rhythm is closer to a tabletop-inspired narrative than an action RPG, so it is a poor fit if you want combat to carry the experience."
+        },
+        "discoElysium": {
+          "reason": "The investigation develops through conversations, observations and arguments between your character’s own faculties. Building a detective changes how you read people and situations, making dialogue the main terrain to explore. Choose it over Citizen Sleeper when you want a messier, more open-ended investigation instead of a routine organised into daily cycles.",
+          "consideration": "Dense text, mature subject matter and an unconventional protagonist demand attention. It is not a conventional combat-driven RPG, and its tone is considerably heavier than the smaller adventures in the first selection."
+        },
+        "itTakesTwo": {
+          "reason": "The two-player requirement is the point: abilities and obstacles repeatedly ask partners to do different jobs and combine them. Changing mechanics give a pair plenty to discover together. Choose it when both players want to commit to a shared adventure and enjoy moving between platforming, puzzles and action rather than staying with one mechanic.",
+          "consideration": "You need a second player; this is not a solo campaign with optional company. Both players should be comfortable with active controls. Check the requirements and available ways to play together on your chosen platform."
+        },
+        "portal2": {
+          "reason": "The separate co-op campaign gives two players portals and a shared problem, then asks them to plan movements that neither can complete alone. Describing what you see and coordinating a sequence become as important as execution. Choose it when talking through a solution together is the main attraction, rather than following a constantly changing adventure.",
+          "consideration": "The single-player story and co-op campaign are distinct, so select the co-op mode for this recommendation. First-person movement and spatial reasoning are central; check that both players enjoy that perspective and puzzle style."
+        }
       }
     }
   }

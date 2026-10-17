@@ -15,6 +15,12 @@ or shadcn docs first — this stack is ahead of training data.
 
 - Three zones: **`(marketing)`** = static landing `/` + SEO `/games/[slug]` (public, ISR);
   **`(app)`** = `/home` + descendants (always has a session: member or guest). Use App Router **route groups**.
+- Public discovery lives only at `/discover`, in English without a language selector:
+  editorial selections in `features/game/config/discovery.ts`, guidance from the English
+  dictionary, game facts from existing public SEO reads. Keep links and guidance
+  in the server-rendered HTML, with its own canonical and one URL in sitemap chunk 0.
+  Links from Spanish pages also point to `/discover`; do not add `/es/discover`.
+  It does not depend on a guest session or change the `/home` experience.
 - Build the **domain/business layer before UI**, feature by feature.
 - The browser talks to the backend **directly** for data (token in `Authorization`); a tiny
   **BFF** (`app/api/auth/*`) exists ONLY for operations that must touch the httpOnly cookie.

@@ -52,6 +52,17 @@ const landingFeatureSchema = z.object({
   description: z.string(),
 })
 
+const discoveryCollectionSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  comparison: z.string(),
+})
+
+const discoveryGameSchema = z.object({
+  reason: z.string(),
+  consideration: z.string(),
+})
+
 const legalSectionSchema = z.object({
   heading: z.string(),
   paragraphs: z.array(z.string()).min(1),
@@ -137,6 +148,7 @@ export const dictionarySchema = z.object({
       nav: z.object({
         features: z.string(),
         how: z.string(),
+        discover: z.string(),
       }),
       mock: z.object({
         trending: z.string(),
@@ -163,6 +175,33 @@ export const dictionarySchema = z.object({
       }),
       footer: z.object({
         rights: z.string(),
+      }),
+    }),
+    discovery: z.object({
+      title: z.string(),
+      description: z.string(),
+      eyebrow: z.string(),
+      collectionLabel: z.string(),
+      whyPick: z.string(),
+      consider: z.string(),
+      viewGame: z.string(),
+      methodTitle: z.string(),
+      methodDescription: z.string(),
+      dataDescription: z.string(),
+      dataLink: z.string(),
+      exploreApp: z.string(),
+      collections: z.object({
+        unwind: discoveryCollectionSchema,
+        stories: discoveryCollectionSchema,
+        together: discoveryCollectionSchema,
+      }),
+      games: z.object({
+        aShortHike: discoveryGameSchema,
+        donutCounty: discoveryGameSchema,
+        citizenSleeper: discoveryGameSchema,
+        discoElysium: discoveryGameSchema,
+        itTakesTwo: discoveryGameSchema,
+        portal2: discoveryGameSchema,
       }),
     }),
     legal: z.object({

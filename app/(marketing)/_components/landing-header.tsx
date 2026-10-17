@@ -6,9 +6,17 @@ import Link from 'next/link'
 
 import { BrandMark } from '@/components/brand-mark'
 import { Button } from '@/components/ui/button'
-import type { Dictionary } from '@/lib/i18n'
+import type { Dictionary, Locale } from '@/lib/i18n'
+import { DISCOVERY_PATH } from '@/features/game/utils/discovery-path'
 
-export function LandingHeader({ dict }: { dict: Dictionary }) {
+export function LandingHeader({
+  dict,
+  sectionBase = '',
+}: {
+  dict: Dictionary
+  locale?: Locale
+  sectionBase?: string
+}) {
   const { brand, landing, actions } = dict.app
 
   return (
@@ -20,12 +28,18 @@ export function LandingHeader({ dict }: { dict: Dictionary }) {
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-          <a href="#features" className="transition-colors hover:text-foreground">
+          <a href={`${sectionBase}#features`} className="transition-colors hover:text-foreground">
             {landing.nav.features}
           </a>
-          <a href="#how-it-works" className="transition-colors hover:text-foreground">
+          <a
+            href={`${sectionBase}#how-it-works`}
+            className="transition-colors hover:text-foreground"
+          >
             {landing.nav.how}
           </a>
+          <Link href={DISCOVERY_PATH} className="transition-colors hover:text-foreground">
+            {landing.nav.discover}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

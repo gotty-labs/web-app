@@ -1,5 +1,25 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Public discovery
+
+`/discover` exposes small, explained game selections in English only, without a
+language selector, an account or a guest session. It shares the marketing
+design and existing public game endpoints; `/home` keeps the interactive app flow.
+
+- Selection membership: `features/game/config/discovery.ts` (canonical game slugs).
+- Original guidance: `app.discovery` in the English dictionary. The shared dictionary
+  contract retains the Spanish copy, but discovery always loads English.
+- Live catalogue facts and covers: `features/game/services/discovery.ts`, using the
+  existing public SEO clients and 78-hour ISR fallback. Backend failures propagate;
+  a missing game is omitted rather than linked to a 404. Review selections when
+  changing or removing a configured game.
+- The route renders its content and links on the server, declares its own canonical,
+  and appears once in sitemap chunk 0. Landing headers and footers in any language
+  link to `/discover`. There is no `/es/discover` route. No new backend API or
+  advertising-only feature flag is used.
+- These improvements do not guarantee AdSense approval. Request another review only
+  after publishing and checking the actual public pages.
+
 ## Guest session recovery
 
 When refresh confirms that a guest session is invalid, the client clears it and the
