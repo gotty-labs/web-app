@@ -43,6 +43,21 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: '/',
       },
+      {
+        // Commercial SEO crawlers can exhaust ISR writes across the catalogue.
+        // Keep this list aligned with the production firewall's SEO crawler rule.
+        userAgent: [
+          'SERankingBacklinksBot',
+          'SEBot-WA',
+          'SemrushBot',
+          'SiteAuditBot',
+          'AhrefsBot',
+          'AhrefsSiteAudit',
+          'MJ12bot',
+          'DataForSeoBot',
+        ],
+        disallow: '/',
+      },
     ],
     sitemap: `${env.siteUrl}/sitemap-index.xml`,
   }
