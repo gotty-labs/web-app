@@ -22,7 +22,8 @@ export const apiErrorSchema = z.object({
   responseId: z.string().optional(),
   success: z.literal(false),
   status: z.number(),
-  error: gtErrorTypeSchema,
+  // Coarse category only: an unknown type must not hide the envelope's internalCode.
+  error: gtErrorTypeSchema.catch('INTERNAL_ERROR'),
   errorInfo: z.object({
     reason: z.string(),
     additionalInfo: z.string().optional(),
