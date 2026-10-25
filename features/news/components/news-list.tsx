@@ -31,7 +31,6 @@ import {
   useAdvertising,
   useCardAdViewport,
 } from '@/features/advertising'
-import { isMaintenanceError } from '@/lib/api/maintenance'
 import type { NewsSource, NewsStory } from '@/lib/domain/models'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
@@ -87,8 +86,6 @@ export function NewsList({
   const initialLoading = items.length === 0 && !error && (loading || hasMore)
 
   if (error && items.length === 0) {
-    // Maintenance has its own global blocking notice; the screen shows no error of its own.
-    if (isMaintenanceError(error)) return null
     return <LoadError message={dict.app.feed.error} testId="button.news.retry" onRetry={loadMore} />
   }
 
@@ -139,7 +136,7 @@ export function NewsList({
           ))}
       </div>
 
-      {error && items.length > 0 && !isMaintenanceError(error) ? (
+      {error && items.length > 0 ? (
         <LoadError
           message={t.error.nextPage}
           testId="button.news.next-page.retry"
