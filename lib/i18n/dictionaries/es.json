@@ -162,6 +162,49 @@
       "AUDIO": "Audio",
       "SUBTITLES": "Subtítulos",
       "INTERFACE": "Interfaz"
+    },
+    "languages": {
+      "yourLanguageTitle": "En tu idioma · {language}",
+      "yourLanguageDisplayName": "Español",
+      "yourLanguageName": "español",
+      "levelComplete": "Completo",
+      "levelAudio": "Con voces",
+      "levelSubtitles": "Subtitulado",
+      "levelInterfaceOnly": "Solo interfaz",
+      "levelUnavailable": "No disponible",
+      "categoryVoices": "Voces",
+      "stateNoData": "Sin datos",
+      "more": "+{count}",
+      "showAll": "Ver los {count} idiomas",
+      "sheetTitle": "{count} idiomas",
+      "filterAll": "Todos",
+      "yourLanguageTag": "Tu idioma",
+      "a11yCard": "En tu idioma, {language}: {level}.",
+      "a11yAvailable": "Disponible: {categories}.",
+      "a11yUnavailable": "No disponible: {categories}.",
+      "a11yNoData": "Sin datos de {categories}.",
+      "a11yCardUnavailable": "En tu idioma: no disponible en {language}.",
+      "a11yRow": "{language}: {categories}",
+      "a11yRowYourLanguage": "{language}, tu idioma: {categories}",
+      "a11ySummaryVoices": {
+        "one": "voces en 1 idioma",
+        "other": "voces en {count} idiomas"
+      },
+      "a11ySummarySubtitles": {
+        "one": "subtítulos en 1 idioma",
+        "other": "subtítulos en {count} idiomas"
+      },
+      "a11ySummaryInterface": {
+        "one": "interfaz en 1 idioma",
+        "other": "interfaz en {count} idiomas"
+      },
+      "a11yMore": {
+        "one": "y 1 idioma más",
+        "other": "y {count} idiomas más"
+      },
+      "a11yCategoryVoices": "voces",
+      "a11yCategorySubtitles": "subtítulos",
+      "a11yCategoryInterface": "interfaz"
     }
   },
   "app": {

@@ -114,6 +114,21 @@ const gameLanguageSchema = z.object({
   categories: z.array(gameLanguageCategorySchema),
 })
 
+/** Ignore future provider enum values without rejecting the rest of the game. */
+export const gameLanguagesSchema = z
+  .array(z.object({ type: z.string(), categories: z.array(z.string()) }))
+  .transform((languages) =>
+    languages.flatMap((language) => {
+      const type = gameLanguageTypeSchema.safeParse(language.type)
+      if (!type.success) return []
+      const categories = gameLanguageCategorySchema.options.filter((category) =>
+        language.categories.includes(category),
+      )
+      return categories.length ? [{ type: type.data, categories }] : []
+    }),
+  )
+  .pipe(z.array(gameLanguageSchema))
+
 /** Current user's library state for a game (`GET /game/public/:slug/library`). */
 export const gameLibraryStateSchema = z.object({
   saved: z.boolean(),
@@ -141,7 +156,7 @@ export const gameDtoSchema = z.object({
   themes: z.array(gameThemeSchema),
   genres: z.array(gameGenreSchema),
   companies: companiesSchema,
-  languages: z.array(gameLanguageSchema),
+  languages: gameLanguagesSchema.optional().default([]),
   platforms: z.array(gameConsoleSchema),
   releaseDates: z.array(gameReleaseDateSchema),
   // Precomputed related games (4–10, or empty). Optional + `[]` default so a backend

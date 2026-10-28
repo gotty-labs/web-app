@@ -162,6 +162,49 @@
       "AUDIO": "Audio",
       "SUBTITLES": "Subtitles",
       "INTERFACE": "Interface"
+    },
+    "languages": {
+      "yourLanguageTitle": "In your language · {language}",
+      "yourLanguageDisplayName": "English",
+      "yourLanguageName": "English",
+      "levelComplete": "Complete",
+      "levelAudio": "Voiced",
+      "levelSubtitles": "Subtitled",
+      "levelInterfaceOnly": "Interface only",
+      "levelUnavailable": "Not available",
+      "categoryVoices": "Voices",
+      "stateNoData": "No data",
+      "more": "+{count}",
+      "showAll": "See all {count} languages",
+      "sheetTitle": "{count} languages",
+      "filterAll": "All",
+      "yourLanguageTag": "Your language",
+      "a11yCard": "In your language, {language}: {level}.",
+      "a11yAvailable": "Available: {categories}.",
+      "a11yUnavailable": "Not available: {categories}.",
+      "a11yNoData": "No data for {categories}.",
+      "a11yCardUnavailable": "In your language: not available in {language}.",
+      "a11yRow": "{language}: {categories}",
+      "a11yRowYourLanguage": "{language}, your language: {categories}",
+      "a11ySummaryVoices": {
+        "one": "voices in 1 language",
+        "other": "voices in {count} languages"
+      },
+      "a11ySummarySubtitles": {
+        "one": "subtitles in 1 language",
+        "other": "subtitles in {count} languages"
+      },
+      "a11ySummaryInterface": {
+        "one": "interface in 1 language",
+        "other": "interface in {count} languages"
+      },
+      "a11yMore": {
+        "one": "and 1 more language",
+        "other": "and {count} more languages"
+      },
+      "a11yCategoryVoices": "voices",
+      "a11yCategorySubtitles": "subtitles",
+      "a11yCategoryInterface": "interface"
     }
   },
   "app": {

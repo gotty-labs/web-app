@@ -59,6 +59,12 @@
 }
 
 :root {
+  /* Fixed icon rails preserve room for names when only text is enlarged.
+     Moki: 40px rails, 480px dialog and 50% disabled icon opacity. */
+  --spacing-language-icon-slot: 40px;
+  --container-language-dialog: 480px;
+  --opacity-disabled: 0.5;
+  --language-dialog-max-height: 85svh;
   --background: oklch(1 0 0);
   --onboarding-media-background: #15141c;
   --foreground: oklch(0.145 0 0);
@@ -105,6 +111,49 @@
   --filter-panel-max-height: min(62svh, 34rem);
 }
 
+/* Only this header wraps its action; other detail sections retain their layout. */
+.game-languages > :first-child {
+  flex-wrap: wrap;
+}
+.game-languages-dialog {
+  --language-dialog-inset: calc(var(--spacing) * 4);
+  padding: var(--language-dialog-inset);
+  padding-bottom: 0;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: fit-content;
+  width: 100%;
+  max-width: var(--container-language-dialog);
+  max-height: var(--language-dialog-max-height);
+  transform: none;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+/* The list reaches the panel edge; its trailing inset scrolls with the rows. */
+.game-languages-list {
+  padding-bottom: calc(var(--language-dialog-inset) + env(safe-area-inset-bottom, 0px));
+}
+@variant md {
+  .game-languages-dialog {
+    --language-dialog-inset: calc(var(--spacing) * 6);
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    max-width: min(var(--container-language-dialog), calc(100% - var(--spacing) * 8));
+    border-radius: var(--radius-xl);
+  }
+}
+/* Short windows (including landscape phones): keep a scrollable list below the
+   fixed title and wrapping filters, even with 200% text. */
+@media (max-height: 30rem) {
+  .game-languages-dialog {
+    --language-dialog-inset: calc(var(--spacing) * 2);
+    max-height: 100svh;
+    gap: var(--spacing);
+  }
+}
 /* Dark surfaces = violet-tinted charcoal (never pure black): every neutral
    carries a subtle chroma toward the brand hue (~285), and elevation is a
    lightness ramp — background (0.19) < card/sidebar (0.23) < popover (0.25)

@@ -275,11 +275,12 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
               />
             )}
 
-            {game.languages.length > 0 && (
-              <DetailSection title={t.languages}>
-                <GameLanguages dict={dict} languages={game.languages} />
-              </DetailSection>
-            )}
+            <GameLanguages
+              dict={dict}
+              languages={game.languages}
+              locale={locale}
+              gameId={game.id}
+            />
 
             {/* Always the last block; hidden under the minimum (handled inside). */}
             <GameRelatedSection
