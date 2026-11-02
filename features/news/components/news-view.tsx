@@ -21,11 +21,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { authPromptStore, useSession } from '@/features/auth'
 import type { NewsSource, NewsStory } from '@/lib/domain/models'
+import { fillTemplate } from '@/lib/i18n'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 import { useHiddenSources } from '../hooks/use-hidden-sources'
 import { getNewsSources } from '../services/news'
-import { filterBadgeCount, fillTemplate } from '../utils/rules'
+import { filterBadgeCount } from '../utils/rules'
 
 import { AlsoInSheet } from './also-in-sheet'
 import { NewsList } from './news-list'
