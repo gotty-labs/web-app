@@ -1,6 +1,7 @@
 import type { GameLanguageCategory, GameLanguageType } from '@/lib/domain/enums'
 import { gameLanguagesSchema } from '@/lib/domain/models/game'
 import type { Dictionary, Locale } from '@/lib/i18n'
+import { fillTemplate } from '@/lib/i18n/template'
 
 export const LANGUAGE_CATEGORIES = ['AUDIO', 'SUBTITLES', 'INTERFACE'] as const
 
@@ -37,7 +38,7 @@ export function buildGameLanguages(input: unknown, locale: Locale, dict: Diction
         name,
         categories,
         isYourLanguage,
-        accessibleLabel: fillLanguageText(isYourLanguage ? t.a11yRowYourLanguage : t.a11yRow, {
+        accessibleLabel: fillTemplate(isYourLanguage ? t.a11yRowYourLanguage : t.a11yRow, {
           language: name,
           categories: list.format(categories.map((category) => a11yNames[category])),
         }),
@@ -83,7 +84,7 @@ export function buildGameLanguages(input: unknown, locale: Locale, dict: Diction
   const categoryList = (predicate: (indicator: (typeof indicators)[number]) => boolean) =>
     list.format(indicators.filter(predicate).map(({ category }) => a11yNames[category]))
   const accessibleCard = [
-    fillLanguageText(level === 'unavailable' ? t.a11yCardUnavailable : t.a11yCard, {
+    fillTemplate(level === 'unavailable' ? t.a11yCardUnavailable : t.a11yCard, {
       language: t.yourLanguageName,
       level: levelLabels[level].toLocaleLowerCase(locale),
     }),
@@ -94,10 +95,10 @@ export function buildGameLanguages(input: unknown, locale: Locale, dict: Diction
           [t.a11yUnavailable, categoryList((item) => !item.available && item.count > 0)],
         ]
           .filter(([, categories]) => categories)
-          .map(([template, categories]) => fillLanguageText(template, { categories }))),
+          .map(([template, categories]) => fillTemplate(template, { categories }))),
     ...[categoryList((item) => item.count === 0)]
       .filter(Boolean)
-      .map((categories) => fillLanguageText(t.a11yNoData, { categories })),
+      .map((categories) => fillTemplate(t.a11yNoData, { categories })),
   ].join(' ')
   const summaryTemplates = {
     AUDIO: t.a11ySummaryVoices,
@@ -107,7 +108,7 @@ export function buildGameLanguages(input: unknown, locale: Locale, dict: Diction
   const summary = indicators.filter((item) => item.count > 0)
   const accessibleSummary = list.format(
     summary.map(({ category, count }) =>
-      fillLanguageText(summaryTemplates[category][count === 1 ? 'one' : 'other'], { count }),
+      fillTemplate(summaryTemplates[category][count === 1 ? 'one' : 'other'], { count }),
     ),
   )
   const others = rows.filter((row) => !row.isYourLanguage)
@@ -127,22 +128,13 @@ export function buildGameLanguages(input: unknown, locale: Locale, dict: Diction
       accessibleSummary.charAt(0).toLocaleUpperCase(locale) + accessibleSummary.slice(1),
     accessibleChips: [
       list.format(chips.map((chip) => chip.name)),
-      ...(more
-        ? [fillLanguageText(t.a11yMore[more === 1 ? 'one' : 'other'], { count: more })]
-        : []),
+      ...(more ? [fillTemplate(t.a11yMore[more === 1 ? 'one' : 'other'], { count: more })] : []),
     ].join(' '),
-    title: fillLanguageText(t.yourLanguageTitle, { language: t.yourLanguageDisplayName }),
-    showAll: fillLanguageText(t.showAll, { count: rows.length }),
-    sheetTitle: fillLanguageText(t.sheetTitle, { count: rows.length }),
-    moreLabel: fillLanguageText(t.more, { count: more }),
+    title: fillTemplate(t.yourLanguageTitle, { language: t.yourLanguageDisplayName }),
+    showAll: fillTemplate(t.showAll, { count: rows.length }),
+    sheetTitle: fillTemplate(t.sheetTitle, { count: rows.length }),
+    moreLabel: fillTemplate(t.more, { count: more }),
   }
-}
-
-export function fillLanguageText(
-  template: string,
-  values: Record<string, string | number>,
-): string {
-  return template.replace(/\{(\w+)\}/g, (match, key: string) => String(values[key] ?? match))
 }
 
 export type GameLanguagesView = ReturnType<typeof buildGameLanguages>

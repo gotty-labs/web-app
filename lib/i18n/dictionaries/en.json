@@ -718,6 +718,25 @@
       "backToHome": "Go to Gotty home",
       "related": {
         "title": "Related games"
+      },
+      "achievements": {
+        "title": "Achievements",
+        "seeAll": "See all ({count})",
+        "totalOne": "1 achievement",
+        "totalOther": "{count} achievements",
+        "progress": "{achieved} of {total} unlocked",
+        "percent": "{progress}%",
+        "rarity": "{rarity} of players have it",
+        "rarityRare": "<0.1% of players have it",
+        "rarityRareShort": "<0.1%",
+        "hiddenTitle": "Hidden achievement",
+        "hiddenRevealClick": "Click to reveal",
+        "hiddenPrefix": "Hidden",
+        "sourceA11y": "Steam achievements",
+        "signInHint": "Sign in to save your progress",
+        "revealA11y": "Reveal",
+        "achievedA11y": "unlocked",
+        "notAchievedA11y": "not unlocked"
       }
     },
     "library": {
@@ -779,6 +798,9 @@
       "confirmRemoveDescription": "Do you want to remove {game} from your library?",
       "confirmRemoveListDescription": "Do you want to remove {game} from this list? It will stay in your library.",
       "confirmRemove": "Remove",
+      "removeWithAchievementsTitle": "Remove from your library?",
+      "removeWithAchievementsMessageOne": "Your status, hours and the achievement you've marked will be deleted.",
+      "removeWithAchievementsMessageOther": "Your status, hours and the {count} achievements you've marked will be deleted.",
       "removedToast": "Removed from your library",
       "removedWhitelistToast": "Removed from your wishlist",
       "addedToast": "Added to your library",

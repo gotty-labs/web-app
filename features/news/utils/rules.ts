@@ -156,10 +156,3 @@ export function sourceMonogram(name: string): string {
   const marks = trimmed.match(/[A-Z0-9]/g) ?? []
   return marks.length > 1 ? marks.slice(0, 2).join('') : trimmed[0].toUpperCase()
 }
-
-/** Replaces `{key}` placeholders in a dictionary template. */
-export function fillTemplate(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
-    key in values ? String(values[key]) : match,
-  )
-}

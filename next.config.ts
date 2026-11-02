@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'i.ytimg.com',
         pathname: '/vi/**',
       },
+      // Steam achievement icons (served unoptimized, straight from Steam's CDN).
+      {
+        protocol: 'https',
+        hostname: 'cdn.akamai.steamstatic.com',
+        pathname: '/steamcommunity/public/images/apps/**',
+      },
     ],
   },
 }

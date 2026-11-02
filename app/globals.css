@@ -49,6 +49,9 @@
   --color-progress-blocked-foreground: var(--progress-blocked-foreground);
   --color-progress-completed: var(--progress-completed);
   --color-progress-completed-foreground: var(--progress-completed-foreground);
+  /* Semantic success (achievement toggle + progress): alias of completed progress. */
+  --color-success: var(--progress-completed);
+  --color-success-foreground: var(--progress-completed-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -63,6 +66,11 @@
      Moki: 40px rails, 480px dialog and 50% disabled icon opacity. */
   --spacing-language-icon-slot: 40px;
   --container-language-dialog: 480px;
+  /* Moki --spacing-size-avatar (44px): achievement icon and toggle slots; and the
+     design system's dialog container (480px) for the achievements list. */
+  --spacing-achievement-icon: 44px;
+  --container-dialog: 480px;
+  --dialog-max-height: 85svh;
   --opacity-disabled: 0.5;
   --language-dialog-max-height: 85svh;
   --background: oklch(1 0 0);

@@ -718,6 +718,25 @@
       "backToHome": "Ir al inicio de Gotty",
       "related": {
         "title": "Juegos relacionados"
+      },
+      "achievements": {
+        "title": "Logros",
+        "seeAll": "Ver todos ({count})",
+        "totalOne": "1 logro",
+        "totalOther": "{count} logros",
+        "progress": "{achieved} de {total} conseguidos",
+        "percent": "{progress} %",
+        "rarity": "{rarity} de jugadores lo tienen",
+        "rarityRare": "<0,1 % de jugadores lo tienen",
+        "rarityRareShort": "<0,1 %",
+        "hiddenTitle": "Logro oculto",
+        "hiddenRevealClick": "Haz clic para revelarlo",
+        "hiddenPrefix": "Oculto",
+        "sourceA11y": "Logros de Steam",
+        "signInHint": "Inicia sesión para guardar tu progreso",
+        "revealA11y": "Revelar",
+        "achievedA11y": "conseguido",
+        "notAchievedA11y": "no conseguido"
       }
     },
     "library": {
@@ -779,6 +798,9 @@
       "confirmRemoveDescription": "¿Quieres eliminar {game} de tu biblioteca?",
       "confirmRemoveListDescription": "¿Quieres eliminar {game} de esta lista? Seguirá en tu biblioteca.",
       "confirmRemove": "Eliminar",
+      "removeWithAchievementsTitle": "¿Eliminar de tu biblioteca?",
+      "removeWithAchievementsMessageOne": "Se borrarán tu estado, tus horas y el logro que has marcado.",
+      "removeWithAchievementsMessageOther": "Se borrarán tu estado, tus horas y los {count} logros que has marcado.",
       "removedToast": "Eliminado de tu biblioteca",
       "removedWhitelistToast": "Eliminado de deseados",
       "addedToast": "Añadido a tu biblioteca",

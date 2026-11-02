@@ -57,3 +57,12 @@ export const storeGameLibraryInputSchema = z.object({
   progressDuration: z.number().min(0).optional(),
 })
 export type StoreGameLibraryInput = z.infer<typeof storeGameLibraryInputSchema>
+
+/**
+ * `PATCH /game/user/library/:gameId` — mark/unmark ONE achievement. Never combined
+ * with the progress fields above (the backend rejects the mix with a 400).
+ */
+export const markGameAchievementInputSchema = z.object({
+  achievement: z.object({ id: z.string().min(1), achieved: z.boolean() }),
+})
+export type MarkGameAchievementInput = z.infer<typeof markGameAchievementInputSchema>
