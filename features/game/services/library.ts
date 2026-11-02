@@ -12,10 +12,12 @@ import { voidDataSchema } from '@/lib/api/envelope'
 import {
   createLibraryListInputSchema,
   getUserLibraryInputSchema,
+  markGameAchievementInputSchema,
   storeGameLibraryInputSchema,
   updateLibraryListInputSchema,
   type CreateLibraryListInput,
   type GetUserLibraryInput,
+  type MarkGameAchievementInput,
   type StoreGameLibraryInput,
   type UpdateLibraryListInput,
 } from '@/lib/domain/inputs'
@@ -133,9 +135,27 @@ export async function storeGameInLibrary(
 }
 
 /**
+ * Mark or unmark one achievement. A mark also saves the game in Library (from nothing
+ * or from the wishlist); an unmark never touches the library entry. The response
+ * carries no data — callers keep their optimistic state.
+ */
+export async function markGameAchievement(
+  gameId: string,
+  input: MarkGameAchievementInput['achievement'],
+): Promise<void> {
+  await authedRequest({
+    method: 'PATCH',
+    path: `/game/user/library/${gameId}`,
+    body: markGameAchievementInputSchema.parse({ achievement: input }),
+    schema: voidDataSchema,
+  })
+}
+
+/**
  * Remove a game from the user's library (undo of save/whitelist). The backend has no
  * DELETE route (404); removal is a PATCH on the same upsert resource that clears the
- * status (`{ status: null }` drops the entry). Sent raw (not through
+ * status (`{ status: null }` drops the entry, and with it the progress, lists and
+ * achievement marks). Sent raw (not through
  * `storeGameLibraryInputSchema`, which doesn't model the null-clear).
  */
 export async function removeGameFromLibrary(gameId: string): Promise<void> {

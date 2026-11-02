@@ -2,19 +2,21 @@
  * Library actions for the game detail, rendered in the hero right under the title
  * (where the visitor is already looking) and mirrored in a compact bar pinned to the
  * top once that row scrolls away, so saving stays one click from anywhere on the page.
- * Lives inside the detail's client island (session + i18n + toaster + auth prompt on
- * the otherwise-static page).
+ * Lives under the detail's client providers (session + i18n + toaster + auth prompt on
+ * the otherwise-static page) and reads/writes the game's shared library state, which
+ * the achievements block also uses.
  *
  *  - guest / no session → "Sign in to save", which opens the auth prompt (the library
  *                         is member-only, as in the native apps).
  *  - saved = false   → Save (primary) · Wishlist · Lists.
- *  - saved = true    → "Saved ▾" (Progress placeholder, Remove) · Lists.
+ *  - saved = true    → "Saved ▾" (Progress placeholder, Remove) · Lists. Removing a game
+ *                      with marked achievements asks for confirmation first.
  * Lists shows the game's membership count and opens a toggleable membership sheet.
  * The sticky bar keeps the primary action visible and folds the rest into a menu.
  */
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import {
   BookmarkCheckIcon,
   BookmarkPlusIcon,
@@ -29,6 +31,16 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -53,11 +65,13 @@ import { Spinner } from '@/components/ui/spinner'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useReportError } from '@/hooks/use-report-error'
 import { authPromptStore, useSession } from '@/features/auth'
-import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
 import type { GameLibraryState } from '@/lib/domain/models'
+import type { StoreGameLibraryInput } from '@/lib/domain/inputs'
+import { fillTemplate } from '@/lib/i18n'
 import { useDictionary, useLocale } from '@/lib/i18n/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
+import { useGameLibraryState } from '../hooks/use-game-library-state'
 import { useScrolledPast } from '../hooks/use-scrolled-past'
 import { trackGameAdded, type GameAddedMetadata } from '../utils/analytics'
 import { formatCount } from '../utils/format'
@@ -156,34 +170,16 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
   const libraryT = dict.app.library
   const report = useReportError()
 
-  const [libraryState, setLibraryState] = useState<GameLibraryState | null>(null)
-  const [ready, setReady] = useState(false)
+  const { phase, state: libraryState, update, replace } = useGameLibraryState()
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
   const [listSheetOpen, setListSheetOpen] = useState(false)
   const [createListOpen, setCreateListOpen] = useState(false)
   const [draftGameListIds, setDraftGameListIds] = useState<string[]>([])
 
-  useEffect(() => {
-    let active = true
-    getGameLibraryState(slug)
-      .then((state) => {
-        if (!active) return
-        setLibraryState(state)
-      })
-      .catch(() => {
-        // A failed library-state read should not show actions with an unknown state.
-      })
-      .finally(() => {
-        if (active) setReady(true)
-      })
-    return () => {
-      active = false
-    }
-  }, [slug])
-
   // Wait until we know the real library state before painting the actions, so we
   // never offer "Save" for a game that's already saved.
-  if (!ready) {
+  if (phase === 'loading') {
     return (
       <>
         <div className={ROW_CLASS}>
@@ -200,15 +196,16 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
     )
   }
 
-  // The protected endpoint returns a state even when the game is not saved.
+  // The protected endpoint returns a state even when the game is not saved; a failed
+  // read shows no actions rather than an unknown state.
   if (!libraryState) return null
 
-  const { saved, lists, gameListIds } = libraryState
+  const { saved, lists, gameListIds, achievedAchievementIds } = libraryState
   const pending = pendingKey !== null
   const listSelectionChanged = !haveSameIds(gameListIds, draftGameListIds)
 
   function patchLibraryState(patch: Partial<GameLibraryState>) {
-    setLibraryState((current) => (current ? { ...current, ...patch } : current))
+    update((current) => ({ ...current, ...patch }))
   }
 
   async function run(
@@ -256,7 +253,7 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
         } catch (error) {
           try {
             const refreshed = await getGameLibraryState(slug)
-            setLibraryState(refreshed)
+            replace(refreshed)
             setDraftGameListIds(refreshed.gameListIds)
           } catch {
             // Preserve the current state if reconciliation also fails.
@@ -281,13 +278,19 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
 
   const comingSoon = () => toast(t.comingSoon)
 
-  const removeFromLibrary = () =>
+  const markedCount = achievedAchievementIds.length
+  const removeGame = () =>
     run(
       'remove',
       () => removeGameFromLibrary(gameId),
-      () => patchLibraryState({ saved: false, gameListIds: [] }),
+      () => patchLibraryState({ saved: false, gameListIds: [], achievedAchievementIds: [] }),
       t.removedToast,
     )
+  // Marked achievements are lost with the entry, so only then ask first.
+  const removeFromLibrary = () => {
+    if (markedCount > 0) setConfirmRemoveOpen(true)
+    else void removeGame()
+  }
   const saveToLibrary = () => store('save', { status: 'SAVED' }, t.savedToast)
   const saveToWishlist = () => store('whitelist', { status: 'WHITELIST' }, t.whitelistToast)
 
@@ -524,6 +527,34 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
         </SheetContent>
       </Sheet>
 
+      <AlertDialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{libraryT.removeWithAchievementsTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {fillTemplate(
+                markedCount === 1
+                  ? libraryT.removeWithAchievementsMessageOne
+                  : libraryT.removeWithAchievementsMessageOther,
+                { count: formatCount(markedCount, locale) },
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="button.library.remove_cancel">
+              {dict.app.actions.cancel}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              data-testid="button.library.remove_confirm"
+              onClick={() => void removeGame()}
+            >
+              {libraryT.confirmRemove}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <CreateLibraryListSheet
         open={createListOpen}
         existingLists={lists}
@@ -533,7 +564,7 @@ function SignedInLibraryActions({ game, slug, barGame, scrolledPast }: ActionsPr
             return await createLibraryList({ ...input, gameIds: [gameId] })
           } catch (error) {
             try {
-              setLibraryState(await getGameLibraryState(slug))
+              replace(await getGameLibraryState(slug))
             } catch {
               // Preserve the current state if reconciliation also fails.
             }

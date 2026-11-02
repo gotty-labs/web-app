@@ -44,6 +44,8 @@ export const InternalCode = {
   GAME_NOT_FOUND: 50070,
   UNSUPPORTED_GAME_SECTION: 50071,
   LIBRARY_LIST_NAME_ALREADY_EXISTS: 50072,
+  // Clients show nothing for it (failed marks keep the optimistic state).
+  ACHIEVEMENT_NOT_FOUND: 50073,
   // Platform
   WEB_PLATFORM_NOT_ALLOWED: 50080,
   // Request / validation

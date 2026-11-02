@@ -192,6 +192,10 @@ export type GameLibraryProgressState = z.infer<typeof gameLibraryProgressStateSc
 export const userGameLibraryStatusSchema = z.enum(['SAVED', 'WHITELIST'])
 export type UserGameLibraryStatus = z.infer<typeof userGameLibraryStatusSchema>
 
+/** Origin of a game's achievement catalogue (today only Steam). */
+export const gameAchievementSourceSchema = z.enum(['STEAM'])
+export type GameAchievementSource = z.infer<typeof gameAchievementSourceSchema>
+
 export const consoleFamilySchema = z.enum(['PLAY', 'XBOX', 'SEGA', 'LINUX', 'NINTENDO'])
 export type ConsoleFamily = z.infer<typeof consoleFamilySchema>
 
