@@ -262,12 +262,9 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                 </DetailSection>
               )}
 
-              {timeToBeatEntries.length > 0 && (
-                <DetailSection title={t.timeToBeat}>
-                  <GameTimeToBeat entries={timeToBeatEntries} />
-                </DetailSection>
-              )}
-
+              {/* Canonical tail (shared with iOS/Android): achievements → time to beat →
+                  languages → expansions/DLCs → related. Absent sections render nothing,
+                  so the column's gap never leaves a hole. */}
               {achievements && (
                 <DetailSection title={t.achievements.title}>
                   <GameAchievements
@@ -278,6 +275,19 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                   />
                 </DetailSection>
               )}
+
+              {timeToBeatEntries.length > 0 && (
+                <DetailSection title={t.timeToBeat}>
+                  <GameTimeToBeat entries={timeToBeatEntries} />
+                </DetailSection>
+              )}
+
+              <GameLanguages
+                dict={dict}
+                languages={game.languages}
+                locale={locale}
+                gameId={game.id}
+              />
 
               {(expansions.length > 0 || dlcs.length > 0) && (
                 <GameAdditionalContent
@@ -293,13 +303,6 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
                   }}
                 />
               )}
-
-              <GameLanguages
-                dict={dict}
-                languages={game.languages}
-                locale={locale}
-                gameId={game.id}
-              />
 
               {/* Always the last block; hidden under the minimum (handled inside). */}
               <GameRelatedSection
