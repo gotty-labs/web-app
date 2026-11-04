@@ -162,6 +162,49 @@
       "AUDIO": "Audio",
       "SUBTITLES": "Subtitles",
       "INTERFACE": "Interface"
+    },
+    "languages": {
+      "yourLanguageTitle": "In your language · {language}",
+      "yourLanguageDisplayName": "English",
+      "yourLanguageName": "English",
+      "levelComplete": "Complete",
+      "levelAudio": "Voiced",
+      "levelSubtitles": "Subtitled",
+      "levelInterfaceOnly": "Interface only",
+      "levelUnavailable": "Not available",
+      "categoryVoices": "Voices",
+      "stateNoData": "No data",
+      "more": "+{count}",
+      "showAll": "See all {count} languages",
+      "sheetTitle": "{count} languages",
+      "filterAll": "All",
+      "yourLanguageTag": "Your language",
+      "a11yCard": "In your language, {language}: {level}.",
+      "a11yAvailable": "Available: {categories}.",
+      "a11yUnavailable": "Not available: {categories}.",
+      "a11yNoData": "No data for {categories}.",
+      "a11yCardUnavailable": "In your language: not available in {language}.",
+      "a11yRow": "{language}: {categories}",
+      "a11yRowYourLanguage": "{language}, your language: {categories}",
+      "a11ySummaryVoices": {
+        "one": "voices in 1 language",
+        "other": "voices in {count} languages"
+      },
+      "a11ySummarySubtitles": {
+        "one": "subtitles in 1 language",
+        "other": "subtitles in {count} languages"
+      },
+      "a11ySummaryInterface": {
+        "one": "interface in 1 language",
+        "other": "interface in {count} languages"
+      },
+      "a11yMore": {
+        "one": "and 1 more language",
+        "other": "and {count} more languages"
+      },
+      "a11yCategoryVoices": "voices",
+      "a11yCategorySubtitles": "subtitles",
+      "a11yCategoryInterface": "interface"
     }
   },
   "app": {
@@ -183,12 +226,6 @@
       "description": "Gotty is a small, free project built for the community. Ads are our only way to cover its costs and keep making it better for everyone.",
       "reload": "I've disabled it, reload",
       "continue": "Continue"
-    },
-    "maintenance": {
-      "title": "Gotty is taking a short break",
-      "description": "We’re carrying out scheduled maintenance. Your games and lists are safe.",
-      "availability": "We expect to be back around {time}.",
-      "retry": "Check again"
     },
     "actions": {
       "enterApp": "Enter the app",
@@ -681,6 +718,25 @@
       "backToHome": "Go to Gotty home",
       "related": {
         "title": "Related games"
+      },
+      "achievements": {
+        "title": "Achievements",
+        "seeAll": "See all ({count})",
+        "totalOne": "1 achievement",
+        "totalOther": "{count} achievements",
+        "progress": "{achieved} of {total} unlocked",
+        "percent": "{progress}%",
+        "rarity": "{rarity} of players have it",
+        "rarityRare": "<0.1% of players have it",
+        "rarityRareShort": "<0.1%",
+        "hiddenTitle": "Hidden achievement",
+        "hiddenRevealClick": "Click to reveal",
+        "hiddenPrefix": "Hidden",
+        "sourceA11y": "Steam achievements",
+        "signInHint": "Sign in to save your progress",
+        "revealA11y": "Reveal",
+        "achievedA11y": "unlocked",
+        "notAchievedA11y": "not unlocked"
       }
     },
     "library": {
@@ -742,6 +798,9 @@
       "confirmRemoveDescription": "Do you want to remove {game} from your library?",
       "confirmRemoveListDescription": "Do you want to remove {game} from this list? It will stay in your library.",
       "confirmRemove": "Remove",
+      "removeWithAchievementsTitle": "Remove from your library?",
+      "removeWithAchievementsMessageOne": "Your status, hours and the achievement you've marked will be deleted.",
+      "removeWithAchievementsMessageOther": "Your status, hours and the {count} achievements you've marked will be deleted.",
       "removedToast": "Removed from your library",
       "removedWhitelistToast": "Removed from your wishlist",
       "addedToast": "Added to your library",

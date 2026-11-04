@@ -6,9 +6,11 @@
  * It renders a full-bleed hero (artwork background + framed cover) and a stack of
  * content sections. The server resolves every enum/date to a localized string and
  * hands the interactive pieces (library menu, media gallery, release calendar,
- * storyline, DLC) compact plain-object view-models — so those client components ship
- * behavior, not the whole dictionary. Library writes still live in `GameDetailIsland`,
- * slotted under the hero title; the rating summary leads the content.
+ * storyline, DLC, achievements) compact plain-object view-models. `GameDetailProviders`
+ * wraps the page with the client providers its interactive pieces share (session,
+ * i18n, this game's library state); library writes sit under the hero title and the
+ * rating summary leads the content. Hidden achievements reach the page without their
+ * content (no spoilers in the HTML or the serialized props).
  */
 import { notFound } from 'next/navigation'
 
@@ -19,6 +21,7 @@ import type { GameReleaseDate } from '@/lib/domain/models'
 
 import { getGameCover } from '../config/images'
 import { findPublicGame } from '../services/seo'
+import { buildAchievementsView } from '../utils/achievements'
 import { gameRegionLabel, gameReleaseStatusLabel } from '../utils/labels'
 import {
   formatFullDate,
@@ -32,11 +35,13 @@ import { youtubeId } from '../utils/media'
 
 import { DetailSection } from './detail-section'
 import { ExpandableText } from './expandable-text'
+import { GameAchievements } from './game-achievements'
 import { GameAdditionalContent, type DlcItem } from './game-additional-content'
 import { GameDetailAdLayout } from './game-detail-ad-layout'
-import { GameDetailIsland } from './game-detail-island'
+import { GameDetailProviders } from './game-detail-providers'
 import { GameEngines } from './game-engines'
 import { GameHero } from './game-hero'
+import { GameLibraryActions } from './game-library-actions'
 import { GameLanguages } from './game-languages'
 import { GameMediaGallery } from './game-media-gallery'
 import { GamePlatforms } from './game-platforms'
@@ -116,6 +121,15 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
     .filter((entry): entry is Omit<TimeToBeatEntry, 'value'> => entry !== null)
     .map((entry) => ({ ...entry, value: formatTimeToBeat(entry.seconds) }))
 
+  const achievements = buildAchievementsView(game.achievements, locale, dict)
+  // Analytics metadata for `game_added` (library actions and the first achievement mark).
+  const addedMetadata = {
+    id: game.id,
+    name: game.name,
+    genres: game.genres,
+    platforms: game.platforms.map(({ id }) => ({ id })),
+  }
+
   const artworks = game.media?.artworks ?? []
   const screenshots = game.media?.screenshots ?? []
   const videoIds = (game.media?.videos ?? [])
@@ -135,163 +149,173 @@ export async function GameDetail({ slug, locale }: { slug: string; locale: Local
 
   return (
     <AdvertisingProvider>
-      <main>
-        <GameHero
-          game={game}
-          dict={dict}
-          releaseYear={formatYear(releaseIso)}
-          actions={
-            <GameDetailIsland
-              game={{
-                id: game.id,
-                name: game.name,
-                genres: game.genres,
-                platforms: game.platforms.map(({ id }) => ({ id })),
-              }}
-              slug={slug}
-              cover={getGameCover(game.media?.cover)}
-              rating={ratingLabel}
-              locale={locale}
-              dictionary={dict}
-            />
-          }
-        />
-
-        <GameDetailAdLayout label={dict.app.advertising.label}>
-          <div className="flex flex-col gap-10">
-            <GameRatingSummary rating={game.rating} dict={dict} locale={locale} />
-
-            {(game.description || game.storyline) && (
-              <DetailSection
-                title={t.about}
-                action={
-                  game.storyline ? (
-                    <StorylineDialog
-                      storyline={game.storyline}
-                      title={t.storyline}
-                      triggerLabel={t.readStoryline}
-                    />
-                  ) : undefined
-                }
-              >
-                {game.description ? (
-                  <ExpandableText
-                    text={game.description}
-                    moreLabel={t.showMore}
-                    lessLabel={t.showLess}
-                  />
-                ) : null}
-              </DetailSection>
-            )}
-
-            {facts.length > 0 && (
-              <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
-                {facts.map((fact) => (
-                  <div key={fact.label} className="flex flex-col gap-0.5">
-                    <dt className="text-xs text-muted-foreground">{fact.label}</dt>
-                    <dd className="font-medium">{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-
-            {(game.genres.length > 0 || game.themes.length > 0 || game.ageRating.length > 0) && (
-              <GameTags
-                dict={dict}
-                genres={game.genres}
-                themes={game.themes}
-                ageRatings={game.ageRating}
+      <GameDetailProviders slug={slug} locale={locale} dictionary={dict}>
+        <main>
+          <GameHero
+            game={game}
+            dict={dict}
+            releaseYear={formatYear(releaseIso)}
+            actions={
+              <GameLibraryActions
+                game={addedMetadata}
+                slug={slug}
+                cover={getGameCover(game.media?.cover)}
+                rating={ratingLabel}
               />
-            )}
+            }
+          />
 
-            {hasMedia && (
-              <DetailSection title={t.media}>
-                <GameMediaGallery
-                  artworks={artworks}
-                  screenshots={screenshots}
-                  videoIds={videoIds}
-                  labels={{
-                    title: t.media,
-                    viewGallery: t.viewGallery,
-                    all: dict.app.search.all,
-                    artworks: t.mediaArtworks,
-                    screenshots: t.mediaScreenshots,
-                    videos: t.mediaVideos,
-                    play: t.playVideo,
-                    fullscreen: t.fullscreen,
-                    previous: t.previous,
-                    next: t.next,
-                  }}
+          <GameDetailAdLayout label={dict.app.advertising.label}>
+            <div className="flex flex-col gap-10">
+              <GameRatingSummary rating={game.rating} dict={dict} locale={locale} />
+
+              {(game.description || game.storyline) && (
+                <DetailSection
+                  title={t.about}
+                  action={
+                    game.storyline ? (
+                      <StorylineDialog
+                        storyline={game.storyline}
+                        title={t.storyline}
+                        triggerLabel={t.readStoryline}
+                      />
+                    ) : undefined
+                  }
+                >
+                  {game.description ? (
+                    <ExpandableText
+                      text={game.description}
+                      moreLabel={t.showMore}
+                      lessLabel={t.showLess}
+                    />
+                  ) : null}
+                </DetailSection>
+              )}
+
+              {facts.length > 0 && (
+                <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
+                  {facts.map((fact) => (
+                    <div key={fact.label} className="flex flex-col gap-0.5">
+                      <dt className="text-xs text-muted-foreground">{fact.label}</dt>
+                      <dd className="font-medium">{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+
+              {(game.genres.length > 0 || game.themes.length > 0 || game.ageRating.length > 0) && (
+                <GameTags
+                  dict={dict}
+                  genres={game.genres}
+                  themes={game.themes}
+                  ageRatings={game.ageRating}
                 />
-              </DetailSection>
-            )}
+              )}
 
-            {game.platforms.length > 0 && (
-              <DetailSection title={t.platforms}>
-                <GamePlatforms platforms={game.platforms} />
-              </DetailSection>
-            )}
+              {hasMedia && (
+                <DetailSection title={t.media}>
+                  <GameMediaGallery
+                    artworks={artworks}
+                    screenshots={screenshots}
+                    videoIds={videoIds}
+                    labels={{
+                      title: t.media,
+                      viewGallery: t.viewGallery,
+                      all: dict.app.search.all,
+                      artworks: t.mediaArtworks,
+                      screenshots: t.mediaScreenshots,
+                      videos: t.mediaVideos,
+                      play: t.playVideo,
+                      fullscreen: t.fullscreen,
+                      previous: t.previous,
+                      next: t.next,
+                    }}
+                  />
+                </DetailSection>
+              )}
 
-            {releaseRows.length > 0 && (
-              <DetailSection title={t.releases}>
-                <GameReleaseDates
-                  rows={releaseRows}
+              {game.platforms.length > 0 && (
+                <DetailSection title={t.platforms}>
+                  <GamePlatforms platforms={game.platforms} />
+                </DetailSection>
+              )}
+
+              {releaseRows.length > 0 && (
+                <DetailSection title={t.releases}>
+                  <GameReleaseDates
+                    rows={releaseRows}
+                    labels={{
+                      gameName: game.name,
+                      releasesTitle: t.releases,
+                      seeAll: t.seeAll,
+                      addToCalendar: t.addToCalendar,
+                      appleCalendar: t.appleCalendar,
+                      googleCalendar: t.googleCalendar,
+                    }}
+                  />
+                </DetailSection>
+              )}
+
+              {game.engines.length > 0 && (
+                <DetailSection title={t.engines}>
+                  <GameEngines engines={game.engines} />
+                </DetailSection>
+              )}
+
+              {/* Canonical tail (shared with iOS/Android): achievements → time to beat →
+                  languages → expansions/DLCs → related. Absent sections render nothing,
+                  so the column's gap never leaves a hole. */}
+              {achievements && (
+                <DetailSection title={t.achievements.title}>
+                  <GameAchievements
+                    view={achievements}
+                    slug={slug}
+                    locale={locale}
+                    game={addedMetadata}
+                  />
+                </DetailSection>
+              )}
+
+              {timeToBeatEntries.length > 0 && (
+                <DetailSection title={t.timeToBeat}>
+                  <GameTimeToBeat entries={timeToBeatEntries} />
+                </DetailSection>
+              )}
+
+              <GameLanguages
+                dict={dict}
+                languages={game.languages}
+                locale={locale}
+                gameId={game.id}
+              />
+
+              {(expansions.length > 0 || dlcs.length > 0) && (
+                <GameAdditionalContent
+                  expansions={expansions}
+                  dlcs={dlcs}
                   labels={{
-                    gameName: game.name,
+                    expansions: t.expansions,
+                    dlcs: t.dlcs,
                     releasesTitle: t.releases,
-                    seeAll: t.seeAll,
                     addToCalendar: t.addToCalendar,
                     appleCalendar: t.appleCalendar,
                     googleCalendar: t.googleCalendar,
                   }}
                 />
-              </DetailSection>
-            )}
+              )}
 
-            {game.engines.length > 0 && (
-              <DetailSection title={t.engines}>
-                <GameEngines engines={game.engines} />
-              </DetailSection>
-            )}
-
-            {timeToBeatEntries.length > 0 && (
-              <DetailSection title={t.timeToBeat}>
-                <GameTimeToBeat entries={timeToBeatEntries} />
-              </DetailSection>
-            )}
-
-            {(expansions.length > 0 || dlcs.length > 0) && (
-              <GameAdditionalContent
-                expansions={expansions}
-                dlcs={dlcs}
-                labels={{
-                  expansions: t.expansions,
-                  dlcs: t.dlcs,
-                  releasesTitle: t.releases,
-                  addToCalendar: t.addToCalendar,
-                  appleCalendar: t.appleCalendar,
-                  googleCalendar: t.googleCalendar,
-                }}
+              {/* Always the last block; hidden under the minimum (handled inside). */}
+              <GameRelatedSection
+                key={game.id}
+                sourceGameId={game.id}
+                games={game.related}
+                locale={locale}
+                dictionary={dict}
               />
-            )}
-
-            {game.languages.length > 0 && (
-              <DetailSection title={t.languages}>
-                <GameLanguages dict={dict} languages={game.languages} />
-              </DetailSection>
-            )}
-
-            {/* Always the last block; hidden under the minimum (handled inside). */}
-            <GameRelatedSection
-              key={game.id}
-              sourceGameId={game.id}
-              games={game.related}
-              locale={locale}
-              dictionary={dict}
-            />
-          </div>
-        </GameDetailAdLayout>
-      </main>
+            </div>
+          </GameDetailAdLayout>
+        </main>
+      </GameDetailProviders>
     </AdvertisingProvider>
   )
 }

@@ -43,7 +43,7 @@ import { cn } from '@/lib/utils'
 
 import { progressStateToggleClass } from '../config/progress-state-styles'
 import { useIsCompact } from '../hooks/use-is-compact'
-import { timeToBeatHours } from '../utils/format'
+import { formatCount, timeToBeatHours } from '../utils/format'
 import { gameProgressStateLabel } from '../utils/labels'
 import { gamePath } from '../utils/paths'
 
@@ -103,6 +103,9 @@ export function LibraryGameActionsSheet({
   const [hours, setHours] = useState(Math.min(currentHours, maxHours))
   const [listIds, setListIds] = useState<string[]>(currentListIds)
   const [removeKind, setRemoveKind] = useState<RemoveKind | null>(null)
+  // Removing from Library also deletes the marked achievements: the copy says so.
+  const markedCount = game.achievedAchievementsCount
+  const warnsAchievements = removeKind === 'library' && markedCount > 0
   const listSelectionChanged =
     listIds.length !== currentListIds.length ||
     listIds.some((listId) => !currentListIds.includes(listId))
@@ -391,17 +394,31 @@ export function LibraryGameActionsSheet({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t.confirmRemoveTitle}</AlertDialogTitle>
+            <AlertDialogTitle>
+              {warnsAchievements ? t.removeWithAchievementsTitle : t.confirmRemoveTitle}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              {interpolate(
-                removeKind === 'list' ? t.confirmRemoveListDescription : t.confirmRemoveDescription,
-                { game: game.name },
-              )}
+              {warnsAchievements
+                ? interpolate(
+                    markedCount === 1
+                      ? t.removeWithAchievementsMessageOne
+                      : t.removeWithAchievementsMessageOther,
+                    { count: formatCount(markedCount, locale) },
+                  )
+                : interpolate(
+                    removeKind === 'list'
+                      ? t.confirmRemoveListDescription
+                      : t.confirmRemoveDescription,
+                    { game: game.name },
+                  )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{dict.app.actions.cancel}</AlertDialogCancel>
+            <AlertDialogCancel data-testid="button.library.remove_cancel">
+              {dict.app.actions.cancel}
+            </AlertDialogCancel>
             <AlertDialogAction
+              data-testid="button.library.remove_confirm"
               variant="destructive"
               disabled={pending}
               onClick={() => {

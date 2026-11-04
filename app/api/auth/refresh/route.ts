@@ -14,7 +14,6 @@
 import { NextResponse } from 'next/server'
 
 import { apiRequest } from '@/lib/api/client'
-import { isMaintenanceError } from '@/lib/api/maintenance'
 import { clearSession, persistSession, readSession } from '@/features/auth/server/session-cookie'
 import { userSessionSchema } from '@/lib/domain/models'
 
@@ -40,7 +39,7 @@ export async function POST(): Promise<NextResponse> {
     await persistSession(rotated)
     return NextResponse.json({ id: rotated.id, accessToken: rotated.sessionToken })
   } catch (error) {
-    if (!isMaintenanceError(error)) await clearSession()
+    await clearSession()
     return errorResponse(error)
   }
 }

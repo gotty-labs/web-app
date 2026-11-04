@@ -14,7 +14,6 @@ export const gtErrorTypeSchema = z.enum([
   'BAD_REQUEST',
   'AUTH_ERROR',
   'DB_ERROR',
-  'MAINTENANCE',
   'MAIL_PROVIDER_ERROR',
   'RESTFUL_EXTERNAL_PROVIDER_ERROR',
   'GAME_ERROR',
@@ -45,6 +44,8 @@ export const InternalCode = {
   GAME_NOT_FOUND: 50070,
   UNSUPPORTED_GAME_SECTION: 50071,
   LIBRARY_LIST_NAME_ALREADY_EXISTS: 50072,
+  // Clients show nothing for it (failed marks keep the optimistic state).
+  ACHIEVEMENT_NOT_FOUND: 50073,
   // Platform
   WEB_PLATFORM_NOT_ALLOWED: 50080,
   // Request / validation
@@ -52,7 +53,6 @@ export const InternalCode = {
   // Persistence
   MONGO_WRITE_VALIDATION_ERROR: 50030,
   MONGO_WRITE_DUPLICATE_FIELD: 50031,
-  MONGO_UNAVAILABLE: 50032,
 } as const
 
 export type InternalCode = (typeof InternalCode)[keyof typeof InternalCode]

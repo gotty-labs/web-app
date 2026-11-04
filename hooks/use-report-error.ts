@@ -10,7 +10,6 @@
 import { useCallback, useContext } from 'react'
 
 import { ErrorContext } from '@/contexts/error-provider'
-import { isMaintenanceError } from '@/lib/api/maintenance'
 import { getErrorMessage } from '@/lib/i18n'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
@@ -20,7 +19,7 @@ export function useReportError(): (error: unknown, opts?: { silent?: boolean }) 
 
   return useCallback(
     (error, opts) => {
-      if (opts?.silent || isMaintenanceError(error)) return
+      if (opts?.silent) return
       show?.(getErrorMessage(error, dict))
     },
     [show, dict],

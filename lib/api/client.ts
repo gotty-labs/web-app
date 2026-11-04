@@ -17,7 +17,6 @@ import { type GtLanguage } from '@/lib/domain/enums'
 import { env } from '../config/env'
 import { ApiException, unwrap } from './envelope'
 import { buildHeaders } from './headers'
-import { reportMaintenanceError } from './maintenance'
 
 type QueryPrimitive = string | number | boolean
 type QueryValue = QueryPrimitive | QueryPrimitive[] | null | undefined
@@ -106,14 +105,7 @@ export async function apiRequest<T>(options: ApiRequestOptions<T>): Promise<T> {
   // Enveloped error (carries a stable internalCode) → typed ApiException via unwrap.
   const isEnvelopedError =
     typeof raw === 'object' && raw !== null && (raw as { success?: unknown }).success === false
-  if (isEnvelopedError) {
-    try {
-      return unwrap(raw, schema)
-    } catch (error) {
-      reportMaintenanceError(error)
-      throw error
-    }
-  }
+  if (isEnvelopedError) return unwrap(raw, schema)
 
   // Non-2xx WITHOUT our envelope (e.g. 429 throttler, 5xx, gateway/proxy) → synthesize an
   // ApiException from the HTTP status, so the classifier (rateLimit/server) and retryOn429 work.

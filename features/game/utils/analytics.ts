@@ -1,4 +1,16 @@
 import { track } from '@/lib/analytics'
+import type { GameLanguagesView } from './languages'
+
+export function trackLanguagesSheetOpened(
+  gameId: string,
+  languagesCount: number,
+  level: GameLanguagesView['level'],
+): void {
+  track({
+    name: 'languages_sheet_opened',
+    properties: { game_id: gameId, languages_count: languagesCount, user_language_level: level },
+  })
+}
 
 export type GameAddedDestination = 'library' | 'wishlist' | 'list'
 export type GameAddedSourceScreen = 'feed' | 'search' | 'game_detail' | 'library'

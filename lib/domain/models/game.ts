@@ -10,6 +10,7 @@
 import { z } from 'zod'
 
 import {
+  gameAchievementSourceSchema,
   gameAgeRatingSchema,
   gameCategorySchema,
   gameGenreSchema,
@@ -99,6 +100,8 @@ export const gameLibrarySchema = gameSummarySchema.extend({
   timeToBeat: timeToBeatSchema.optional(),
   engines: z.array(engineSchema),
   companies: companiesSchema,
+  // Marks that exist in the current catalogue; drives the remove confirmations.
+  achievedAchievementsCount: z.number().int().min(0).optional().default(0),
 })
 export type GameLibrary = z.infer<typeof gameLibrarySchema>
 
@@ -114,13 +117,50 @@ const gameLanguageSchema = z.object({
   categories: z.array(gameLanguageCategorySchema),
 })
 
+/** Ignore future provider enum values without rejecting the rest of the game. */
+export const gameLanguagesSchema = z
+  .array(z.object({ type: z.string(), categories: z.array(z.string()) }))
+  .transform((languages) =>
+    languages.flatMap((language) => {
+      const type = gameLanguageTypeSchema.safeParse(language.type)
+      if (!type.success) return []
+      const categories = gameLanguageCategorySchema.options.filter((category) =>
+        language.categories.includes(category),
+      )
+      return categories.length ? [{ type: type.data, categories }] : []
+    }),
+  )
+  .pipe(z.array(gameLanguageSchema))
+
 /** Current user's library state for a game (`GET /game/public/:slug/library`). */
 export const gameLibraryStateSchema = z.object({
   saved: z.boolean(),
   lists: z.array(gameLibraryListSchema),
   gameListIds: z.array(z.string()),
+  // Achievement ids the user marked in this game (Steam order, current catalogue only).
+  achievedAchievementIds: z.array(z.string()).optional().default([]),
 })
 export type GameLibraryState = z.infer<typeof gameLibraryStateSchema>
+
+/** One Steam achievement. `id` is Steam's API name — content, as far as spoilers go. */
+export const gameAchievementSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  hidden: z.boolean(),
+  rarity: z.number().nullable(), // % of Steam players (0–100)
+  iconUrl: z.string().nullable(),
+  iconGrayUrl: z.string().nullable(),
+})
+export type GameAchievement = z.infer<typeof gameAchievementSchema>
+
+/** Whole catalogue in Steam order; `null` when the game has none (or it failed). */
+export const gameAchievementsSchema = z.object({
+  source: gameAchievementSourceSchema,
+  total: z.number().int().min(1),
+  items: z.array(gameAchievementSchema).min(1),
+})
+export type GameAchievements = z.infer<typeof gameAchievementsSchema>
 
 /** Full game detail — powers both the in-app detail and the public SEO page. */
 export const gameDtoSchema = z.object({
@@ -141,11 +181,13 @@ export const gameDtoSchema = z.object({
   themes: z.array(gameThemeSchema),
   genres: z.array(gameGenreSchema),
   companies: companiesSchema,
-  languages: z.array(gameLanguageSchema),
+  languages: gameLanguagesSchema.optional().default([]),
   platforms: z.array(gameConsoleSchema),
   releaseDates: z.array(gameReleaseDateSchema),
   // Precomputed related games (4–10, or empty). Optional + `[]` default so a backend
   // that doesn't send it yet still validates (the detail just omits the block).
   related: z.array(gameSummarySchema).optional().default([]),
+  // Missing or unparseable achievements never break the detail: no block instead.
+  achievements: gameAchievementsSchema.nullable().optional().default(null).catch(null),
 })
 export type GameDto = z.infer<typeof gameDtoSchema>

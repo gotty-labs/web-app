@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { MaintenanceModal, useMaintenanceStatus } from '@/features/maintenance'
 import { useDictionary } from '@/lib/i18n/hooks/use-i18n'
 
 /** Shows an already-mapped message in the global modal. Null outside a provider. */
@@ -32,7 +31,6 @@ export const ErrorContext = createContext<((message: string) => void) | null>(nu
 
 export function ErrorProvider({ children }: { children: ReactNode }) {
   const dict = useDictionary()
-  const maintenanceActive = useMaintenanceStatus()
   const [message, setMessage] = useState<string | null>(null)
 
   const show = useCallback((next: string) => setMessage(next), [])
@@ -41,7 +39,7 @@ export function ErrorProvider({ children }: { children: ReactNode }) {
     <ErrorContext value={show}>
       {children}
       <Dialog
-        open={message !== null && !maintenanceActive}
+        open={message !== null}
         onOpenChange={(open) => {
           if (!open) setMessage(null)
         }}
@@ -56,7 +54,6 @@ export function ErrorProvider({ children }: { children: ReactNode }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <MaintenanceModal open={maintenanceActive} />
     </ErrorContext>
   )
 }

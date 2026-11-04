@@ -27,7 +27,6 @@ import { BffError, bffRequest } from '@/lib/api/bff-client'
 import { apiRequest, type ApiRequestOptions } from '@/lib/api/client'
 import { ApiException } from '@/lib/api/envelope'
 import { InternalCode } from '@/lib/api/error-codes'
-import { isMaintenanceError } from '@/lib/api/maintenance'
 import { getClientLocale } from '@/lib/i18n/locales'
 
 import { isAccessTokenExpired } from '../utils/jwt'
@@ -74,8 +73,6 @@ async function performRefresh(): Promise<string> {
     sessionStore.setAccess(data)
     return data.accessToken
   } catch (error) {
-    if (isMaintenanceError(error)) throw error
-
     // A temporary transport/server failure is not a reason to keep creating guests.
     const guest = sessionStore.getSnapshot().session?.guest === true
     const invalidSession =
