@@ -320,7 +320,7 @@
         "label": "Legal",
         "title": "Privacy policy",
         "description": "How Gotty collects, uses, shares, and protects information when you use our website and apps.",
-        "lastUpdated": "Last updated: September 23, 2026",
+        "lastUpdated": "Last updated: November 6, 2026",
         "sections": [
           {
             "heading": "Who we are",
@@ -335,7 +335,7 @@
             ],
             "bullets": [
               "Account information: email address, nickname, profile photo, authentication-provider identifiers, and email-verification state.",
-              "Library and preferences: saved games, custom lists, progress, playtime, console visibility, and notification preferences.",
+              "Library and preferences: saved games, custom lists, progress, playtime, and console visibility.",
               "Feedback and support: messages you send us and an email address if you ask us to reply.",
               "Technical and security information: IP address, browser or device type, app version, diagnostic information, and security or server logs where applicable.",
               "Analytics and advertising information: events, device or browser identifiers, and advertising signals processed by the services described below when they are enabled and permitted."
@@ -344,7 +344,7 @@
           {
             "heading": "How we use information",
             "paragraphs": [
-              "We use information to create and maintain your account, operate your library, authenticate requests, send service messages, respond to feedback, prevent abuse, troubleshoot failures, measure product usage, and display or measure advertising."
+              "We use information to create and maintain your account, operate your library, authenticate requests, send service messages and the push notifications you accept, respond to feedback, prevent abuse, troubleshoot failures, measure product usage, and display or measure advertising."
             ]
           },
           {
@@ -362,9 +362,24 @@
             ]
           },
           {
+            "heading": "Push notifications",
+            "paragraphs": [
+              "The Gotty iOS and Android apps can send push notifications about important video game news. The website does not send notifications.",
+              "You only receive them if you accept them in the app. You can turn them off at any time from Profile → Notifications or from your device's system settings.",
+              "This data is not linked to your account, so signing in, signing out, or deleting your account does not change it.",
+              "Notification images are downloaded from the outlet that published the story, as in the News section."
+            ],
+            "bullets": [
+              "Data we process: your device's notification token, a random installation identifier, the platform, the app language, whether notifications are turned on, and which news notifications have been sent to that installation.",
+              "Providers: Firebase Cloud Messaging (Google) handles sending as our processor. On iOS, delivery also goes through Apple's notification service.",
+              "Installation data retention: deleted when the notification service reports that the token is no longer valid (for example, on the next send after you uninstall the app) or, at the latest, after 270 days without opening the app.",
+              "Sent notification records retention: the record of which notifications were sent is deleted no later than 30 days after the story was published."
+            ]
+          },
+          {
             "heading": "Service providers and sharing",
             "paragraphs": [
-              "We share information with service providers that host the API, database, email delivery, authentication, analytics, advertising, error monitoring, and website infrastructure. They process information on our instructions or under their own applicable privacy policies. We may also disclose information when required by law, to protect users and the service, or as part of a business transfer."
+              "We share information with service providers that host the API, database, email delivery, push notification delivery, authentication, analytics, advertising, error monitoring, and website infrastructure. They process information on our instructions or under their own applicable privacy policies. We may also disclose information when required by law, to protect users and the service, or as part of a business transfer."
             ]
           },
           {
@@ -601,7 +616,6 @@
     "profile": {
       "account": "Account",
       "settings": "Settings",
-      "notifications": "Notifications",
       "consoleExclusions": "Hidden consoles",
       "logout": "Log out",
       "version": "Version",
@@ -892,11 +906,6 @@
         "cta": "Change password",
         "retryIn": "Try again in",
         "sentToast": "Check your email to change your password"
-      },
-      "notifications": {
-        "title": "Notifications",
-        "description": "Get notified about new releases and updates.",
-        "enable": "Enable notifications"
       }
     },
     "onboarding": {

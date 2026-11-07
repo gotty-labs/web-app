@@ -3,7 +3,7 @@
  * modal and follows the shared session/startup state; change-password emails a secure
  * link. Console visibility lives in the sidebar "Options" group. Guests have no account
  * to manage: they get a "browsing as a guest" card with a Sign in entry point instead
- * of the account sections, and keep the device-level preferences.
+ * of the account sections.
  */
 'use client'
 
@@ -14,9 +14,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
-import { Switch } from '@/components/ui/switch'
 import { AppTopBar } from '@/components/app-top-bar'
 import { authPromptStore, useSession } from '@/features/auth'
 import { useReportError } from '@/hooks/use-report-error'
@@ -40,8 +38,6 @@ export function SettingsView() {
   const [verifyOpen, setVerifyOpen] = useState(false)
   const [changingPassword, setChangingPassword] = useState(false)
   const [pwCooldown, setPwCooldown] = useState(0)
-  // No-op preference until the backend exposes notification settings — defaults ON.
-  const [notifications, setNotifications] = useState(true)
 
   // Same cooldown UX as the OTP resend: a successful "email me a link" opens a 60s
   // window so the user can't spam the endpoint. setState lives in the timer callback.
@@ -119,25 +115,6 @@ export function SettingsView() {
             </CardContent>
           </Card>
         )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{s.notifications.title}</CardTitle>
-            <CardDescription>{s.notifications.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between gap-4">
-              <Label htmlFor="notifications-toggle" className="font-normal">
-                {s.notifications.enable}
-              </Label>
-              <Switch
-                id="notifications-toggle"
-                checked={notifications}
-                onCheckedChange={setNotifications}
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {verifyOpen && <VerifyEmailModal onClose={() => setVerifyOpen(false)} />}
       </main>

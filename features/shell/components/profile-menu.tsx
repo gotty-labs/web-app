@@ -3,7 +3,7 @@
  *
  * A `DropdownMenu` whose trigger is a `SidebarMenuButton` showing the user's avatar +
  * nickname. The menu collects account-level actions: settings, hidden consoles,
- * notifications, and log out, with the app version pinned at the bottom.
+ * and log out, with the app version pinned at the bottom.
  *
  * Reads the user from `useSession()` and routes log-out through `signOut()` (clears
  * the member session + cookie and continues as a fresh guest). Guests get no account

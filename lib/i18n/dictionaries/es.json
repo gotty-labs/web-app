@@ -320,7 +320,7 @@
         "label": "Legal",
         "title": "Política de privacidad",
         "description": "Cómo Gotty recopila, utiliza, comparte y protege la información cuando usas nuestra web y nuestras aplicaciones.",
-        "lastUpdated": "Última actualización: 23 de septiembre de 2026",
+        "lastUpdated": "Última actualización: 6 de noviembre de 2026",
         "sections": [
           {
             "heading": "Quiénes somos",
@@ -335,7 +335,7 @@
             ],
             "bullets": [
               "Información de la cuenta: dirección de email, nombre de usuario, foto de perfil, identificadores del proveedor de autenticación y estado de verificación del email.",
-              "Biblioteca y preferencias: juegos guardados, listas personalizadas, progreso, tiempo de juego, visibilidad de consolas y preferencias de notificaciones.",
+              "Biblioteca y preferencias: juegos guardados, listas personalizadas, progreso, tiempo de juego y visibilidad de consolas.",
               "Feedback y soporte: los mensajes que nos envías y una dirección de email si nos pides que respondamos.",
               "Información técnica y de seguridad: dirección IP, navegador o dispositivo, versión de la aplicación, información de diagnóstico y registros de seguridad o del servidor cuando corresponda.",
               "Información de analítica y publicidad: eventos, identificadores del dispositivo o navegador y señales publicitarias procesadas por los servicios descritos más abajo cuando están habilitados y permitidos."
@@ -344,7 +344,7 @@
           {
             "heading": "Cómo usamos la información",
             "paragraphs": [
-              "Usamos la información para crear y mantener tu cuenta, gestionar tu biblioteca, autenticar solicitudes, enviar comunicaciones de servicio, responder al feedback, prevenir abusos, investigar errores, medir el uso del producto y mostrar o medir publicidad."
+              "Usamos la información para crear y mantener tu cuenta, gestionar tu biblioteca, autenticar solicitudes, enviar comunicaciones de servicio y las notificaciones push que aceptes, responder al feedback, prevenir abusos, investigar errores, medir el uso del producto y mostrar o medir publicidad."
             ]
           },
           {
@@ -362,9 +362,24 @@
             ]
           },
           {
+            "heading": "Notificaciones push",
+            "paragraphs": [
+              "Las aplicaciones de Gotty para iOS y Android pueden enviar notificaciones push sobre noticias importantes de videojuegos. La web no envía notificaciones.",
+              "Solo las recibes si las aceptas en la aplicación. Puedes desactivarlas en cualquier momento desde Perfil → Notificaciones o desde los ajustes del sistema de tu dispositivo.",
+              "Estos datos no se asocian a tu cuenta, por lo que iniciar sesión, cerrarla o eliminar la cuenta no los modifica.",
+              "Las imágenes de las notificaciones se descargan desde el medio que publicó la noticia, como en la sección Noticias."
+            ],
+            "bullets": [
+              "Datos que tratamos: el token de notificaciones de tu dispositivo, un identificador aleatorio de la instalación, la plataforma, el idioma de la aplicación, si las notificaciones están activadas y qué avisos de noticias se han enviado a esa instalación.",
+              "Proveedores: Firebase Cloud Messaging (Google) se encarga del envío como encargado del tratamiento. En iOS, la entrega pasa además por el servicio de notificaciones de Apple.",
+              "Conservación de los datos de la instalación: se borran cuando el servicio de notificaciones indica que el token ya no es válido (por ejemplo, en el siguiente envío después de desinstalar la aplicación) o, como máximo, tras 270 días sin abrir la aplicación.",
+              "Conservación del registro de envíos: el registro de qué avisos se han enviado se borra como máximo 30 días después de la publicación de la noticia."
+            ]
+          },
+          {
             "heading": "Proveedores y comunicaciones",
             "paragraphs": [
-              "Compartimos información con proveedores que alojan la API, la base de datos, el envío de emails, la autenticación, la analítica, la publicidad, la monitorización de errores y la infraestructura web. La tratan siguiendo nuestras instrucciones o conforme a sus propias políticas de privacidad aplicables. También podemos comunicar información cuando lo exija la ley, para proteger a los usuarios y el servicio o como parte de una operación empresarial."
+              "Compartimos información con proveedores que alojan la API, la base de datos, el envío de emails, el envío de notificaciones push, la autenticación, la analítica, la publicidad, la monitorización de errores y la infraestructura web. La tratan siguiendo nuestras instrucciones o conforme a sus propias políticas de privacidad aplicables. También podemos comunicar información cuando lo exija la ley, para proteger a los usuarios y el servicio o como parte de una operación empresarial."
             ]
           },
           {
@@ -601,7 +616,6 @@
     "profile": {
       "account": "Cuenta",
       "settings": "Ajustes",
-      "notifications": "Notificaciones",
       "consoleExclusions": "Consolas ocultas",
       "logout": "Cerrar sesión",
       "version": "Versión",
@@ -892,11 +906,6 @@
         "cta": "Cambiar contraseña",
         "retryIn": "Reinténtalo en",
         "sentToast": "Revisa tu email para cambiar la contraseña"
-      },
-      "notifications": {
-        "title": "Notificaciones",
-        "description": "Recibe avisos de novedades y actualizaciones.",
-        "enable": "Activar notificaciones"
       }
     },
     "onboarding": {

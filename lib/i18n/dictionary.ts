@@ -295,7 +295,6 @@ export const dictionarySchema = z.object({
     profile: z.object({
       account: z.string(),
       settings: z.string(),
-      notifications: z.string(),
       consoleExclusions: z.string(),
       logout: z.string(),
       version: z.string(),
@@ -588,11 +587,6 @@ export const dictionarySchema = z.object({
         cta: z.string(),
         retryIn: z.string(),
         sentToast: z.string(),
-      }),
-      notifications: z.object({
-        title: z.string(),
-        description: z.string(),
-        enable: z.string(),
       }),
     }),
     onboarding: z.object({
